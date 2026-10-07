@@ -29,6 +29,7 @@ export class Dota2Hero {
 	#activityModifiers = new Set<Dota2AssetModifier>();
 	#group: Group;
 	#pedestalModel: Source2ModelInstance | null = null;
+	#pedestalModels = new Map<string, Source2ModelInstance | null>();
 	#petModel: Source2ModelInstance | null = null;
 	#metamorphosisModel: Source2ModelInstance | null = null;
 	#activity = DEFAULT_ACTIVITY;
@@ -312,7 +313,7 @@ export class Dota2Hero {
 						}
 						if (modifier.type == 'pet') {
 							this.#petModel = model;
-						} if (modifier.type == 'hero_model_change') {
+						} else if (modifier.type == 'hero_model_change') {
 							this.#metamorphosisModel = model;
 						} else {
 							this.#pedestalModel = model;
@@ -448,7 +449,15 @@ export class Dota2Hero {
 	}
 
 	async #initPedestal(): Promise<void> {
-		this.#pedestalModel = await Source2ModelManager.createInstance('dota2', OptionsManager.getItem('app.loadout.pedestalmodel') as string, true);
+		const path = OptionsManager.getItem('app.loadout.pedestalmodel') as string;
+
+		let model: Source2ModelInstance | undefined | null = this.#pedestalModels.get(path);
+		if (model === undefined) {
+			model = await Source2ModelManager.createInstance('dota2', path, true);
+			this.#pedestalModels.set(path, model);
+		}
+
+		this.#pedestalModel = model;
 	}
 
 	async #setSkin(skin: number): Promise<void> {
