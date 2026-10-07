@@ -164,7 +164,7 @@ export class Dota2Hero {
 
 		this.#items.set(itemId, item);
 
-		Dota2LoadoutController.dispatchEvent<Dota2Item>('heroitemadded', { detail: item });
+		Dota2LoadoutController.dispatchEvent('heroitemadded', { detail: item });
 
 		if (item.slot) {
 			await this.#replaceSlot(item);
@@ -185,12 +185,11 @@ export class Dota2Hero {
 
 	async removeItem(itemId: string): Promise<void> {
 		const item = this.#items.get(itemId);
-
-		Dota2LoadoutController.dispatchEvent<Dota2Item>('heroitemremoved', { detail: item });
-
 		if (!item) {
 			return;
 		}
+
+		Dota2LoadoutController.dispatchEvent('heroitemremoved', { detail: item });
 		await item.remove();
 		this.#items.delete(itemId);
 		this.#itemsPerSlot.delete(item.slot);
@@ -243,7 +242,7 @@ export class Dota2Hero {
 			entity?.remove();
 		}
 		this.#units.clear();
-		Dota2LoadoutController.dispatchEvent<void>('herounitschanged');
+		Dota2LoadoutController.dispatchEvent('herounitschanged');
 	}
 
 	async processModifiers(): Promise<void> {
@@ -429,7 +428,7 @@ export class Dota2Hero {
 				model.setVisible(((event as CustomEvent<OptionsManagerEvent<Record<string, boolean>>>).detail.value)[modifierAsset] ? undefined : false);
 			});
 
-			Dota2LoadoutController.dispatchEvent<void>('herounitschanged');
+			Dota2LoadoutController.dispatchEvent('herounitschanged');
 
 		}
 		this.#positionUnits();
@@ -450,6 +449,10 @@ export class Dota2Hero {
 
 	async #initPedestal(): Promise<void> {
 		const path = OptionsManager.getItem('app.loadout.pedestalmodel') as string;
+
+		if (!path) {
+			return;
+		}
 
 		let model: Source2ModelInstance | undefined | null = this.#pedestalModels.get(path);
 		if (model === undefined) {
@@ -512,7 +515,7 @@ export class Dota2Hero {
 			promises.push(item.setVisible(personaId == item.getPersonaId()));
 		}
 		await Promise.all(promises);
-		Dota2LoadoutController.dispatchEvent<number>('heropersonachanged', { detail: personaId });
+		Dota2LoadoutController.dispatchEvent('heropersonachanged', { detail: personaId });
 	}
 
 	async setActivity(activity: string): Promise<void> {

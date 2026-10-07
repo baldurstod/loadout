@@ -130,6 +130,12 @@ export declare class Dota2Item {
     setArcanaLevel(arcanaLevel: number | undefined): void;
 }
 
+export declare class Dota2ItemManager {
+    #private;
+    static getItems(characterId: string): Promise<Set<string>>;
+    static getBaseItemId(characterId: string, slot: string): Promise<string | null>;
+}
+
 export declare class Dota2ItemTemplate {
     #private;
     constructor(definition: JSONObject);
@@ -160,12 +166,24 @@ export declare class Dota2ItemTemplates {
 
 export declare class Dota2LoadoutController {
     #private;
-    static addEventListener(type: Dota2LoadoutControllerEvent, callback: EventListenerOrEventListenerObject | null, options?: AddEventListenerOptions | boolean): void;
-    static dispatchEvent<T>(type: Dota2LoadoutControllerEvent, options?: CustomEventInit<T>): boolean;
+    static addEventListener(type: 'heroitemadded', callback: (evt: CustomEvent<Dota2Item>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'heroitemremoved', callback: (evt: CustomEvent<Dota2Item>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'herounitschanged', callback: (evt: CustomEvent<void>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'heropersonachanged', callback: (evt: CustomEvent<number>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'itemsloaded', callback: (evt: CustomEvent<string>) => void, options?: AddEventListenerOptions | boolean): void;
+    static dispatchEvent(type: 'heroitemadded', options: Dota2LoadoutControllerEventInit<Dota2Item>): boolean;
+    static dispatchEvent(type: 'heroitemremoved', options: Dota2LoadoutControllerEventInit<Dota2Item>): boolean;
+    static dispatchEvent(type: 'herounitschanged', options?: CustomEventInit<void>): boolean;
+    static dispatchEvent(type: 'heropersonachanged', options: Dota2LoadoutControllerEventInit<number>): boolean;
+    static dispatchEvent(type: 'itemsloaded', options: Dota2LoadoutControllerEventInit<string>): boolean;
     static removeEventListener(type: Dota2LoadoutControllerEvent, callback: EventListenerOrEventListenerObject | null, options?: EventListenerOptions | boolean): void;
 }
 
-export declare type Dota2LoadoutControllerEvent = 'heroitemadded' | 'heroitemremoved' | 'herounitschanged' | 'heropersonachanged';
+export declare type Dota2LoadoutControllerEvent = 'heroitemadded' | 'heroitemremoved' | 'herounitschanged' | 'heropersonachanged' | 'itemsloaded';
+
+export declare interface Dota2LoadoutControllerEventInit<T = any> extends EventInit {
+    detail: T;
+}
 
 export declare type Dota2Unit = {
     name: string;

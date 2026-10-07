@@ -41,7 +41,6 @@ class Dota2AssetModifier {
     }
 }
 
-//import { Character } from './loadout/characters/character';
 class Dota2LoadoutController {
     static #eventTarget = new EventTarget();
     static addEventListener(type, callback, options) {
@@ -705,10 +704,10 @@ class Dota2Hero {
     }
     async removeItem(itemId) {
         const item = this.#items.get(itemId);
-        Dota2LoadoutController.dispatchEvent('heroitemremoved', { detail: item });
         if (!item) {
             return;
         }
+        Dota2LoadoutController.dispatchEvent('heroitemremoved', { detail: item });
         await item.remove();
         this.#items.delete(itemId);
         this.#itemsPerSlot.delete(item.slot);
@@ -944,6 +943,9 @@ class Dota2Hero {
     }
     async #initPedestal() {
         const path = OptionsManager.getItem('app.loadout.pedestalmodel');
+        if (!path) {
+            return;
+        }
         let model = this.#pedestalModels.get(path);
         if (model === undefined) {
             model = await Source2ModelManager.createInstance('dota2', path, true);
@@ -1053,4 +1055,81 @@ function getUnitPlacement(i) {
     return vec3.fromValues(0, 400 * (i % 2 - 0.5) * Math.floor((i + 1) / 2), 0);
 }
 
-export { DEFAULT_ACTIVITY, Dota2AssetModifier, Dota2Hero, Dota2HeroTemplate, Dota2HeroTemplates, Dota2Item, Dota2ItemTemplate, Dota2ItemTemplates, Dota2LoadoutController, Dota2Units, getPersonaId };
+const DOTA2_REPOSITORY = 'https://dota2content.dotaloadout.com/';
+const DOTA2_GENERATED_ITEMS = 'generated/items/';
+
+class Dota2ItemManager {
+    static #characterTemplates = new Map();
+    static #characters = new Map();
+    static #itemsPerCharacter = new Map();
+    static async #loadItems(characterId) {
+        let items = this.#itemsPerCharacter.get(characterId);
+        if (items) {
+            return items;
+        }
+        items = new Promise(async (resolve) => {
+            const response = await fetch(new URL(`${DOTA2_GENERATED_ITEMS}${characterId}.json`, DOTA2_REPOSITORY));
+            if (!response) {
+                return false;
+            }
+            const itemsJSON = await response.json();
+            if (!itemsJSON) {
+                return false;
+            }
+            const characterItems = new Set();
+            for (const item of itemsJSON) {
+                Dota2ItemTemplates.addTemplate(item);
+                characterItems.add(String(item.id));
+            }
+            Dota2LoadoutController.dispatchEvent('itemsloaded', { detail: characterId });
+            resolve(characterItems);
+        });
+        this.#itemsPerCharacter.set(characterId, items);
+        return items;
+    }
+    static async #loadNeutralCreeps(characterId) {
+        const items = new Set();
+        for (const [key, unit] of Dota2Units.getUnits()) {
+            if (unit.IsNeutralUnitType == '1' && unit.ConsideredHero != '1') {
+                const item = {
+                    id: key,
+                    name: unit.name,
+                    slot: 'neutral_creeps',
+                    assetmodifiers: [
+                        {
+                            "asset": characterId,
+                            "modifier": unit.Model,
+                            "type": 'entity_model',
+                        },
+                    ],
+                };
+                Dota2ItemTemplates.addTemplate(item);
+                items.add(key);
+            }
+        }
+        return items;
+    }
+    static async getItems(characterId) {
+        if (characterId === 'neutralcreeps') {
+            return this.#loadNeutralCreeps(characterId);
+        }
+        else {
+            return this.#loadItems(characterId);
+        }
+    }
+    static async getBaseItemId(characterId, slot) {
+        const items = await this.#loadItems(characterId);
+        if (!items) {
+            return null;
+        }
+        for (const itemId of items) {
+            const item = Dota2ItemTemplates.getTemplate(itemId);
+            if (item?.isBaseItem && item?.slot == slot) {
+                return itemId;
+            }
+        }
+        return null;
+    }
+}
+
+export { DEFAULT_ACTIVITY, Dota2AssetModifier, Dota2Hero, Dota2HeroTemplate, Dota2HeroTemplates, Dota2Item, Dota2ItemManager, Dota2ItemTemplate, Dota2ItemTemplates, Dota2LoadoutController, Dota2Units, getPersonaId };

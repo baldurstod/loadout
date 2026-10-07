@@ -4,6 +4,7 @@ export * from './dota2/heroes/hero';
 export * from './dota2/heroes/herotemplate';
 export * from './dota2/heroes/herotemplates';
 export * from './dota2/items/item';
+export * from './dota2/items/itemmanager';
 export * from './dota2/items/itemtemplate';
 export * from './dota2/items/itemtemplates';
 export * from './dota2/utils/persona';
