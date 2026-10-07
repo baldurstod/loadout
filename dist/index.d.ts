@@ -48,7 +48,7 @@ export declare class Dota2Hero {
     get itemSlots(): Map<string, Dota2HeroSlot> | undefined;
     isHero(): boolean;
     getModelCount(): number;
-    getModelName(): string;
+    getModelPath(): string;
     setModelId(modelId: number): Promise<void>;
     getModelId(): number;
     hasItem(itemId: string): boolean;
@@ -87,7 +87,7 @@ export declare class Dota2HeroTemplate {
     getSpawnedUnits(): Array<string>;
     isHero(): boolean;
     getModelCount(): number;
-    getModelName(modelID: number): string;
+    getModelPath(modelID: number): string;
     getAdjective(name: string): string | undefined;
 }
 
@@ -108,6 +108,7 @@ export declare class Dota2Item {
     getExtraEntities(): Set<Entity>;
     remove(): Promise<void>;
     setVisible(visible: boolean | undefined): Promise<void>;
+    isVisible(): boolean;
     get character(): Dota2Hero;
     get name(): string;
     get id(): string;

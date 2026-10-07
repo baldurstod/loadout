@@ -84,6 +84,10 @@ export class Dota2Item {
 		}
 	}
 
+	isVisible(): boolean {
+		return this.#visible ?? true;
+	}
+
 	get character() {
 		return this.#hero;
 	}

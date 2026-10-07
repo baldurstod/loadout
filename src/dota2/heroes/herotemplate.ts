@@ -65,7 +65,7 @@ export class Dota2HeroTemplate {
 		return i;
 	}
 
-	getModelName(modelID: number): string {
+	getModelPath(modelID: number): string {
 		return (this.#definition[`Model${modelID}`] as string) ?? this.#definition.Model as string ?? '';
 	}
 

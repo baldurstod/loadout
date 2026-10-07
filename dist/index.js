@@ -127,6 +127,9 @@ class Dota2Item {
             extraEntity.setVisible(visible);
         }
     }
+    isVisible() {
+        return this.#visible ?? true;
+    }
     get character() {
         return this.#hero;
     }
@@ -533,7 +536,7 @@ class Dota2HeroTemplate {
         }
         return i;
     }
-    getModelName(modelID) {
+    getModelPath(modelID) {
         return this.#definition[`Model${modelID}`] ?? this.#definition.Model ?? '';
     }
     getAdjective(name) {
@@ -573,7 +576,7 @@ class Dota2Hero {
     #modelPromise;
     #visible = false;
     #personaId = 0; // Base hero
-    #alternateModelName;
+    #alternateModelPath;
     #activityModifiers = new Set();
     #group;
     #pedestalModel = null;
@@ -599,7 +602,7 @@ class Dota2Hero {
         }
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         this.#modelPromise = new Promise(async (resolve) => {
-            this.#model = await Source2ModelManager.createInstance('dota2', this.getModelName(), true);
+            this.#model = await Source2ModelManager.createInstance('dota2', this.getModelPath(), true);
             this.#group.addChild(this.#model);
             resolve(this.#model);
             await this.playSequence();
@@ -654,8 +657,8 @@ class Dota2Hero {
     getModelCount() {
         return this.#template.getModelCount();
     }
-    getModelName() {
-        return this.#alternateModelName ?? this.#template.getModelName(this.#modelId);
+    getModelPath() {
+        return this.#alternateModelPath ?? this.#template.getModelPath(this.#modelId);
     }
     async setModelId(modelId) {
         if (modelId >= 0 && modelId <= this.getModelCount()) {
@@ -760,7 +763,7 @@ class Dota2Hero {
         const modifiers = await this.getAssetModifiers();
         await this.#processGeneratedUnits();
         //this.usePersonaModel(this.#personaId);
-        let alternateModelName;
+        let alternateModelPath;
         const replacements = new Map();
         let skin = 0;
         let arcanaLevel = 0;
@@ -778,11 +781,11 @@ class Dota2Hero {
                     if (modifier.asset && modifier.asset.startsWith(this.id)) {
                         if (modifier.asset.startsWith(`${this.id}_variant_`)) {
                             if (modifier.asset.endsWith(`_variant_${this.#modelId}`)) {
-                                alternateModelName = modifier.modifier;
+                                alternateModelPath = modifier.modifier;
                             }
                         }
                         else {
-                            alternateModelName = modifier.modifier;
+                            alternateModelPath = modifier.modifier;
                         }
                     }
                     else {
@@ -807,8 +810,8 @@ class Dota2Hero {
                 case 'pet':
                 case 'portrait_background_model':
                 case 'hero_model_change':
-                    const modelName = replacements.get(modifier.asset) ?? modifier.modifier ?? modifier.asset ?? '';
-                    const model = await Source2ModelManager.createInstance('dota2', modelName, true);
+                    const modelPath = replacements.get(modifier.asset) ?? modifier.modifier ?? modifier.asset ?? '';
+                    const model = await Source2ModelManager.createInstance('dota2', modelPath, true);
                     if (model) {
                         model.setVisible(this.#visible);
                         model.skin = Number(modifier.skin ?? 0);
@@ -838,7 +841,7 @@ class Dota2Hero {
         if (!this.#pedestalModel) {
             await this.#initPedestal();
         }
-        await this.#setCharacterModel(alternateModelName);
+        await this.#setCharacterModel(alternateModelPath);
         const model = await this.getModel();
         model?.resetBodyGroups();
         await this.#setSkin(skin);
@@ -907,8 +910,8 @@ class Dota2Hero {
         if (modifierType == 'courier' || modifierType == 'courier_flying') {
             modifierAsset += '_' + modifierType;
         }
-        const modelName = modifier.modifier ?? '';
-        const model = await Source2ModelManager.createInstance('dota2', modelName, true);
+        const modelPath = modifier.modifier ?? '';
+        const model = await Source2ModelManager.createInstance('dota2', modelPath, true);
         if (model) {
             this.#group.addChild(model);
             model.setVisible(this.#visible);
@@ -920,7 +923,7 @@ class Dota2Hero {
             this.#units.get(modifierAsset)?.remove();
             this.#units.delete(modifierAsset);
             this.#units.set(modifierAsset, model);
-            model.setPosition(getUnitPlacement(this.#units.size + (this.getModelName() ? 1 : 0)));
+            model.setPosition(getUnitPlacement(this.#units.size + (this.getModelPath() ? 1 : 0)));
             model.setVisible(await OptionsManager.getSubItem('app.units.display', modifierAsset) ? undefined : false);
             OptionsManagerEvents.addEventListener('app.units.display', (event) => {
                 model.setVisible((event.detail.value)[modifierAsset] ? undefined : false);
@@ -932,7 +935,7 @@ class Dota2Hero {
     #positionUnits(event) {
         const display = (event?.detail?.value ?? OptionsManager.getItem('app.units.display'));
         console.info(display);
-        let unit = this.getModelName() ? 1 : 0;
+        let unit = this.getModelPath() ? 1 : 0;
         for (const [unitId, model] of this.#units) {
             console.info(unitId, model);
             if (display[unitId]) {
@@ -980,9 +983,9 @@ class Dota2Hero {
             item.reparentChilds();
         }
     }
-    async #setCharacterModel(modelName) {
-        if (this.#alternateModelName != modelName) {
-            this.#alternateModelName = modelName;
+    async #setCharacterModel(modelPath) {
+        if (this.#alternateModelPath != modelPath) {
+            this.#alternateModelPath = modelPath;
             await this.#resetModel();
         }
     }
