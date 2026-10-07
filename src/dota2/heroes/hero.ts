@@ -24,7 +24,7 @@ export class Dota2Hero {
 	#model: Source2ModelInstance | null = null;
 	#modelPromise?: Promise<Source2ModelInstance | null>;
 	#visible: boolean | undefined = false;
-	#personaId = 0;// Base hero
+	//#personaId = 0;// Base hero
 	#alternateModelPath?: string;
 	#activityModifiers = new Set<Dota2AssetModifier>();
 	#group: Group;
@@ -160,7 +160,7 @@ export class Dota2Hero {
 		if (!item) {
 			return;
 		}
-		await item.setVisible(this.#personaId == item.getPersonaId());
+		//await item.setVisible(this.#personaId == item.getPersonaId());
 
 		this.#items.set(itemId, item);
 
@@ -512,7 +512,7 @@ export class Dota2Hero {
 	async #setPersonaId(personaId: number): Promise<void> {
 		const promises: Promise<void>[] = [];
 		for (const [, item] of this.#items) {
-			promises.push(item.setVisible(personaId == item.getPersonaId()));
+			promises.push(item.setVisible(item.slot === 'persona_selector' || personaId == item.getPersonaId()));
 		}
 		await Promise.all(promises);
 		Dota2LoadoutController.dispatchEvent('heropersonachanged', { detail: personaId });

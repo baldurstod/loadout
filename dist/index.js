@@ -575,7 +575,7 @@ class Dota2Hero {
     #model = null;
     #modelPromise;
     #visible = false;
-    #personaId = 0; // Base hero
+    //#personaId = 0;// Base hero
     #alternateModelPath;
     #activityModifiers = new Set();
     #group;
@@ -688,7 +688,7 @@ class Dota2Hero {
         if (!item) {
             return;
         }
-        await item.setVisible(this.#personaId == item.getPersonaId());
+        //await item.setVisible(this.#personaId == item.getPersonaId());
         this.#items.set(itemId, item);
         Dota2LoadoutController.dispatchEvent('heroitemadded', { detail: item });
         if (item.slot) {
@@ -1000,7 +1000,7 @@ class Dota2Hero {
     async #setPersonaId(personaId) {
         const promises = [];
         for (const [, item] of this.#items) {
-            promises.push(item.setVisible(personaId == item.getPersonaId()));
+            promises.push(item.setVisible(item.slot === 'persona_selector' || personaId == item.getPersonaId()));
         }
         await Promise.all(promises);
         Dota2LoadoutController.dispatchEvent('heropersonachanged', { detail: personaId });
