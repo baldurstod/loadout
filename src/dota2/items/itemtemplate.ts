@@ -58,7 +58,7 @@ export class Dota2ItemTemplate {
 
 	getSkin(styleId: number): number {
 		const style = (this.#definition.styles as JSONObject)?.[styleId] as JSONObject;
-		return (style?.skin as number | undefined) ?? (this.#definition.skin as number | undefined) ?? 0;
+		return Number(style?.skin as number | undefined ?? (this.#definition.skin as number | undefined) ?? 0);
 
 	}
 

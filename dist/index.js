@@ -388,7 +388,7 @@ class Dota2ItemTemplate {
     }
     getSkin(styleId) {
         const style = this.#definition.styles?.[styleId];
-        return style?.skin ?? this.#definition.skin ?? 0;
+        return Number(style?.skin ?? this.#definition.skin ?? 0);
     }
     hasStyles() {
         return Object.keys(this.#definition.styles ?? {}).length > 1;
