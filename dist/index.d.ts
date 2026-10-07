@@ -10,7 +10,7 @@ export declare class Dota2AssetModifier {
     #private;
     constructor(item: Dota2Item | null, definition: Dota2AssetModifierJSON);
     get item(): Dota2Item | null;
-    get type(): string | undefined;
+    get type(): Dota2AssetModifierType | undefined;
     get asset(): string | undefined;
     get modifier(): string | undefined;
     get persona(): string | undefined;
@@ -23,7 +23,7 @@ export declare class Dota2AssetModifier {
 
 export declare type Dota2AssetModifierJSON = {
     modifier?: string;
-    type?: string;
+    type?: Dota2AssetModifierType;
     style?: string;
     asset?: string;
     level?: string;
@@ -32,6 +32,8 @@ export declare type Dota2AssetModifierJSON = {
     loadout_default_offset?: string;
     value?: string;
 };
+
+export declare type Dota2AssetModifierType = 'activity' | 'additional_wearable' | 'entity_model' | 'hero_model_change' | 'model' | 'model_skin' | 'particle' | 'particle_create' | 'persona' | 'pet' | 'portrait_background_model' | 'courier' | 'courier_flying' | 'entity_clientside_model' | 'arcana_level' | 'bodygroup_visibility';
 
 export declare class Dota2Hero {
     #private;
@@ -184,37 +186,5 @@ export declare class Dota2Units {
 }
 
 export declare function getPersonaId(slot: string): number;
-
-export declare const MODIFIER_ACTIVITY = "activity";
-
-export declare const MODIFIER_ADDITIONAL_WEARABLE = "additional_wearable";
-
-export declare const MODIFIER_ARCANA_LEVEL = "arcana_level";
-
-export declare const MODIFIER_BODYGROUP_VISIBILITY = "bodygroup_visibility";
-
-export declare const MODIFIER_COURIER = "courier";
-
-export declare const MODIFIER_COURIER_FLYING = "courier_flying";
-
-export declare const MODIFIER_ENTITY_CLIENTSIDE_MODEL = "entity_clientside_model";
-
-export declare const MODIFIER_ENTITY_MODEL = "entity_model";
-
-export declare const MODIFIER_HERO_MODEL_CHANGE = "hero_model_change";
-
-export declare const MODIFIER_MODEL = "model";
-
-export declare const MODIFIER_MODEL_SKIN = "model_skin";
-
-export declare const MODIFIER_PARTICLE = "particle";
-
-export declare const MODIFIER_PARTICLE_CREATE = "particle_create";
-
-export declare const MODIFIER_PERSONA = "persona";
-
-export declare const MODIFIER_PET = "pet";
-
-export declare const MODIFIER_PORTRAIT_BACKGROUND_MODEL = "portrait_background_model";
 
 export { }

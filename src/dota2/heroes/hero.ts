@@ -6,7 +6,6 @@ import { Dota2AssetModifier } from '../assetmodifier';
 import { Dota2LoadoutController } from '../controller';
 import { Dota2Item } from '../items/item';
 import { Dota2ItemTemplates } from '../items/itemtemplates';
-import { MODIFIER_ACTIVITY, MODIFIER_ARCANA_LEVEL, MODIFIER_BODYGROUP_VISIBILITY, MODIFIER_COURIER, MODIFIER_COURIER_FLYING, MODIFIER_ENTITY_MODEL, MODIFIER_HERO_MODEL_CHANGE, MODIFIER_MODEL, MODIFIER_MODEL_SKIN, MODIFIER_PARTICLE, MODIFIER_PERSONA, MODIFIER_PET, MODIFIER_PORTRAIT_BACKGROUND_MODEL } from '../modifiers';
 import { Dota2Units } from '../utils/units';
 import { Dota2HeroSlot, Dota2HeroTemplate } from './herotemplate';
 import { Dota2HeroTemplates } from './herotemplates';
@@ -265,13 +264,13 @@ export class Dota2Hero {
 
 		for (const modifier of modifiers) {
 			switch (modifier.type) {
-				case MODIFIER_PERSONA:
+				case 'persona':
 					console.log(modifier);
 					await this.#setPersonaId(Number(modifier.persona));
 					break;
-				case MODIFIER_ENTITY_MODEL:
-				case MODIFIER_COURIER:
-				case MODIFIER_COURIER_FLYING:
+				case 'entity_model':
+				case 'courier':
+				case 'courier_flying':
 					if (modifier.asset && modifier.asset.startsWith(this.id)) {
 						if (modifier.asset.startsWith(`${this.id}_variant_`)) {
 							if (modifier.asset.endsWith(`_variant_${this.#modelId}`)) {
@@ -285,23 +284,23 @@ export class Dota2Hero {
 						await this.#setUnit(modifier);
 					}
 					break;
-				case MODIFIER_MODEL:
-				case MODIFIER_PARTICLE:
+				case 'model':
+				case 'particle':
 					replacements.set(modifier.asset!, modifier.modifier!);
 					break;
-				case MODIFIER_MODEL_SKIN:
+				case 'model_skin':
 					skin = Number(modifier.skin ?? 0);
 					break;
-				case MODIFIER_BODYGROUP_VISIBILITY:
+				case 'bodygroup_visibility':
 					// TODO: use modifier.asset to determine the model to replace
 					bodygroups.set(modifier.modifier!, Number(modifier.value));
 					break;
-				case MODIFIER_ACTIVITY:
+				case 'activity':
 					this.#activityModifiers.add(modifier);
 					break;
-				case MODIFIER_PET:
-				case MODIFIER_PORTRAIT_BACKGROUND_MODEL:
-				case MODIFIER_HERO_MODEL_CHANGE:
+				case 'pet':
+				case 'portrait_background_model':
+				case 'hero_model_change':
 					const modelName = replacements.get(modifier.asset!) ?? modifier.modifier ?? modifier.asset ?? '';
 					const model = await Source2ModelManager.createInstance('dota2', modelName, true);
 					if (model) {
@@ -311,16 +310,16 @@ export class Dota2Hero {
 						if (loadoutDefaultOffset) {
 							model.setPosition(stringToVec3(loadoutDefaultOffset));
 						}
-						if (modifier.type == MODIFIER_PET) {
+						if (modifier.type == 'pet') {
 							this.#petModel = model;
-						} if (modifier.type == MODIFIER_HERO_MODEL_CHANGE) {
+						} if (modifier.type == 'hero_model_change') {
 							this.#metamorphosisModel = model;
 						} else {
 							this.#pedestalModel = model;
 						}
 					}
 					break;
-				case MODIFIER_ARCANA_LEVEL:
+				case 'arcana_level':
 					arcanaLevel = Number(modifier.level ?? 0);
 					break;
 				default:
@@ -406,7 +405,7 @@ export class Dota2Hero {
 			return;
 		}
 		const modifierType = modifier.type;
-		if (modifierType == MODIFIER_COURIER || modifierType == MODIFIER_COURIER_FLYING) {
+		if (modifierType == 'courier' || modifierType == 'courier_flying') {
 			modifierAsset += '_' + modifierType;
 		}
 		const modelName = modifier.modifier ?? '';

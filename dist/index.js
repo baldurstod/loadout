@@ -55,23 +55,6 @@ class Dota2LoadoutController {
     }
 }
 
-const MODIFIER_ACTIVITY = 'activity';
-const MODIFIER_ADDITIONAL_WEARABLE = 'additional_wearable';
-const MODIFIER_ENTITY_MODEL = 'entity_model';
-const MODIFIER_HERO_MODEL_CHANGE = 'hero_model_change';
-const MODIFIER_MODEL = 'model';
-const MODIFIER_MODEL_SKIN = 'model_skin';
-const MODIFIER_PARTICLE = 'particle';
-const MODIFIER_PARTICLE_CREATE = 'particle_create';
-const MODIFIER_PERSONA = 'persona';
-const MODIFIER_PET = 'pet';
-const MODIFIER_PORTRAIT_BACKGROUND_MODEL = 'portrait_background_model';
-const MODIFIER_COURIER = 'courier';
-const MODIFIER_COURIER_FLYING = 'courier_flying';
-const MODIFIER_ENTITY_CLIENTSIDE_MODEL = 'entity_clientside_model';
-const MODIFIER_ARCANA_LEVEL = 'arcana_level';
-const MODIFIER_BODYGROUP_VISIBILITY = 'bodygroup_visibility';
-
 function getPersonaId(slot) {
     const result = /\_persona\_(\d)$/.exec(slot);
     if (result?.length == 2) {
@@ -220,7 +203,7 @@ class Dota2Item {
         let originalModelName = this.#template.getModelName(this.#style, characterModelId);
         if (!originalModelName && modifiers) {
             for (const modifier of modifiers) {
-                if (modifier.type == MODIFIER_ENTITY_MODEL && modifier.asset && modifier.asset.endsWith(`_variant_${characterModelId}`)) {
+                if (modifier.type == 'entity_model' && modifier.asset && modifier.asset.endsWith(`_variant_${characterModelId}`)) {
                     originalModelName = modifier.modifier ?? originalModelName;
                     break;
                 }
@@ -239,7 +222,7 @@ class Dota2Item {
         let position;
         for (const modifier of modifiers) {
             switch (modifier.type) {
-                case MODIFIER_PARTICLE_CREATE:
+                case 'particle_create':
                     if (!OptionsManager.getItem('app.showeffects') || !modifier.modifier) {
                         break;
                     }
@@ -258,7 +241,7 @@ class Dota2Item {
                         system.setVisible(this.#visible);
                     }
                     break;
-                case MODIFIER_ADDITIONAL_WEARABLE:
+                case 'additional_wearable':
                     if (!modifier.asset) {
                         break;
                     }
@@ -270,9 +253,9 @@ class Dota2Item {
                         this.#extraEntities.add(model);
                     }
                     break;
-                case MODIFIER_ENTITY_MODEL:
+                case 'entity_model':
                     break;
-                case MODIFIER_ENTITY_CLIENTSIDE_MODEL:
+                case 'entity_clientside_model':
                     if (!modifier.asset || !modifier.modifier) {
                         break;
                     }
@@ -785,13 +768,13 @@ class Dota2Hero {
         const bodygroups = new Map();
         for (const modifier of modifiers) {
             switch (modifier.type) {
-                case MODIFIER_PERSONA:
+                case 'persona':
                     console.log(modifier);
                     await this.#setPersonaId(Number(modifier.persona));
                     break;
-                case MODIFIER_ENTITY_MODEL:
-                case MODIFIER_COURIER:
-                case MODIFIER_COURIER_FLYING:
+                case 'entity_model':
+                case 'courier':
+                case 'courier_flying':
                     if (modifier.asset && modifier.asset.startsWith(this.id)) {
                         if (modifier.asset.startsWith(`${this.id}_variant_`)) {
                             if (modifier.asset.endsWith(`_variant_${this.#modelId}`)) {
@@ -807,23 +790,23 @@ class Dota2Hero {
                         await this.#setUnit(modifier);
                     }
                     break;
-                case MODIFIER_MODEL:
-                case MODIFIER_PARTICLE:
+                case 'model':
+                case 'particle':
                     replacements.set(modifier.asset, modifier.modifier);
                     break;
-                case MODIFIER_MODEL_SKIN:
+                case 'model_skin':
                     skin = Number(modifier.skin ?? 0);
                     break;
-                case MODIFIER_BODYGROUP_VISIBILITY:
+                case 'bodygroup_visibility':
                     // TODO: use modifier.asset to determine the model to replace
                     bodygroups.set(modifier.modifier, Number(modifier.value));
                     break;
-                case MODIFIER_ACTIVITY:
+                case 'activity':
                     this.#activityModifiers.add(modifier);
                     break;
-                case MODIFIER_PET:
-                case MODIFIER_PORTRAIT_BACKGROUND_MODEL:
-                case MODIFIER_HERO_MODEL_CHANGE:
+                case 'pet':
+                case 'portrait_background_model':
+                case 'hero_model_change':
                     const modelName = replacements.get(modifier.asset) ?? modifier.modifier ?? modifier.asset ?? '';
                     const model = await Source2ModelManager.createInstance('dota2', modelName, true);
                     if (model) {
@@ -833,10 +816,10 @@ class Dota2Hero {
                         if (loadoutDefaultOffset) {
                             model.setPosition(stringToVec3(loadoutDefaultOffset));
                         }
-                        if (modifier.type == MODIFIER_PET) {
+                        if (modifier.type == 'pet') {
                             this.#petModel = model;
                         }
-                        if (modifier.type == MODIFIER_HERO_MODEL_CHANGE) {
+                        if (modifier.type == 'hero_model_change') {
                             this.#metamorphosisModel = model;
                         }
                         else {
@@ -844,7 +827,7 @@ class Dota2Hero {
                         }
                     }
                     break;
-                case MODIFIER_ARCANA_LEVEL:
+                case 'arcana_level':
                     arcanaLevel = Number(modifier.level ?? 0);
                     break;
                 default:
@@ -921,7 +904,7 @@ class Dota2Hero {
             return;
         }
         const modifierType = modifier.type;
-        if (modifierType == MODIFIER_COURIER || modifierType == MODIFIER_COURIER_FLYING) {
+        if (modifierType == 'courier' || modifierType == 'courier_flying') {
             modifierAsset += '_' + modifierType;
         }
         const modelName = modifier.modifier ?? '';
@@ -1063,4 +1046,4 @@ function getUnitPlacement(i) {
     return vec3.fromValues(0, 400 * (i % 2 - 0.5) * Math.floor((i + 1) / 2), 0);
 }
 
-export { DEFAULT_ACTIVITY, Dota2AssetModifier, Dota2Hero, Dota2HeroTemplate, Dota2HeroTemplates, Dota2Item, Dota2ItemTemplate, Dota2ItemTemplates, Dota2LoadoutController, Dota2Units, MODIFIER_ACTIVITY, MODIFIER_ADDITIONAL_WEARABLE, MODIFIER_ARCANA_LEVEL, MODIFIER_BODYGROUP_VISIBILITY, MODIFIER_COURIER, MODIFIER_COURIER_FLYING, MODIFIER_ENTITY_CLIENTSIDE_MODEL, MODIFIER_ENTITY_MODEL, MODIFIER_HERO_MODEL_CHANGE, MODIFIER_MODEL, MODIFIER_MODEL_SKIN, MODIFIER_PARTICLE, MODIFIER_PARTICLE_CREATE, MODIFIER_PERSONA, MODIFIER_PET, MODIFIER_PORTRAIT_BACKGROUND_MODEL, getPersonaId };
+export { DEFAULT_ACTIVITY, Dota2AssetModifier, Dota2Hero, Dota2HeroTemplate, Dota2HeroTemplates, Dota2Item, Dota2ItemTemplate, Dota2ItemTemplates, Dota2LoadoutController, Dota2Units, getPersonaId };

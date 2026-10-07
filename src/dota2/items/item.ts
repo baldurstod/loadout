@@ -4,7 +4,6 @@ import { OptionsManager } from 'harmony-browser-utils';
 import { JSONObject } from 'harmony-types';
 import { Dota2AssetModifier } from '../assetmodifier';
 import { Dota2Hero } from '../heroes/hero';
-import { MODIFIER_ADDITIONAL_WEARABLE, MODIFIER_ENTITY_CLIENTSIDE_MODEL, MODIFIER_ENTITY_MODEL, MODIFIER_PARTICLE_CREATE } from '../modifiers';
 import { getPersonaId } from '../utils/persona';
 import { Dota2ItemTemplate } from './itemtemplate';
 
@@ -180,7 +179,7 @@ export class Dota2Item {
 		let originalModelName = this.#template.getModelName(this.#style, characterModelId);
 		if (!originalModelName && modifiers) {
 			for (const modifier of modifiers) {
-				if (modifier.type == MODIFIER_ENTITY_MODEL && modifier.asset && modifier.asset.endsWith(`_variant_${characterModelId}`)) {
+				if (modifier.type == 'entity_model' && modifier.asset && modifier.asset.endsWith(`_variant_${characterModelId}`)) {
 					originalModelName = modifier.modifier ?? originalModelName;
 					break;
 				}
@@ -204,7 +203,7 @@ export class Dota2Item {
 		let position;
 		for (const modifier of modifiers) {
 			switch (modifier.type) {
-				case MODIFIER_PARTICLE_CREATE:
+				case 'particle_create':
 					if (!OptionsManager.getItem('app.showeffects') || !modifier.modifier) {
 						break;
 					}
@@ -223,7 +222,7 @@ export class Dota2Item {
 					}
 
 					break;
-				case MODIFIER_ADDITIONAL_WEARABLE:
+				case 'additional_wearable':
 					if (!modifier.asset) {
 						break;
 					}
@@ -235,7 +234,7 @@ export class Dota2Item {
 						this.#extraEntities.add(model);
 					}
 					break;
-				case MODIFIER_ENTITY_MODEL:
+				case 'entity_model':
 					break;
 					/*
 					TODO ?
@@ -251,7 +250,7 @@ export class Dota2Item {
 					}
 					*/
 					break;
-				case MODIFIER_ENTITY_CLIENTSIDE_MODEL:
+				case 'entity_clientside_model':
 					if (!modifier.asset || !modifier.modifier) {
 						break;
 					}

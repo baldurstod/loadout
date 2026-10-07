@@ -6,6 +6,5 @@ export * from './dota2/heroes/herotemplates';
 export * from './dota2/items/item';
 export * from './dota2/items/itemtemplate';
 export * from './dota2/items/itemtemplates';
-export * from './dota2/modifiers';
 export * from './dota2/utils/persona';
 export * from './dota2/utils/units';
