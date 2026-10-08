@@ -688,13 +688,14 @@ class Dota2Hero {
         if (!item) {
             return;
         }
-        //await item.setVisible(this.#personaId == item.getPersonaId());
+        await item.setVisible(item.getPersonaId() === 0);
         this.#items.set(itemId, item);
         Dota2LoadoutController.dispatchEvent('heroitemadded', { detail: item });
         if (item.slot) {
             await this.#replaceSlot(item);
         }
         await this.#addChild(await item.getModel());
+        await this.processModifiers();
     }
     async #addChild(itemModel) {
         const model = await this.getModel();

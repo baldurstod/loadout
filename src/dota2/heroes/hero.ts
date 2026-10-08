@@ -160,7 +160,7 @@ export class Dota2Hero {
 		if (!item) {
 			return;
 		}
-		//await item.setVisible(this.#personaId == item.getPersonaId());
+		await item.setVisible(item.getPersonaId() === 0);
 
 		this.#items.set(itemId, item);
 
@@ -171,6 +171,7 @@ export class Dota2Hero {
 		}
 
 		await this.#addChild(await item.getModel());
+		await this.processModifiers();
 	}
 
 	async #addChild(itemModel: Entity | null): Promise<void> {
