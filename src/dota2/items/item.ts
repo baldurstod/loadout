@@ -312,6 +312,19 @@ export class Dota2Item {
 						}
 					}
 					break;
+				case 'persona':
+				case 'particle':
+					// Dealt with in hero processModifiers() method
+					break;
+				case 'hero_scale':
+				case 'response_criteria':
+				case 'icon_replacement_hero':
+				case 'icon_replacement_hero_minimap':
+				case 'ability_icon':
+				case 'default_idle_expression':
+				case 'chatwheel':
+					// TODO
+					break;
 				default:
 					console.warn('item_unknown_modifier_type', modifier.type);
 					break;

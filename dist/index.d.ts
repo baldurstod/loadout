@@ -33,7 +33,7 @@ export declare type Dota2AssetModifierJSON = {
     value?: string;
 };
 
-export declare type Dota2AssetModifierType = 'activity' | 'additional_wearable' | 'entity_model' | 'hero_model_change' | 'model' | 'model_skin' | 'particle' | 'particle_create' | 'persona' | 'pet' | 'portrait_background_model' | 'courier' | 'courier_flying' | 'entity_clientside_model' | 'arcana_level' | 'bodygroup_visibility';
+export declare type Dota2AssetModifierType = 'activity' | 'additional_wearable' | 'entity_model' | 'hero_model_change' | 'model' | 'model_skin' | 'particle' | 'particle_create' | 'persona' | 'pet' | 'portrait_background_model' | 'courier' | 'courier_flying' | 'entity_clientside_model' | 'arcana_level' | 'bodygroup_visibility' | 'hero_scale' | 'icon_replacement_hero' | 'icon_replacement_hero_minimap' | 'ability_icon' | 'response_criteria' | 'chatwheel' | 'default_idle_expression';
 
 export declare class Dota2Hero {
     #private;
@@ -57,7 +57,6 @@ export declare class Dota2Hero {
     removeItem(itemId: string): Promise<void>;
     getItems(): Map<string, Dota2Item>;
     getItemsWithBundle(): Map<string, Dota2Item>;
-    getAssetModifiers(): Promise<Dota2AssetModifier[]>;
     processModifiers(): Promise<void>;
     setActivity(activity: string): Promise<void>;
     getActivity(): string;

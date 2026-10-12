@@ -307,6 +307,19 @@ class Dota2Item {
                         }
                     }
                     break;
+                case 'persona':
+                case 'particle':
+                    // Dealt with in hero processModifiers() method
+                    break;
+                case 'hero_scale':
+                case 'response_criteria':
+                case 'icon_replacement_hero':
+                case 'icon_replacement_hero_minimap':
+                case 'ability_icon':
+                case 'default_idle_expression':
+                case 'chatwheel':
+                    // TODO
+                    break;
                 default:
                     console.warn('item_unknown_modifier_type', modifier.type);
                     break;
@@ -734,7 +747,7 @@ class Dota2Hero {
         }
         return items;
     }
-    async getAssetModifiers() {
+    async #getAssetModifiers() {
         let modifiers = [];
         for (const [, item] of this.#items) {
             const itemModifiers = item.getAssetModifiers();
@@ -761,7 +774,7 @@ class Dota2Hero {
     async processModifiers() {
         this.#group.setAttribute('desaturate', OptionsManager.getItem('app.characters.desaturate'));
         this.#clearExtraEntities();
-        const modifiers = await this.getAssetModifiers();
+        const modifiers = await this.#getAssetModifiers();
         await this.#processGeneratedUnits();
         //this.usePersonaModel(this.#personaId);
         let alternateModelPath;
@@ -773,7 +786,6 @@ class Dota2Hero {
         for (const modifier of modifiers) {
             switch (modifier.type) {
                 case 'persona':
-                    console.log(modifier);
                     await this.#setPersonaId(Number(modifier.persona));
                     break;
                 case 'entity_model':
@@ -833,6 +845,18 @@ class Dota2Hero {
                     break;
                 case 'arcana_level':
                     arcanaLevel = Number(modifier.level ?? 0);
+                    break;
+                case 'particle_create':
+                    // Dealt with in item processModifiers() method
+                    break;
+                case 'hero_scale':
+                case 'icon_replacement_hero':
+                case 'icon_replacement_hero_minimap':
+                case 'ability_icon':
+                case 'response_criteria':
+                case 'chatwheel':
+                case 'default_idle_expression':
+                    // TODO
                     break;
                 default:
                     console.warn('character_unknown_modifier_type', modifier.type, modifier);
