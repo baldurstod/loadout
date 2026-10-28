@@ -2,7 +2,92 @@ import { Entity } from 'harmony-3d';
 import { JSONObject } from 'harmony-types';
 import { JSONValue } from 'harmony-types';
 import { Scene } from 'harmony-3d';
+import { Source1ModelInstance } from 'harmony-3d';
+import { Source1ParticleSystem } from 'harmony-3d';
 import { Source2ModelInstance } from 'harmony-3d';
+import { vec3 } from 'gl-matrix';
+import { vec4 } from 'gl-matrix';
+
+export declare type AttachedParticlesystem = {
+    'attachment': string;
+    'system': string;
+};
+
+export declare class Character {
+    #private;
+    readonly scene: Scene;
+    readonly characterClass: Tf2Class;
+    readonly name: string;
+    readonly npc: string;
+    readonly items: Map<string, Tf2Item>;
+    readonly effects: Set<Effect>;
+    static autoSelectAnim: boolean;
+    constructor(characterClass: Tf2Class, scene: Scene);
+    loadModel(path: string, name: string): Promise<void>;
+    getModel(): Promise<Source1ModelInstance | null>;
+    addExtraModel(path: string, repository?: string): Promise<Source1ModelInstance | null>;
+    setVisible(visble: boolean): void;
+    setTeam(team: Team): Promise<void>;
+    getTeam(): Team;
+    getItemById(itemId: string): Tf2Item | undefined;
+    toggleItem(template: ItemTemplate): Promise<[Tf2Item, boolean]>;
+    addItem(template: ItemTemplate): Promise<Tf2Item>;
+    updatePaintColor(): void;
+    isInvulnerable(): boolean;
+    setInvulnerable(isInvulnerable: boolean): Promise<void>;
+    getRagdoll(): Ragdoll;
+    setRagdoll(ragdoll: Ragdoll | null): Promise<void>;
+    renderBodyPart(bodyPart: string, render: boolean): void;
+    setBodyPartIdModel(bodyPartId: number, modelId: number): void;
+    setBodyPartModel(bodyPartId: string, modelId: number): void;
+    setPose(pose: string): void;
+    setUserAnim(userAnim: string): void;
+    autoSelectAnim(): void;
+    setFlexControllerValue(name: string, value: number): Promise<void>;
+    resetFlexes(): Promise<void>;
+    addEffect(template: EffectTemplate): Promise<Effect>;
+    removeEffect(effect: Effect): void;
+    setKillsteakEffect(template: EffectTemplate | null, color?: KillstreakColor): Promise<[Effect | null, Effect | null]>;
+    setDecapitationLevel(level: number): Promise<[Effect | null, Effect | null]>;
+    getDecapitationLevel(): number;
+    setTauntEffect(template: EffectTemplate | null): Promise<Effect | null>;
+    getTauntEffect(): Effect | null;
+    getKillstreakEffects(): [Effect | null, Effect | null];
+    setPoseParameter(name: string, value: number): void;
+    savePreset(name: string): Preset;
+    loadPreset(preset: Preset): Promise<void>;
+    removeAll(): void;
+    removeAllItems(): void;
+    removeAllEffects(): void;
+    copy(other: Character): Promise<void>;
+}
+
+export declare const CharactersList: Map<Tf2Class, CharactersType>;
+
+export declare type CharactersType = {
+    name: string;
+    path: string;
+    type: UsePlayerModels;
+    icon: string;
+    hidden?: boolean;
+    npc: string;
+};
+
+export declare const ClassRemovablePartsOff: string[];
+
+export declare const COIN_SPIN_EFFECT = 406;
+
+/**
+ * Return a css value of a color
+ * @param {Number} color The color, in integer format (ie: Indubitably Green: 7511618)
+ */
+export declare function colorToCss(color?: number): string;
+
+export declare function colorToVec3(color: number, tint?: vec3): vec3;
+
+export declare function colorToVec4(color: number, tint?: vec4): vec4;
+
+export declare const COMMUNITY_SPARKLE_EFFECT = 4;
 
 export declare const DEFAULT_ACTIVITY = "ACT_DOTA_IDLE";
 
@@ -203,6 +288,335 @@ export declare class Dota2Units {
     static getUnits(): Map<string, Dota2Unit>;
 }
 
+export declare class Effect {
+    readonly template: EffectTemplate;
+    name: string;
+    system: Source1ParticleSystem | null;
+    attachment?: string;
+    offset: vec3;
+    killstreakColor?: KillstreakColor;
+    constructor(template: EffectTemplate);
+    getId(): number;
+    getType(): EffectType;
+}
+
+export declare class EffectTemplate {
+    #private;
+    readonly id: number;
+    readonly type: EffectType;
+    constructor(type: EffectType, id: number, definition: JSONObject);
+    getName(): string;
+    getSystem(): string;
+    isTeamColored(): boolean;
+    getImage(): string;
+    getAttachment(): string;
+}
+
+export declare enum EffectType {
+    Cosmetic = "cosmetic_unusual_effects",
+    Killstreak = "killstreak_eyeglows",
+    Taunt = "taunt_unusual_effects",
+    Weapon = "weapon_unusual_effects",
+    Other = "other_particles"
+}
+
+export declare const enum Eye {
+    Right = 0,
+    Left = 1
+}
+
 export declare function getPersonaId(slot: string): number;
+
+export declare class ItemTemplate {
+    #private;
+    readonly id: string;
+    readonly creatorid64?: string;
+    readonly warpaints: Map<string, Warpaint>;
+    constructor(id: string, definition: JSONObject);
+    get name(): string;
+    get realName(): string;
+    isUsedByClass(characterClass: Tf2Class): boolean;
+    getUsedByClasses(): Set<string>;
+    classCount(): number;
+    getModel(npc: string): Promise<string | null>;
+    getModelBlue(npc: string): string | null;
+    get imageInventory(): string | null;
+    get redSkin(): number;
+    get bluSkin(): number;
+    get playerBodygroups(): Record<string, string>;
+    get wmBodygroupOverride(): Record<string, string>;
+    get usePerClassBodygroups(): boolean;
+    getExtraWearable(): string;
+    getAttachedModels(): string;
+    get animSlot(): string;
+    getItemSlot(): string | null;
+    getItemSlotPerClass(npc: string): string | null;
+    get attachedModelsFestive(): string;
+    get weaponUsesStattrakModule(): string;
+    get weaponStattrakModuleScale(): string;
+    get particleSuffix(): string | null;
+    get repository(): string;
+    get equipRegions(): string[];
+    get setItemTintRGB(): string;
+    get setItemTintRGB2(): string | null;
+    get setAttachedParticleStatic(): string | null;
+    get attachedParticlesystems(): AttachedParticlesystem[];
+    get customTauntScenePerClass(): Record<string, string> | undefined;
+    get customTauntOutroScenePerClass(): Record<string, string> | undefined;
+    get customTauntPropScenePerClass(): Record<string, string> | undefined;
+    get customTauntPropOutroScenePerClass(): Record<string, string> | undefined;
+    getImportSessionClasses(): Record<string, any> | undefined;
+    get tauntAttackName(): string | null;
+    get tauntSuccessSoundLoop(): string;
+    get tauntSuccessSoundLoopOffset(): number;
+    getMaterialOverride(): string;
+    getTags(): string[];
+    getSubscriptions(): number;
+    getUpdated(): number;
+    getCreated(): number;
+    isWorkshop(): boolean;
+    isSfmWorkshop(): boolean;
+    isTournamentMedal(): boolean;
+    isPaintable(): boolean;
+    isWarPaintable(): boolean;
+    isHalloweenRestricted(): boolean;
+    getItemTypeName(): string;
+    getCollection(): string;
+    getGrade(): string;
+    getHide(): boolean;
+    addKeyword(keyword: string): void;
+    hasKeyword(search: string): boolean;
+    canCustomizeTexture(): boolean;
+    isTaunt(): boolean;
+    getPaintkitProtoDefIndex(): string | null;
+    addWarpaint(id: string, weapon: string, title: string): void;
+    getWorkshopGameRepository(): string;
+    getWorkshopRepository(): string;
+}
+
+declare enum KillstreakColor {
+    None = 0,
+    TeamShine = 1,
+    DeadlyDaffodil = 2,
+    Manndarin = 3,
+    MeanGreen = 4,
+    AgonizingEmerald = 5,
+    VillainousViolet = 6,
+    Hotrod = 7,
+    Custom = 1000
+}
+
+export declare function npcToClass(npc: string): Tf2Class | null;
+
+declare enum Paints {
+    None = 0,
+    IndubitablyGreen = 1,
+    ZepheniahsGreed = 2,
+    NobleHattersViolet = 3,
+    ColorNo216_190_216 = 4,
+    ADeepCommitmentToPurple = 5,
+    MannCoOrange = 6,
+    Muskelmannbraun = 7,
+    PeculiarlyDrabTincture = 8,
+    RadiganConagherBrown = 9,
+    YeOldeRusticColour = 10,
+    AustraliumGold = 11,
+    AgedMoustacheGrey = 12,
+    AnExtraordinaryAbundanceOfTinge = 13,
+    ADistinctiveLackOfHue = 14,
+    PinkAsHell = 15,
+    AColorSimilarToSlate = 16,
+    DrablyOlive = 17,
+    TheBitterTasteOfDefeatAndLime = 18,
+    TheColorOfAGentlemannsBusinessPants = 19,
+    DarkSalmonInjustice = 20,
+    AMannsMint = 21,
+    AfterEight = 22,
+    TeamSpirit = 101,
+    OperatorsOveralls = 102,
+    WaterloggedLabCoat = 103,
+    BalaclavasAreForever = 104,
+    AnAirOfDebonair = 105,
+    TheValueOfTeamwork = 106,
+    PutrescentPigmentation = 201,
+    DieJob = 202,
+    ChromaticCorruption = 203,
+    SpectralSpectrum = 204,
+    SinisterStaining = 205,
+    Custom = 1000
+}
+
+export declare enum Panel {
+    None = "none",
+    Items = "items",
+    Printful = "printful",
+    Options = "options",
+    Effects = "effects",
+    Presets = "presets",
+    Paints = "paints",
+    Sheens = "sheens",
+    WeaponEffects = "weaponeffects",
+    Warpaints = "warpaints",
+    Flexes = "flexes",
+    SfmRepositories = "sfmrepositories"
+}
+
+declare class Preset {
+    character: string;
+    name: string;
+    items: Set<PresetItem>;
+    effects: Set<PresetEffect>;
+    decapitationLevel: number;
+    constructor(name?: string);
+    addItem(item: PresetItem): void;
+    addEffect(effect: PresetEffect): void;
+    fromJSON(json: JSONObject): boolean;
+    toJSON(): JSONObject;
+}
+
+declare class PresetEffect {
+    id: number;
+    type: PresetEffectType;
+    attachment?: string | undefined;
+    offset: vec3;
+    color?: KillstreakColor;
+    setType(type: EffectType): void;
+    getType(): EffectType;
+    fromJSON(json: JSONObject): boolean;
+    toJSON(): JSONObject;
+}
+
+declare enum PresetEffectType {
+    Unusual = "unusual",
+    Taunt = "taunt",
+    Killstreak = "killstreak",
+    Weapon = "weapon",
+    Other = "other"
+}
+
+declare class PresetItem {
+    id: string;
+    paint?: number;
+    warpaintId?: number;
+    warpaintWear?: number;
+    warpaintSeed?: bigint;
+    isTournamentMedal: boolean;
+    isWorkshop: boolean;
+    weaponEffect?: number;
+    sheen?: number;
+    showFestivizer: boolean;
+    killCount?: number;
+    fromJSON(json: JSONObject): boolean;
+    toJSON(): JSONObject;
+}
+
+export declare const enum Ragdoll {
+    None = 0,
+    Gold = 1,
+    Ice = 2
+}
+
+export declare function randomProperty(obj: Record<string, any>): string;
+
+export declare enum Team {
+    None = -1,
+    Red = 0,
+    Blu = 1
+}
+
+export declare enum Tf2Class {
+    Scout = 0,
+    Sniper = 1,
+    Soldier = 2,
+    Demoman = 3,
+    Medic = 4,
+    Heavy = 5,
+    Pyro = 6,
+    Spy = 7,
+    Engineer = 8,
+    ScoutBot = 100,
+    SniperBot = 101,
+    SoldierBot = 102,
+    DemomanBot = 103,
+    MedicBot = 104,
+    HeavyBot = 105,
+    PyroBot = 106,
+    SpyBot = 107,
+    EngineerBot = 108,
+    ScoutInfected = 200,
+    SniperInfected = 201,
+    SoldierInfected = 202,
+    DemomanInfected = 203,
+    MedicInfected = 204,
+    HeavyInfected = 205,
+    PyroInfected = 206,
+    SpyInfected = 207,
+    EngineerInfected = 208,
+    Random = 1000,
+    None = 1001,
+    Empty = 1002,
+    CompareWarpaints = 1003
+}
+
+export declare class Tf2Item {
+    #private;
+    readonly id: string;
+    changeTextureSize?: number;
+    constructor(itemTemplate: ItemTemplate, character: Character);
+    getTemplate(): ItemTemplate;
+    setTeam(team: Team): Promise<void>;
+    getEquipRegions(): string[];
+    setKillCount(count: number | null): Promise<void>;
+    getKillCount(): number | null;
+    getRepository(): string;
+    showFestivizer(showFestivizer: boolean): Promise<void>;
+    getShowFestivizer(): boolean;
+    toggleFestivizer(): Promise<void>;
+    setCustomTexture(textureName: string | null): void;
+    getCustomTexture(): string | null;
+    critBoost(boost?: boolean): void;
+    isCritBoosted(): boolean;
+    loadModel(npc: string): Promise<void>;
+    attachSystems(npc: string): Promise<void>;
+    getModel(): Promise<Source1ModelInstance | null>;
+    getModelBlu(): Promise<Source1ModelInstance | null>;
+    getModelExtraWearable(): Promise<Source1ModelInstance | null>;
+    remove(): Promise<void>;
+    isConflicting(other: Tf2Item): boolean;
+    setPaint(paint: Paints | null): void;
+    getPaint(): Paints | null;
+    updatePaintColor(): void;
+    setSheen(sheen: KillstreakColor | null): void;
+    getSheen(): KillstreakColor | null;
+    isTaunt(): boolean;
+    getCustomTauntScenePerClass(npc: string): string | null;
+    getCustomTauntPropScenePerClass(npc: string): string | null;
+    getCustomTauntOutroScenePerClass(npc: string): string | null;
+    getCustomTauntPropOutroScenePerClass(npc: string): string | null;
+    getWorkshopAnimationPerClass(npc: string): string | null;
+    getTauntAttackName(): string | null;
+    setWeaponEffectId(weaponEffectId: number | null): void;
+    getWeaponEffectId(): number | null;
+    setWarpaintId(warpaintId: number | null): void;
+    getWarpaintId(): number | null;
+    setWarpaintWear(warpaintWear: number): void;
+    getWarpaintWear(): number;
+    setWarpaintSeed(warpaintSeed: bigint | number): void;
+    getWarpaintSeed(): bigint;
+    setWarpaint(warpaintId: number, warpaintWear: number, warpaintSeed: bigint | number): void;
+    setTextureSize(textureSize: number): void;
+    getTextureSize(): number | undefined;
+    getCharacter(): Character;
+    getAllModels(): AsyncGenerator<Source1ModelInstance, void, unknown>;
+}
+
+export declare type UsePlayerModels = 'human' | 'bot' | 'infected';
+
+declare type Warpaint = {
+    weapon: string;
+    title: string;
+};
+
+export declare const weaponEffects: Map<number, [string, string]>;
 
 export { }

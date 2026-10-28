@@ -1,4 +1,4 @@
-import { Dota2Item } from "./items/item";
+import { Dota2Item } from './items/item';
 
 export type Dota2LoadoutControllerEvent = 'heroitemadded' | 'heroitemremoved' | 'herounitschanged' | 'heropersonachanged' | 'itemsloaded';
 

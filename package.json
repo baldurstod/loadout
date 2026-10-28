@@ -1,6 +1,6 @@
 {
   "name": "loadout",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -19,10 +19,16 @@
   "dependencies": {
     "gl-matrix": "^3.4.4",
     "harmony-3d": "github:baldurstod/harmony-3d",
+    "harmony-3d-utils": "github:baldurstod/harmony-3d-utils",
     "harmony-browser-utils": "github:baldurstod/harmony-browser-utils",
+    "harmony-dmx": "github:baldurstod/harmony-dmx",
+    "harmony-tf2-utils": "github:baldurstod/harmony-tf2-utils",
     "harmony-types": "github:baldurstod/harmony-types"
   },
   "devDependencies": {
+    "@rollup/plugin-image": "^3.0.3",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-typescript": "^12.3.0",
     "rollup": "^4.63.5",
     "tslib": "^2.8.1",

@@ -1,0 +1,62 @@
+[
+	{
+		"id": 0,
+		"name": "No sheen",
+		"sheen_red": "000000",
+		"color1_red": "000000",
+		"color2_red": "000000"
+	},
+	{
+		"id": 1,
+		"name": "Team shine",
+		"sheen_red": "C8140F",
+		"sheen_blu": "2862C8",
+		"color1_red": "FF7676",
+		"color2_red": "FF231C",
+		"color1_blu": "005CFF",
+		"color2_blu": "86CBF3",
+		"team": true
+	},
+	{
+		"id": 2,
+		"name": "Deadly Daffodil",
+		"sheen_red": "F2AC0A",
+		"color1_red": "FFED8A",
+		"color2_red": "FFD541"
+	},
+	{
+		"id": 3,
+		"name": "Manndarin",
+		"sheen_red": "FF4B05",
+		"color1_red": "FF6F05",
+		"color2_red": "FF891F"
+	},
+	{
+		"id": 4,
+		"name": "Mean green",
+		"sheen_red": "64FF0A",
+		"color1_red": "E6FF3C",
+		"color2_red": "C1FF3D"
+	},
+	{
+		"id": 5,
+		"name": "Agonizing Emerald",
+		"sheen_red": "28FF46",
+		"color1_red": "67FF79",
+		"color2_red": "A5FFC1"
+	},
+	{
+		"id": 6,
+		"name": "Villainous Violet",
+		"sheen_red": "6914FF",
+		"color1_red": "6914FF",
+		"color2_red": "B991FF"
+	},
+	{
+		"id": 7,
+		"name": "Hotrod",
+		"sheen_red": "FF1EFF",
+		"color1_red": "FF78FF",
+		"color2_red": "FFB0D9"
+	}
+]

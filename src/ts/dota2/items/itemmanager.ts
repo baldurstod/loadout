@@ -53,9 +53,9 @@ export class Dota2ItemManager {
 					slot: 'neutral_creeps',
 					assetmodifiers: [
 						{
-							"asset": characterId,
-							"modifier": unit.Model,
-							"type": 'entity_model',
+							'asset': characterId,
+							'modifier': unit.Model,
+							'type': 'entity_model',
 						},
 					],
 				}

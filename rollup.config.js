@@ -1,6 +1,9 @@
-import fs from 'fs';
+import image from '@rollup/plugin-image';
+import json from '@rollup/plugin-json';
+import nodeResolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 import child_process from 'child_process';
+import fs from 'fs';
 
 const TEMP_BUILD = './dist/dts/index.js';
 
@@ -12,10 +15,16 @@ export default [
 			format: 'esm'
 		},
 		plugins: [
+			image(),
+			json({
+				compact: true,
+			}),
 			typescript({
 				"declaration": true,
 				"declarationMap": true,
 				"declarationDir": "dist/dts",
+			}),
+			nodeResolve({
 			}),
 			{
 				name: 'postbuild-commands',
