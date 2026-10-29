@@ -12,6 +12,7 @@ export * from './ts/dota2/utils/units';
 export * from './ts/tf2/characters/character';
 export * from './ts/tf2/characters/characters';
 export * from './ts/tf2/characters/preset';
+export * from './ts/tf2/controller';
 export * from './ts/tf2/effects/effect';
 export * from './ts/tf2/effects/effecttemplate';
 export * from './ts/tf2/enums';

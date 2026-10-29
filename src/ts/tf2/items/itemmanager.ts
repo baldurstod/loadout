@@ -87,11 +87,7 @@ export class Tf2ItemManager {
 		Tf2LoadoutController.addEventListener('itemadded', () => Tf2LoadoutController.dispatchEvent('filtersupdated'));
 		Tf2LoadoutController.addEventListener('itemremoved', () => Tf2LoadoutController.dispatchEvent('filtersupdated'));
 
-		Tf2LoadoutController.addEventListener('togglepanel', event => {
-			if ((event as CustomEvent<Panel>).detail == Panel.Items || (event as CustomEvent<Panel>).detail == Panel.Effects) {
-				this.initItems();
-			}
-		});
+		Tf2LoadoutController.addEventListener('inititems', () => this.initItems());
 
 		WeaponManager.addEventListener(WeaponManagerEvents.AddWarpaint, event => {
 			const detail = (event as CustomEvent).detail;

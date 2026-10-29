@@ -8072,11 +8072,7 @@ class Tf2ItemManager {
         Tf2LoadoutController.addEventListener('itempinned', event => this.#pinItem(event.detail.item, event.detail.pinned));
         Tf2LoadoutController.addEventListener('itemadded', () => Tf2LoadoutController.dispatchEvent('filtersupdated'));
         Tf2LoadoutController.addEventListener('itemremoved', () => Tf2LoadoutController.dispatchEvent('filtersupdated'));
-        Tf2LoadoutController.addEventListener('togglepanel', event => {
-            if (event.detail == Panel.Items || event.detail == Panel.Effects) {
-                this.initItems();
-            }
-        });
+        Tf2LoadoutController.addEventListener('inititems', () => this.initItems());
         WeaponManager.addEventListener(WeaponManagerEvents.AddWarpaint, event => {
             const detail = event.detail;
             this.#addWarpaint(String(detail.p1), String(detail.p2), detail.p3, detail.p4);
@@ -10416,4 +10412,4 @@ class Tf2Character {
     }
 }
 
-export { COIN_SPIN_EFFECT, COMMUNITY_SPARKLE_EFFECT, CharactersList, ClassRemovablePartsOff, DEFAULT_ACTIVITY, Dota2AssetModifier, Dota2Hero, Dota2HeroTemplate, Dota2HeroTemplates, Dota2Item, Dota2ItemManager, Dota2ItemTemplate, Dota2ItemTemplates, Dota2LoadoutController, Dota2Units, Killstreak, KillstreakColor, Paint, Paints, Panel, SfmSortField, Team, Tf2Character, Tf2Class, Tf2Effect, Tf2EffectTemplate, Tf2EffectType, Tf2Item, Tf2ItemManager, Tf2ItemTemplate, Tf2Preset, Tf2PresetEffect, Tf2PresetEffectType, Tf2PresetItem, Tf2Presets, colorToCss, colorToVec3, colorToVec4, getKillstreak, getKillstreakColor, getPaint, getPaintByTint, getPersonaId, killstreakList, npcToClass, paintList, randomProperty, setUpdatePreview, updatePreview, weaponEffects };
+export { COIN_SPIN_EFFECT, COMMUNITY_SPARKLE_EFFECT, CharactersList, ClassRemovablePartsOff, DEFAULT_ACTIVITY, Dota2AssetModifier, Dota2Hero, Dota2HeroTemplate, Dota2HeroTemplates, Dota2Item, Dota2ItemManager, Dota2ItemTemplate, Dota2ItemTemplates, Dota2LoadoutController, Dota2Units, ItemFilterAttribute, Killstreak, KillstreakColor, Paint, Paints, Panel, SfmSortField, Team, Tf2Character, Tf2Class, Tf2Effect, Tf2EffectTemplate, Tf2EffectType, Tf2Item, Tf2ItemManager, Tf2ItemTemplate, Tf2LoadoutController, Tf2Preset, Tf2PresetEffect, Tf2PresetEffectType, Tf2PresetItem, Tf2Presets, colorToCss, colorToVec3, colorToVec4, getKillstreak, getKillstreakColor, getPaint, getPaintByTint, getPersonaId, killstreakList, npcToClass, paintList, randomProperty, setUpdatePreview, updatePreview, weaponEffects };

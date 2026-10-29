@@ -254,6 +254,34 @@ export declare function getPaintByTint(tint: number): Paints | null;
 
 export declare function getPersonaId(slot: string): number;
 
+export declare enum ItemFilterAttribute {
+    Name = 0,
+    Selected = 1,
+    Workshop = 2,
+    SfmWorkshop = 3,
+    SfmUniverse = 4,
+    SfmModel = 5,
+    HideConflict = 6,
+    TournamentMedals = 7,
+    ShowMultiClass = 8,
+    ShowOneClass = 9,
+    ShowAllClass = 10,
+    DoNotFilterPerClass = 11,
+    Paintable = 12,
+    Warpaintable = 13,
+    Halloween = 14,
+    DisplayMedals = 15,
+    DisplayWeapons = 16,
+    DisplayCosmetics = 17,
+    DisplayTaunts = 18,
+    Collection = 19
+}
+
+export declare type ItemPinned = {
+    item: Tf2ItemTemplate;
+    pinned: boolean;
+};
+
 /**
  * A TF2 Sheen
  */
@@ -393,6 +421,11 @@ export declare const enum Ragdoll {
 }
 
 export declare function randomProperty(obj: Record<string, any>): string;
+
+export declare type SetItemFilter = {
+    attribute: ItemFilterAttribute;
+    value: string | boolean | undefined;
+};
 
 export declare function setUpdatePreview(update: boolean): void;
 
@@ -665,6 +698,43 @@ export declare class Tf2ItemTemplate {
     addWarpaint(id: string, weapon: string, title: string): void;
     getWorkshopGameRepository(): string;
     getWorkshopRepository(): string;
+}
+
+export declare class Tf2LoadoutController {
+    #private;
+    static addEventListener(type: 'itemadded', callback: (evt: CustomEvent<Tf2Item>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'itemremoved', callback: (evt: CustomEvent<Tf2Item>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'itemsloaded', callback: (evt: CustomEvent<void>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'inititems', callback: (evt: CustomEvent<void>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'sfmitemsloaded', callback: (evt: CustomEvent<void>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'systemsloaded', callback: (evt: CustomEvent<void>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'setitemfilter', callback: (evt: CustomEvent<SetItemFilter>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'setitemsortascending', callback: (evt: CustomEvent<boolean>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'setsfmitemsortascending', callback: (evt: CustomEvent<boolean>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'filtersupdated', callback: (evt: CustomEvent<void>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'setitemsorttype', callback: (evt: CustomEvent<string>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'setsfmsortfield', callback: (evt: CustomEvent<string>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'itempinned', callback: (evt: CustomEvent<ItemPinned>) => void, options?: AddEventListenerOptions | boolean): void;
+    static dispatchEvent(type: 'itemadded', options: Tf2LoadoutControllerEventInit<Tf2Item>): boolean;
+    static dispatchEvent(type: 'itemremoved', options: Tf2LoadoutControllerEventInit<Tf2Item>): boolean;
+    static dispatchEvent(type: 'itemsloaded', options?: CustomEventInit<void>): boolean;
+    static dispatchEvent(type: 'inititems', options?: CustomEventInit<void>): boolean;
+    static dispatchEvent(type: 'sfmitemsloaded', options?: CustomEventInit<void>): boolean;
+    static dispatchEvent(type: 'systemsloaded', options?: CustomEventInit<void>): boolean;
+    static dispatchEvent(type: 'setitemfilter', options: Tf2LoadoutControllerEventInit<SetItemFilter>): boolean;
+    static dispatchEvent(type: 'setitemsortascending', options: Tf2LoadoutControllerEventInit<boolean>): boolean;
+    static dispatchEvent(type: 'setsfmitemsortascending', options: Tf2LoadoutControllerEventInit<boolean>): boolean;
+    static dispatchEvent(type: 'filtersupdated', options?: CustomEventInit<void>): boolean;
+    static dispatchEvent(type: 'setitemsorttype', options: Tf2LoadoutControllerEventInit<string>): boolean;
+    static dispatchEvent(type: 'setsfmsortfield', options: Tf2LoadoutControllerEventInit<string>): boolean;
+    static dispatchEvent(type: 'itempinned', options: Tf2LoadoutControllerEventInit<ItemPinned>): boolean;
+    static removeEventListener(type: Tf2LoadoutControllerEvent, callback: EventListenerOrEventListenerObject | null, options?: EventListenerOptions | boolean): void;
+}
+
+export declare type Tf2LoadoutControllerEvent = 'itemadded' | 'itemremoved' | 'inititems' | 'itemsloaded' | 'sfmitemsloaded' | 'systemsloaded' | 'setitemfilter' | 'setitemsortascending' | 'setsfmitemsortascending' | 'filtersupdated' | 'setitemsorttype' | 'setsfmsortfield' | 'itempinned';
+
+export declare interface Tf2LoadoutControllerEventInit<T = any> extends EventInit {
+    detail: T;
 }
 
 export declare class Tf2Preset {
