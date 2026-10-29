@@ -80,7 +80,7 @@ export function getPaint(paint: Paints): Paint | null {
 	return null;
 }
 
-export function getPaintByTint(tint:number):Paints | null {
+export function getPaintByTint(tint: number): Paints | null {
 	for (const [paints, definition] of paintList) {
 		if (definition.tintRed == tint) {
 			return paints;

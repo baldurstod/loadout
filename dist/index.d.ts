@@ -13,55 +13,6 @@ export declare type AttachedParticlesystem = {
     'system': string;
 };
 
-export declare class Character {
-    #private;
-    readonly scene: Scene;
-    readonly characterClass: Tf2Class;
-    readonly name: string;
-    readonly npc: string;
-    readonly items: Map<string, Tf2Item>;
-    readonly effects: Set<Effect>;
-    static autoSelectAnim: boolean;
-    constructor(characterClass: Tf2Class, scene: Scene);
-    loadModel(path: string, name: string): Promise<void>;
-    getModel(): Promise<Source1ModelInstance | null>;
-    addExtraModel(path: string, repository?: string): Promise<Source1ModelInstance | null>;
-    setVisible(visble: boolean): void;
-    setTeam(team: Team): Promise<void>;
-    getTeam(): Team;
-    getItemById(itemId: string): Tf2Item | undefined;
-    toggleItem(template: ItemTemplate): Promise<[Tf2Item, boolean]>;
-    addItem(template: ItemTemplate): Promise<Tf2Item>;
-    updatePaintColor(): void;
-    isInvulnerable(): boolean;
-    setInvulnerable(isInvulnerable: boolean): Promise<void>;
-    getRagdoll(): Ragdoll;
-    setRagdoll(ragdoll: Ragdoll | null): Promise<void>;
-    renderBodyPart(bodyPart: string, render: boolean): void;
-    setBodyPartIdModel(bodyPartId: number, modelId: number): void;
-    setBodyPartModel(bodyPartId: string, modelId: number): void;
-    setPose(pose: string): void;
-    setUserAnim(userAnim: string): void;
-    autoSelectAnim(): void;
-    setFlexControllerValue(name: string, value: number): Promise<void>;
-    resetFlexes(): Promise<void>;
-    addEffect(template: EffectTemplate): Promise<Effect>;
-    removeEffect(effect: Effect): void;
-    setKillsteakEffect(template: EffectTemplate | null, color?: KillstreakColor): Promise<[Effect | null, Effect | null]>;
-    setDecapitationLevel(level: number): Promise<[Effect | null, Effect | null]>;
-    getDecapitationLevel(): number;
-    setTauntEffect(template: EffectTemplate | null): Promise<Effect | null>;
-    getTauntEffect(): Effect | null;
-    getKillstreakEffects(): [Effect | null, Effect | null];
-    setPoseParameter(name: string, value: number): void;
-    savePreset(name: string): Preset;
-    loadPreset(preset: Preset): Promise<void>;
-    removeAll(): void;
-    removeAllItems(): void;
-    removeAllEffects(): void;
-    copy(other: Character): Promise<void>;
-}
-
 export declare const CharactersList: Map<Tf2Class, CharactersType>;
 
 export declare type CharactersType = {
@@ -288,23 +239,278 @@ export declare class Dota2Units {
     static getUnits(): Map<string, Dota2Unit>;
 }
 
-export declare class Effect {
-    readonly template: EffectTemplate;
+export declare const enum Eye {
+    Right = 0,
+    Left = 1
+}
+
+export declare function getKillstreak(killstreak: KillstreakColor): Killstreak | null;
+
+export declare function getKillstreakColor(color: vec3): KillstreakColor | null;
+
+export declare function getPaint(paint: Paints): Paint | null;
+
+export declare function getPaintByTint(tint: number): Paints | null;
+
+export declare function getPersonaId(slot: string): number;
+
+/**
+ * A TF2 Sheen
+ */
+export declare class Killstreak {
+    #private;
+    readonly id: number;
+    readonly killstreak: KillstreakColor;
+    readonly teamColored: boolean;
+    constructor(definition: KillstreakDefinition);
+    /**
+     * Compute the sheen color for the given team
+     * @param team The team to compute the color for
+     * @returns vec3
+     */
+    getSheenColor(team: Team): vec3;
+    getKillstreakColor1(team: Team): vec3;
+}
+
+export declare enum KillstreakColor {
+    None = 0,
+    TeamShine = 1,
+    DeadlyDaffodil = 2,
+    Manndarin = 3,
+    MeanGreen = 4,
+    AgonizingEmerald = 5,
+    VillainousViolet = 6,
+    Hotrod = 7,
+    Custom = 1000
+}
+
+export declare type KillstreakDefinition = {
+    id: number;
+    name: string;
+    sheen: KillstreakColor;
+    teamColored: boolean;
+    sheenRed: number;
+    sheenBlu: number;
+    color1Red: number;
+    color1Blu: number;
+    color2Red: number;
+    color2Blu: number;
+};
+
+export declare const killstreakList: Map<KillstreakColor, KillstreakDefinition>;
+
+export declare function npcToClass(npc: string): Tf2Class | null;
+
+/**
+ * A TF2 paint
+ */
+export declare class Paint {
+    #private;
+    readonly id: number;
+    readonly paint: Paints;
+    spell: boolean;
+    teamColored: boolean;
+    time?: number;
+    constructor(definition: PaintDefinition);
+    /**
+     * Compute the paint tint for the given team
+     * @param team The team to compute the tint for
+     * @returns vec3
+     */
+    getTint(team: Team): vec3;
+}
+
+export declare type PaintDefinition = {
+    id: number;
+    name: string;
+    paint: Paints;
+    teamColored: boolean;
+    tintRed: number;
+    tintBlu: number;
+    spell: boolean;
+    time?: number;
+};
+
+export declare const paintList: Map<Paints, PaintDefinition>;
+
+export declare enum Paints {
+    None = 0,
+    IndubitablyGreen = 1,
+    ZepheniahsGreed = 2,
+    NobleHattersViolet = 3,
+    ColorNo216_190_216 = 4,
+    ADeepCommitmentToPurple = 5,
+    MannCoOrange = 6,
+    Muskelmannbraun = 7,
+    PeculiarlyDrabTincture = 8,
+    RadiganConagherBrown = 9,
+    YeOldeRusticColour = 10,
+    AustraliumGold = 11,
+    AgedMoustacheGrey = 12,
+    AnExtraordinaryAbundanceOfTinge = 13,
+    ADistinctiveLackOfHue = 14,
+    PinkAsHell = 15,
+    AColorSimilarToSlate = 16,
+    DrablyOlive = 17,
+    TheBitterTasteOfDefeatAndLime = 18,
+    TheColorOfAGentlemannsBusinessPants = 19,
+    DarkSalmonInjustice = 20,
+    AMannsMint = 21,
+    AfterEight = 22,
+    TeamSpirit = 101,
+    OperatorsOveralls = 102,
+    WaterloggedLabCoat = 103,
+    BalaclavasAreForever = 104,
+    AnAirOfDebonair = 105,
+    TheValueOfTeamwork = 106,
+    PutrescentPigmentation = 201,
+    DieJob = 202,
+    ChromaticCorruption = 203,
+    SpectralSpectrum = 204,
+    SinisterStaining = 205,
+    Custom = 1000
+}
+
+export declare enum Panel {
+    None = "none",
+    Items = "items",
+    Printful = "printful",
+    Options = "options",
+    Effects = "effects",
+    Presets = "presets",
+    Paints = "paints",
+    Sheens = "sheens",
+    WeaponEffects = "weaponeffects",
+    Warpaints = "warpaints",
+    Flexes = "flexes",
+    SfmRepositories = "sfmrepositories"
+}
+
+export declare const enum Ragdoll {
+    None = 0,
+    Gold = 1,
+    Ice = 2
+}
+
+export declare function randomProperty(obj: Record<string, any>): string;
+
+export declare function setUpdatePreview(update: boolean): void;
+
+export declare enum SfmSortField {
+    Index = "sfm-index",
+    Name = "sfm-name",
+    Subscriptions = "sfm-subscriptions",
+    Updated = "sfm-updated",
+    Created = "sfm-created",
+    Random = "sfm-random"
+}
+
+export declare enum Team {
+    None = -1,
+    Red = 0,
+    Blu = 1
+}
+
+export declare class Tf2Character {
+    #private;
+    readonly scene: Scene;
+    readonly characterClass: Tf2Class;
+    readonly name: string;
+    readonly npc: string;
+    readonly items: Map<string, Tf2Item>;
+    readonly effects: Set<Tf2Effect>;
+    static autoSelectAnim: boolean;
+    constructor(characterClass: Tf2Class, scene: Scene);
+    loadModel(path: string, name: string): Promise<void>;
+    getModel(): Promise<Source1ModelInstance | null>;
+    addExtraModel(path: string, repository?: string): Promise<Source1ModelInstance | null>;
+    setVisible(visble: boolean): void;
+    setTeam(team: Team): Promise<void>;
+    getTeam(): Team;
+    getItemById(itemId: string): Tf2Item | undefined;
+    toggleItem(template: Tf2ItemTemplate): Promise<[Tf2Item, boolean]>;
+    addItem(template: Tf2ItemTemplate): Promise<Tf2Item>;
+    updatePaintColor(): void;
+    isInvulnerable(): boolean;
+    setInvulnerable(isInvulnerable: boolean): Promise<void>;
+    getRagdoll(): Ragdoll;
+    setRagdoll(ragdoll: Ragdoll | null): Promise<void>;
+    renderBodyPart(bodyPart: string, render: boolean): void;
+    setBodyPartIdModel(bodyPartId: number, modelId: number): void;
+    setBodyPartModel(bodyPartId: string, modelId: number): void;
+    setPose(pose: string): void;
+    setUserAnim(userAnim: string): void;
+    autoSelectAnim(): void;
+    setFlexControllerValue(name: string, value: number): Promise<void>;
+    resetFlexes(): Promise<void>;
+    addEffect(template: Tf2EffectTemplate): Promise<Tf2Effect>;
+    removeEffect(effect: Tf2Effect): void;
+    setKillsteakEffect(template: Tf2EffectTemplate | null, color?: KillstreakColor): Promise<[Tf2Effect | null, Tf2Effect | null]>;
+    setDecapitationLevel(level: number): Promise<[Tf2Effect | null, Tf2Effect | null]>;
+    getDecapitationLevel(): number;
+    setTauntEffect(template: Tf2EffectTemplate | null): Promise<Tf2Effect | null>;
+    getTauntEffect(): Tf2Effect | null;
+    getKillstreakEffects(): [Tf2Effect | null, Tf2Effect | null];
+    setPoseParameter(name: string, value: number): void;
+    savePreset(name: string): Tf2Preset;
+    loadPreset(preset: Tf2Preset): Promise<void>;
+    removeAll(): void;
+    removeAllItems(): void;
+    removeAllEffects(): void;
+    copy(other: Tf2Character): Promise<void>;
+}
+
+export declare enum Tf2Class {
+    Scout = 0,
+    Sniper = 1,
+    Soldier = 2,
+    Demoman = 3,
+    Medic = 4,
+    Heavy = 5,
+    Pyro = 6,
+    Spy = 7,
+    Engineer = 8,
+    ScoutBot = 100,
+    SniperBot = 101,
+    SoldierBot = 102,
+    DemomanBot = 103,
+    MedicBot = 104,
+    HeavyBot = 105,
+    PyroBot = 106,
+    SpyBot = 107,
+    EngineerBot = 108,
+    ScoutInfected = 200,
+    SniperInfected = 201,
+    SoldierInfected = 202,
+    DemomanInfected = 203,
+    MedicInfected = 204,
+    HeavyInfected = 205,
+    PyroInfected = 206,
+    SpyInfected = 207,
+    EngineerInfected = 208,
+    Random = 1000,
+    None = 1001,
+    Empty = 1002,
+    CompareWarpaints = 1003
+}
+
+export declare class Tf2Effect {
+    readonly template: Tf2EffectTemplate;
     name: string;
     system: Source1ParticleSystem | null;
     attachment?: string;
     offset: vec3;
     killstreakColor?: KillstreakColor;
-    constructor(template: EffectTemplate);
+    constructor(template: Tf2EffectTemplate);
     getId(): number;
-    getType(): EffectType;
+    getType(): Tf2EffectType;
 }
 
-export declare class EffectTemplate {
+export declare class Tf2EffectTemplate {
     #private;
     readonly id: number;
-    readonly type: EffectType;
-    constructor(type: EffectType, id: number, definition: JSONObject);
+    readonly type: Tf2EffectType;
+    constructor(type: Tf2EffectType, id: number, definition: JSONObject);
     getName(): string;
     getSystem(): string;
     isTeamColored(): boolean;
@@ -312,7 +518,7 @@ export declare class EffectTemplate {
     getAttachment(): string;
 }
 
-export declare enum EffectType {
+export declare enum Tf2EffectType {
     Cosmetic = "cosmetic_unusual_effects",
     Killstreak = "killstreak_eyeglows",
     Taunt = "taunt_unusual_effects",
@@ -320,14 +526,81 @@ export declare enum EffectType {
     Other = "other_particles"
 }
 
-export declare const enum Eye {
-    Right = 0,
-    Left = 1
+export declare class Tf2Item {
+    #private;
+    readonly id: string;
+    changeTextureSize?: number;
+    constructor(itemTemplate: Tf2ItemTemplate, character: Tf2Character);
+    getTemplate(): Tf2ItemTemplate;
+    setTeam(team: Team): Promise<void>;
+    getEquipRegions(): string[];
+    setKillCount(count: number | null): Promise<void>;
+    getKillCount(): number | null;
+    getRepository(): string;
+    showFestivizer(showFestivizer: boolean): Promise<void>;
+    getShowFestivizer(): boolean;
+    toggleFestivizer(): Promise<void>;
+    setCustomTexture(textureName: string | null): void;
+    getCustomTexture(): string | null;
+    critBoost(boost?: boolean): void;
+    isCritBoosted(): boolean;
+    loadModel(npc: string): Promise<void>;
+    attachSystems(npc: string): Promise<void>;
+    getModel(): Promise<Source1ModelInstance | null>;
+    getModelBlu(): Promise<Source1ModelInstance | null>;
+    getModelExtraWearable(): Promise<Source1ModelInstance | null>;
+    remove(): Promise<void>;
+    isConflicting(other: Tf2Item): boolean;
+    setPaint(paint: Paints | null): void;
+    getPaint(): Paints | null;
+    updatePaintColor(): void;
+    setSheen(sheen: KillstreakColor | null): void;
+    getSheen(): KillstreakColor | null;
+    isTaunt(): boolean;
+    getCustomTauntScenePerClass(npc: string): string | null;
+    getCustomTauntPropScenePerClass(npc: string): string | null;
+    getCustomTauntOutroScenePerClass(npc: string): string | null;
+    getCustomTauntPropOutroScenePerClass(npc: string): string | null;
+    getWorkshopAnimationPerClass(npc: string): string | null;
+    getTauntAttackName(): string | null;
+    setWeaponEffectId(weaponEffectId: number | null): void;
+    getWeaponEffectId(): number | null;
+    setWarpaintId(warpaintId: number | null): void;
+    getWarpaintId(): number | null;
+    setWarpaintWear(warpaintWear: number): void;
+    getWarpaintWear(): number;
+    setWarpaintSeed(warpaintSeed: bigint | number): void;
+    getWarpaintSeed(): bigint;
+    setWarpaint(warpaintId: number, warpaintWear: number, warpaintSeed: bigint | number): void;
+    setTextureSize(textureSize: number): void;
+    getTextureSize(): number | undefined;
+    getCharacter(): Tf2Character;
+    getAllModels(): AsyncGenerator<Source1ModelInstance, void, unknown>;
 }
 
-export declare function getPersonaId(slot: string): number;
+export declare class Tf2ItemManager {
+    #private;
+    static setCurrentCharacter(character: Tf2Character): void;
+    static setLang(lang: string): void;
+    static getItems(): Map<string, Tf2ItemTemplate>;
+    static getItemTemplate(id: string | number, style?: number): Tf2ItemTemplate | null;
+    static getEffectTemplate(type: Tf2EffectType, id: number): Tf2EffectTemplate | null;
+    static getEffectTemplateById(id: number): [Tf2EffectType, Tf2EffectTemplate] | null;
+    static getEffectTemplateBySystem(system: string): [Tf2EffectType, number, Tf2EffectTemplate] | null;
+    static getFilteredItems(excluded: {
+        e: number;
+    }): [Map<string, Tf2ItemTemplate>, Map<string, Tf2ItemTemplate>];
+    static getSelectedItems(): Set<string>;
+    static getSelectedEffects(): Set<Tf2Effect>;
+    static getConflictingItems(): Set<string>;
+    static initItems(): Promise<void>;
+    static getEffects(type: Tf2EffectType): Map<number, Tf2EffectTemplate>;
+    static getCollections(): Set<string>;
+    static initWorkshopItems(): Promise<void>;
+    static initTournamentMedals(): Promise<void>;
+}
 
-export declare class ItemTemplate {
+export declare class Tf2ItemTemplate {
     #private;
     readonly id: string;
     readonly creatorid64?: string;
@@ -394,99 +667,32 @@ export declare class ItemTemplate {
     getWorkshopRepository(): string;
 }
 
-declare enum KillstreakColor {
-    None = 0,
-    TeamShine = 1,
-    DeadlyDaffodil = 2,
-    Manndarin = 3,
-    MeanGreen = 4,
-    AgonizingEmerald = 5,
-    VillainousViolet = 6,
-    Hotrod = 7,
-    Custom = 1000
-}
-
-export declare function npcToClass(npc: string): Tf2Class | null;
-
-declare enum Paints {
-    None = 0,
-    IndubitablyGreen = 1,
-    ZepheniahsGreed = 2,
-    NobleHattersViolet = 3,
-    ColorNo216_190_216 = 4,
-    ADeepCommitmentToPurple = 5,
-    MannCoOrange = 6,
-    Muskelmannbraun = 7,
-    PeculiarlyDrabTincture = 8,
-    RadiganConagherBrown = 9,
-    YeOldeRusticColour = 10,
-    AustraliumGold = 11,
-    AgedMoustacheGrey = 12,
-    AnExtraordinaryAbundanceOfTinge = 13,
-    ADistinctiveLackOfHue = 14,
-    PinkAsHell = 15,
-    AColorSimilarToSlate = 16,
-    DrablyOlive = 17,
-    TheBitterTasteOfDefeatAndLime = 18,
-    TheColorOfAGentlemannsBusinessPants = 19,
-    DarkSalmonInjustice = 20,
-    AMannsMint = 21,
-    AfterEight = 22,
-    TeamSpirit = 101,
-    OperatorsOveralls = 102,
-    WaterloggedLabCoat = 103,
-    BalaclavasAreForever = 104,
-    AnAirOfDebonair = 105,
-    TheValueOfTeamwork = 106,
-    PutrescentPigmentation = 201,
-    DieJob = 202,
-    ChromaticCorruption = 203,
-    SpectralSpectrum = 204,
-    SinisterStaining = 205,
-    Custom = 1000
-}
-
-export declare enum Panel {
-    None = "none",
-    Items = "items",
-    Printful = "printful",
-    Options = "options",
-    Effects = "effects",
-    Presets = "presets",
-    Paints = "paints",
-    Sheens = "sheens",
-    WeaponEffects = "weaponeffects",
-    Warpaints = "warpaints",
-    Flexes = "flexes",
-    SfmRepositories = "sfmrepositories"
-}
-
-declare class Preset {
+export declare class Tf2Preset {
     character: string;
     name: string;
-    items: Set<PresetItem>;
-    effects: Set<PresetEffect>;
+    items: Set<Tf2PresetItem>;
+    effects: Set<Tf2PresetEffect>;
     decapitationLevel: number;
     constructor(name?: string);
-    addItem(item: PresetItem): void;
-    addEffect(effect: PresetEffect): void;
+    addItem(item: Tf2PresetItem): void;
+    addEffect(effect: Tf2PresetEffect): void;
     fromJSON(json: JSONObject): boolean;
     toJSON(): JSONObject;
 }
 
-declare class PresetEffect {
+export declare class Tf2PresetEffect {
     id: number;
-    type: PresetEffectType;
+    type: Tf2PresetEffectType;
     attachment?: string | undefined;
     offset: vec3;
     color?: KillstreakColor;
-    setType(type: EffectType): void;
-    getType(): EffectType;
+    setType(type: Tf2EffectType): void;
+    getType(): Tf2EffectType;
     fromJSON(json: JSONObject): boolean;
     toJSON(): JSONObject;
 }
 
-declare enum PresetEffectType {
+export declare enum Tf2PresetEffectType {
     Unusual = "unusual",
     Taunt = "taunt",
     Killstreak = "killstreak",
@@ -494,7 +700,7 @@ declare enum PresetEffectType {
     Other = "other"
 }
 
-declare class PresetItem {
+export declare class Tf2PresetItem {
     id: string;
     paint?: number;
     warpaintId?: number;
@@ -510,105 +716,18 @@ declare class PresetItem {
     toJSON(): JSONObject;
 }
 
-export declare const enum Ragdoll {
-    None = 0,
-    Gold = 1,
-    Ice = 2
-}
-
-export declare function randomProperty(obj: Record<string, any>): string;
-
-export declare enum Team {
-    None = -1,
-    Red = 0,
-    Blu = 1
-}
-
-export declare enum Tf2Class {
-    Scout = 0,
-    Sniper = 1,
-    Soldier = 2,
-    Demoman = 3,
-    Medic = 4,
-    Heavy = 5,
-    Pyro = 6,
-    Spy = 7,
-    Engineer = 8,
-    ScoutBot = 100,
-    SniperBot = 101,
-    SoldierBot = 102,
-    DemomanBot = 103,
-    MedicBot = 104,
-    HeavyBot = 105,
-    PyroBot = 106,
-    SpyBot = 107,
-    EngineerBot = 108,
-    ScoutInfected = 200,
-    SniperInfected = 201,
-    SoldierInfected = 202,
-    DemomanInfected = 203,
-    MedicInfected = 204,
-    HeavyInfected = 205,
-    PyroInfected = 206,
-    SpyInfected = 207,
-    EngineerInfected = 208,
-    Random = 1000,
-    None = 1001,
-    Empty = 1002,
-    CompareWarpaints = 1003
-}
-
-export declare class Tf2Item {
+export declare class Tf2Presets {
     #private;
-    readonly id: string;
-    changeTextureSize?: number;
-    constructor(itemTemplate: ItemTemplate, character: Character);
-    getTemplate(): ItemTemplate;
-    setTeam(team: Team): Promise<void>;
-    getEquipRegions(): string[];
-    setKillCount(count: number | null): Promise<void>;
-    getKillCount(): number | null;
-    getRepository(): string;
-    showFestivizer(showFestivizer: boolean): Promise<void>;
-    getShowFestivizer(): boolean;
-    toggleFestivizer(): Promise<void>;
-    setCustomTexture(textureName: string | null): void;
-    getCustomTexture(): string | null;
-    critBoost(boost?: boolean): void;
-    isCritBoosted(): boolean;
-    loadModel(npc: string): Promise<void>;
-    attachSystems(npc: string): Promise<void>;
-    getModel(): Promise<Source1ModelInstance | null>;
-    getModelBlu(): Promise<Source1ModelInstance | null>;
-    getModelExtraWearable(): Promise<Source1ModelInstance | null>;
-    remove(): Promise<void>;
-    isConflicting(other: Tf2Item): boolean;
-    setPaint(paint: Paints | null): void;
-    getPaint(): Paints | null;
-    updatePaintColor(): void;
-    setSheen(sheen: KillstreakColor | null): void;
-    getSheen(): KillstreakColor | null;
-    isTaunt(): boolean;
-    getCustomTauntScenePerClass(npc: string): string | null;
-    getCustomTauntPropScenePerClass(npc: string): string | null;
-    getCustomTauntOutroScenePerClass(npc: string): string | null;
-    getCustomTauntPropOutroScenePerClass(npc: string): string | null;
-    getWorkshopAnimationPerClass(npc: string): string | null;
-    getTauntAttackName(): string | null;
-    setWeaponEffectId(weaponEffectId: number | null): void;
-    getWeaponEffectId(): number | null;
-    setWarpaintId(warpaintId: number | null): void;
-    getWarpaintId(): number | null;
-    setWarpaintWear(warpaintWear: number): void;
-    getWarpaintWear(): number;
-    setWarpaintSeed(warpaintSeed: bigint | number): void;
-    getWarpaintSeed(): bigint;
-    setWarpaint(warpaintId: number, warpaintWear: number, warpaintSeed: bigint | number): void;
-    setTextureSize(textureSize: number): void;
-    getTextureSize(): number | undefined;
-    getCharacter(): Character;
-    getAllModels(): AsyncGenerator<Source1ModelInstance, void, unknown>;
+    selected?: string;
+    addPreset(preset: Tf2Preset): void;
+    getPreset(name: string): Tf2Preset | undefined;
+    getPresets(): Map<string, Tf2Preset>;
+    removePreset(name: string): void;
+    fromJSON(json: JSONObject): boolean;
+    toJSON(): JSONObject;
 }
+
+export declare let updatePreview: boolean;
 
 export declare type UsePlayerModels = 'human' | 'bot' | 'infected';
 

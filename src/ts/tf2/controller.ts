@@ -1,6 +1,6 @@
 import { Panel } from './enums';
 import { Tf2Item } from './items/item';
-import { ItemTemplate } from './items/itemtemplate';
+import { Tf2ItemTemplate } from './items/itemtemplate';
 
 export type Tf2LoadoutControllerEvent =
 	'itemadded'
@@ -101,6 +101,6 @@ export type SetItemFilter = {
 }
 
 export type ItemPinned = {
-	item: ItemTemplate;
+	item: Tf2ItemTemplate;
 	pinned: boolean;
 }

@@ -1,8 +1,8 @@
-import { ItemFilterAttribute } from '../controller';
 import { CharactersList, Tf2Class } from '../characters/characters';
+import { ItemFilterAttribute } from '../controller';
 import { hasConflict } from './hasconflict';
 import { Tf2Item } from './item';
-import { ItemTemplate } from './itemtemplate';
+import { Tf2ItemTemplate } from './itemtemplate';
 
 export enum ItemFilterResult {
 	Ok,
@@ -12,7 +12,7 @@ export enum ItemFilterResult {
 	Conflicting,
 }
 
-export class ItemFilter {
+export class Tf2ItemFilter {
 	name?: string;
 	selected = false;
 	workshop = false;
@@ -35,7 +35,7 @@ export class ItemFilter {
 	displayTaunts = false;
 	collection?: string;
 
-	matchFilter(item: ItemTemplate, excludedItems: { e: number }, characterClass: Tf2Class | null, activeItems: Set<Tf2Item>): ItemFilterResult {
+	matchFilter(item: Tf2ItemTemplate, excludedItems: { e: number }, characterClass: Tf2Class | null, activeItems: Set<Tf2Item>): ItemFilterResult {
 		let ret = false;
 		let highlightConflict = false;
 		let isWeapon = false;

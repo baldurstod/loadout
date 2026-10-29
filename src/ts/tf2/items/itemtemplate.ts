@@ -1,7 +1,7 @@
 import { ChoreographiesManager, Repositories, VcdParser, WebRepository } from 'harmony-3d';
 import { JSONObject } from 'harmony-types';
-import { WORKSHOP_UGC_URL } from '../constants';
 import { CharactersList, Tf2Class } from '../characters/characters';
+import { WORKSHOP_UGC_URL } from '../constants';
 
 type Warpaint = {
 	weapon: string,
@@ -13,7 +13,7 @@ export type AttachedParticlesystem = {
 	'system': string,
 }
 
-export class ItemTemplate {
+export class Tf2ItemTemplate {
 	#definition: JSONObject/*TODO: improve type*/;
 	#keywords = new Set<string>();
 	readonly id: string;

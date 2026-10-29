@@ -1,20 +1,20 @@
 import { JSONObject } from 'harmony-types';
 import { UNUSUALS_IMAGES_DIR } from '../constants';
 
-export enum EffectType {
+export enum Tf2EffectType {
 	Cosmetic = 'cosmetic_unusual_effects',
 	Killstreak = 'killstreak_eyeglows',
 	Taunt = 'taunt_unusual_effects',
 	Weapon = 'weapon_unusual_effects',
 	Other = 'other_particles',
 }
-export class EffectTemplate {
+export class Tf2EffectTemplate {
 	readonly id: number;
-	readonly type: EffectType;
+	readonly type: Tf2EffectType;
 	//#type: EffectType;
 	#definition: JSONObject;
 
-	constructor(type: EffectType, id: number, definition: JSONObject) {
+	constructor(type: Tf2EffectType, id: number, definition: JSONObject) {
 		this.id = id;
 		this.type = type;
 		this.#definition = definition;

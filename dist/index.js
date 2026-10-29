@@ -2206,7 +2206,7 @@ const weaponEffects = new Map([
     [704, ['energyorb', 'Energy orb']],
     [COMMUNITY_SPARKLE_EFFECT, ['community_sparkle', 'Community Sparkle']],
 ]);
-class Effect {
+class Tf2Effect {
     template;
     name = '';
     system = null;
@@ -2224,15 +2224,15 @@ class Effect {
     }
 }
 
-var EffectType;
-(function (EffectType) {
-    EffectType["Cosmetic"] = "cosmetic_unusual_effects";
-    EffectType["Killstreak"] = "killstreak_eyeglows";
-    EffectType["Taunt"] = "taunt_unusual_effects";
-    EffectType["Weapon"] = "weapon_unusual_effects";
-    EffectType["Other"] = "other_particles";
-})(EffectType || (EffectType = {}));
-class EffectTemplate {
+var Tf2EffectType;
+(function (Tf2EffectType) {
+    Tf2EffectType["Cosmetic"] = "cosmetic_unusual_effects";
+    Tf2EffectType["Killstreak"] = "killstreak_eyeglows";
+    Tf2EffectType["Taunt"] = "taunt_unusual_effects";
+    Tf2EffectType["Weapon"] = "weapon_unusual_effects";
+    Tf2EffectType["Other"] = "other_particles";
+})(Tf2EffectType || (Tf2EffectType = {}));
+class Tf2EffectTemplate {
     id;
     type;
     //#type: EffectType;
@@ -6691,6 +6691,21 @@ function getKillstreak(killstreak) {
     }
     return null;
 }
+function getKillstreakColor(color) {
+    const colors = [vec3.create(), vec3.create()];
+    for (const [killstreakColor, definition] of killstreakList) {
+        colorToTint$1(definition.color1Blu, colors[0]);
+        colorToTint$1(definition.color1Red, colors[1]);
+        for (let i = 0; i < 2; i++) {
+            if (Math.abs(color[0] - colors[i][0]) < 0.001 &&
+                Math.abs(color[1] - colors[i][1]) < 0.001 &&
+                Math.abs(color[2] - colors[i][2]) < 0.001) {
+                return killstreakColor;
+            }
+        }
+    }
+    return null;
+}
 function colorToTint$1(color, tint) {
     tint[0] = ((color & 0xFF0000) >> 16) / 255.0;
     tint[1] = ((color & 0x00FF00) >> 8) / 255.0;
@@ -6794,6 +6809,14 @@ function getPaint(paint) {
     const paintDefinition = paintList.get(paint);
     if (paintDefinition) {
         return new Paint(paintDefinition);
+    }
+    return null;
+}
+function getPaintByTint(tint) {
+    for (const [paints, definition] of paintList) {
+        if (definition.tintRed == tint) {
+            return paints;
+        }
     }
     return null;
 }
@@ -7293,7 +7316,7 @@ var ItemFilterResult;
     ItemFilterResult[ItemFilterResult["ExcludedFilter"] = 3] = "ExcludedFilter";
     ItemFilterResult[ItemFilterResult["Conflicting"] = 4] = "Conflicting";
 })(ItemFilterResult || (ItemFilterResult = {}));
-class ItemFilter {
+class Tf2ItemFilter {
     name;
     selected = false;
     workshop = false;
@@ -7642,7 +7665,7 @@ class ItemFilter {
     }
 }
 
-class ItemTemplate {
+class Tf2ItemTemplate {
     #definition;
     #keywords = new Set();
     id;
@@ -7992,8 +8015,8 @@ var SfmSortField;
     SfmSortField["Created"] = "sfm-created";
     SfmSortField["Random"] = "sfm-random";
 })(SfmSortField || (SfmSortField = {}));
-class ItemManager {
-    static #filters = new ItemFilter();
+class Tf2ItemManager {
+    static #filters = new Tf2ItemFilter();
     static #currentCharacter = null;
     //static #characterClass: Tf2Class | null = null;
     static #lang = 'english';
@@ -8222,7 +8245,7 @@ class ItemManager {
             //let keywords = '';
             const itemDefinition = itemList[itemIndex];
             itemDefinition.is_tournament_medal = tournamentMedals;
-            const itemTemplate = new ItemTemplate(itemIndex, itemDefinition);
+            const itemTemplate = new Tf2ItemTemplate(itemIndex, itemDefinition);
             //item.id = itemIndex;
             this.#itemTemplates.set(itemIndex, itemTemplate);
             const collection = itemTemplate.getCollection();
@@ -8270,7 +8293,7 @@ class ItemManager {
             const group = systemList[effectType];
             for (const effectIndex in group) {
                 const effectIndexN = Number(effectIndex);
-                this.#effectTemplates.set(effectType, effectIndexN, new EffectTemplate(effectType, effectIndexN, group[effectIndex]));
+                this.#effectTemplates.set(effectType, effectIndexN, new Tf2EffectTemplate(effectType, effectIndexN, group[effectIndex]));
             }
         }
     }
@@ -8537,7 +8560,7 @@ class ItemManager {
                     }
                 }
             }
-            const itemTemplate = new ItemTemplate('w' + item.id, item);
+            const itemTemplate = new Tf2ItemTemplate('w' + item.id, item);
             this.#itemTemplates.set(itemTemplate.id, itemTemplate);
             //const keywords = '';
             if (item.player_bodygroups) ;
@@ -8612,7 +8635,7 @@ class ItemManager {
             item.name = item.title;
             item.workshopMetadata = null;
             item.paintable = false;
-            const itemTemplate = new ItemTemplate(item.id, item);
+            const itemTemplate = new Tf2ItemTemplate(item.id, item);
             this.#itemTemplates.set(itemTemplate.id, itemTemplate);
             //const keywords = '';
             if (item.player_bodygroups) ;
@@ -8637,6 +8660,9 @@ class ItemManager {
 }
 
 let updatePreview = false;
+function setUpdatePreview(update) {
+    updatePreview = update;
+}
 
 class Tf2Item {
     id;
@@ -8964,7 +8990,7 @@ class Tf2Item {
         if (!this.#model) {
             return;
         }
-        let s = ItemManager.getEffectTemplate(EffectType.Cosmetic, Number(this.#itemTemplate.setAttachedParticleStatic));
+        let s = Tf2ItemManager.getEffectTemplate(Tf2EffectType.Cosmetic, Number(this.#itemTemplate.setAttachedParticleStatic));
         if (s) {
             let sys = await Source1ParticleControler.createSystem('tf2', s.getSystem());
             sys.start();
@@ -9308,7 +9334,7 @@ class FlyingBird {
     }
 }
 
-class PresetItem {
+class Tf2PresetItem {
     id = '';
     paint;
     warpaintId;
@@ -9394,52 +9420,52 @@ class PresetItem {
         return j;
     }
 }
-var PresetEffectType;
-(function (PresetEffectType) {
-    PresetEffectType["Unusual"] = "unusual";
-    PresetEffectType["Taunt"] = "taunt";
-    PresetEffectType["Killstreak"] = "killstreak";
-    PresetEffectType["Weapon"] = "weapon";
-    PresetEffectType["Other"] = "other";
-})(PresetEffectType || (PresetEffectType = {}));
+var Tf2PresetEffectType;
+(function (Tf2PresetEffectType) {
+    Tf2PresetEffectType["Unusual"] = "unusual";
+    Tf2PresetEffectType["Taunt"] = "taunt";
+    Tf2PresetEffectType["Killstreak"] = "killstreak";
+    Tf2PresetEffectType["Weapon"] = "weapon";
+    Tf2PresetEffectType["Other"] = "other";
+})(Tf2PresetEffectType || (Tf2PresetEffectType = {}));
 const VEC3_ZERO = vec3.create();
-class PresetEffect {
+class Tf2PresetEffect {
     id = 0;
-    type = PresetEffectType.Unusual;
+    type = Tf2PresetEffectType.Unusual;
     attachment = '';
     offset = vec3.create();
     color;
     setType(type) {
         switch (type) {
-            case EffectType.Cosmetic:
-                this.type = PresetEffectType.Unusual;
+            case Tf2EffectType.Cosmetic:
+                this.type = Tf2PresetEffectType.Unusual;
                 break;
-            case EffectType.Killstreak:
-                this.type = PresetEffectType.Killstreak;
+            case Tf2EffectType.Killstreak:
+                this.type = Tf2PresetEffectType.Killstreak;
                 break;
-            case EffectType.Taunt:
-                this.type = PresetEffectType.Taunt;
+            case Tf2EffectType.Taunt:
+                this.type = Tf2PresetEffectType.Taunt;
                 break;
-            case EffectType.Weapon:
-                this.type = PresetEffectType.Weapon;
+            case Tf2EffectType.Weapon:
+                this.type = Tf2PresetEffectType.Weapon;
                 break;
-            case EffectType.Other:
-                this.type = PresetEffectType.Other;
+            case Tf2EffectType.Other:
+                this.type = Tf2PresetEffectType.Other;
                 break;
         }
     }
     getType() {
         switch (this.type) {
-            case PresetEffectType.Unusual:
-                return EffectType.Cosmetic;
-            case PresetEffectType.Killstreak:
-                return EffectType.Killstreak;
-            case PresetEffectType.Taunt:
-                return EffectType.Taunt;
-            case PresetEffectType.Weapon:
-                return EffectType.Weapon;
-            case PresetEffectType.Other:
-                return EffectType.Other;
+            case Tf2PresetEffectType.Unusual:
+                return Tf2EffectType.Cosmetic;
+            case Tf2PresetEffectType.Killstreak:
+                return Tf2EffectType.Killstreak;
+            case Tf2PresetEffectType.Taunt:
+                return Tf2EffectType.Taunt;
+            case Tf2PresetEffectType.Weapon:
+                return Tf2EffectType.Weapon;
+            case Tf2PresetEffectType.Other:
+                return Tf2EffectType.Other;
         }
     }
     fromJSON(json) {
@@ -9475,7 +9501,7 @@ class PresetEffect {
         return j;
     }
 }
-class Preset {
+class Tf2Preset {
     character = '';
     name = '';
     items = new Set();
@@ -9502,13 +9528,13 @@ class Preset {
         if (json.items !== undefined) {
             //this.name = json.name as string;
             for (const itemJson of json.items) {
-                const presetItem = new PresetItem();
+                const presetItem = new Tf2PresetItem();
                 if (presetItem.fromJSON(itemJson)) {
                     this.addItem(presetItem);
                 }
             }
             for (const effectJson of json.effects) {
-                const presetEffect = new PresetEffect();
+                const presetEffect = new Tf2PresetEffect();
                 if (presetEffect.fromJSON(effectJson)) {
                     this.addEffect(presetEffect);
                 }
@@ -9538,7 +9564,7 @@ class Preset {
         return j;
     }
 }
-class Presets {
+class Tf2Presets {
     #presets = new Map();
     selected;
     addPreset(preset) {
@@ -9560,7 +9586,7 @@ class Presets {
         this.selected = json.selected;
         if (json.presets) {
             for (const preset of json.presets) {
-                const p = new Preset();
+                const p = new Tf2Preset();
                 if (p.fromJSON(preset)) {
                     this.addPreset(p);
                 }
@@ -9583,7 +9609,7 @@ class Presets {
 }
 
 const eyeAttachments = ['eyeglow_R', 'eyeglow_L'];
-class Character {
+class Tf2Character {
     scene;
     characterClass;
     name;
@@ -9929,7 +9955,7 @@ class Character {
             return;
         }
         const pose = this.#voicePose ?? 'stand';
-        if (Character.autoSelectAnim) {
+        if (Tf2Character.autoSelectAnim) {
             this.#playAnim(pose + '_secondary');
         }
         for (const [, item] of this.items) {
@@ -10025,7 +10051,7 @@ class Character {
         }
     }
     async #addEffect(name, systemName, attachment, offset) {
-        const effect = new Effect(new EffectTemplate(EffectType.Other, -1, {}));
+        const effect = new Tf2Effect(new Tf2EffectTemplate(Tf2EffectType.Other, -1, {}));
         this.effects.add(effect);
         //const system = await Source1ParticleControler.createSystem('tf2', systemName);
         effect.system = await Source1ParticleControler.createSystem('tf2', systemName);
@@ -10058,7 +10084,7 @@ class Character {
         }
     }
     async addEffect(template) {
-        const effect = new Effect(template);
+        const effect = new Tf2Effect(template);
         this.effects.add(effect);
         await this.#createEffect(effect);
         this.#setEffectsTeam();
@@ -10070,10 +10096,10 @@ class Character {
         await this.#ready;
         let attachment = '';
         switch (effect.template.type) {
-            case EffectType.Cosmetic:
+            case Tf2EffectType.Cosmetic:
                 attachment = 'bip_head';
                 break;
-            case EffectType.Killstreak:
+            case Tf2EffectType.Killstreak:
                 attachment = eyeAttachment ?? '';
                 break;
         }
@@ -10152,7 +10178,7 @@ class Character {
                 continue;
             }
             if (template) {
-                const effect = new Effect(template);
+                const effect = new Tf2Effect(template);
                 effect.killstreakColor = color;
                 await this.#createEffect(effect, undefined, eyeAttachments[i]);
                 const sys = effect?.system;
@@ -10184,7 +10210,7 @@ class Character {
         this.#decapitationLevel = level;
         let template = null;
         if (level > 0) {
-            template = new EffectTemplate(EffectType.Killstreak, 20000, { 'name': 'Eye glow', 'system': 'eye_powerup_green_lvl_' + level, });
+            template = new Tf2EffectTemplate(Tf2EffectType.Killstreak, 20000, { 'name': 'Eye glow', 'system': 'eye_powerup_green_lvl_' + level, });
         }
         return this.#setKillsteakEffect(this.#decapitationEffects, template, 1 /* Eye.Left */);
     }
@@ -10200,7 +10226,7 @@ class Character {
             this.#tauntEffect = null;
             return null;
         }
-        const effect = new Effect(template);
+        const effect = new Tf2Effect(template);
         this.#tauntEffect = effect;
         await this.#createEffect(effect);
         this.#setEffectsTeam();
@@ -10219,12 +10245,12 @@ class Character {
         }
     }
     savePreset(name) {
-        const preset = new Preset(name);
+        const preset = new Tf2Preset(name);
         const npc = CharactersList.get(this.characterClass).name;
         preset.character = npc;
         preset.decapitationLevel = this.#decapitationLevel;
         for (const [, item] of this.items) {
-            const presetItem = new PresetItem();
+            const presetItem = new Tf2PresetItem();
             presetItem.id = item.id;
             if (presetItem.id.startsWith('w')) {
                 // Remove leading w
@@ -10258,7 +10284,7 @@ class Character {
             if (!effect) {
                 return;
             }
-            const presetEffect = new PresetEffect();
+            const presetEffect = new Tf2PresetEffect();
             presetEffect.id = effect.template.id;
             presetEffect.setType(effect.template.type);
             presetEffect.attachment = effect.attachment;
@@ -10291,18 +10317,18 @@ class Character {
         await Promise.all(itemPromises);
         this.setDecapitationLevel(preset.decapitationLevel);
         for (const presetEffect of preset.effects) {
-            const template = ItemManager.getEffectTemplate(presetEffect.getType(), presetEffect.id);
+            const template = Tf2ItemManager.getEffectTemplate(presetEffect.getType(), presetEffect.id);
             if (!template) {
                 continue;
             }
             switch (presetEffect.type) {
-                case PresetEffectType.Unusual:
+                case Tf2PresetEffectType.Unusual:
                     this.addEffect(template);
                     break;
-                case PresetEffectType.Killstreak:
+                case Tf2PresetEffectType.Killstreak:
                     this.setKillsteakEffect(template, presetEffect.color);
                     break;
-                case PresetEffectType.Taunt:
+                case Tf2PresetEffectType.Taunt:
                     this.setTauntEffect(template);
                     break;
             }
@@ -10313,7 +10339,7 @@ class Character {
         if (presetItem.isWorkshop) {
             itemId = 'w' + itemId;
         }
-        const template = ItemManager.getItemTemplate(itemId);
+        const template = Tf2ItemManager.getItemTemplate(itemId);
         if (!template) {
             return;
         }
@@ -10390,4 +10416,4 @@ class Character {
     }
 }
 
-export { COIN_SPIN_EFFECT, COMMUNITY_SPARKLE_EFFECT, Character, CharactersList, ClassRemovablePartsOff, DEFAULT_ACTIVITY, Dota2AssetModifier, Dota2Hero, Dota2HeroTemplate, Dota2HeroTemplates, Dota2Item, Dota2ItemManager, Dota2ItemTemplate, Dota2ItemTemplates, Dota2LoadoutController, Dota2Units, Effect, EffectTemplate, EffectType, ItemTemplate, Panel, Team, Tf2Class, Tf2Item, colorToCss, colorToVec3, colorToVec4, getPersonaId, npcToClass, randomProperty, weaponEffects };
+export { COIN_SPIN_EFFECT, COMMUNITY_SPARKLE_EFFECT, CharactersList, ClassRemovablePartsOff, DEFAULT_ACTIVITY, Dota2AssetModifier, Dota2Hero, Dota2HeroTemplate, Dota2HeroTemplates, Dota2Item, Dota2ItemManager, Dota2ItemTemplate, Dota2ItemTemplates, Dota2LoadoutController, Dota2Units, Killstreak, KillstreakColor, Paint, Paints, Panel, SfmSortField, Team, Tf2Character, Tf2Class, Tf2Effect, Tf2EffectTemplate, Tf2EffectType, Tf2Item, Tf2ItemManager, Tf2ItemTemplate, Tf2Preset, Tf2PresetEffect, Tf2PresetEffectType, Tf2PresetItem, Tf2Presets, colorToCss, colorToVec3, colorToVec4, getKillstreak, getKillstreakColor, getPaint, getPaintByTint, getPersonaId, killstreakList, npcToClass, paintList, randomProperty, setUpdatePreview, updatePreview, weaponEffects };

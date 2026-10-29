@@ -1,7 +1,7 @@
 import { vec3 } from 'gl-matrix';
 import { Source1ParticleSystem } from 'harmony-3d';
 import { KillstreakColor } from '../paints/killstreaks';
-import { EffectTemplate, EffectType } from './effecttemplate';
+import { Tf2EffectTemplate, Tf2EffectType } from './effecttemplate';
 
 export const COMMUNITY_SPARKLE_EFFECT = 4;
 export const COIN_SPIN_EFFECT = 406;
@@ -14,15 +14,15 @@ export const weaponEffects = new Map<number, [string, string]>([
 	[COMMUNITY_SPARKLE_EFFECT, ['community_sparkle', 'Community Sparkle']],
 ]);
 
-export class Effect {
-	readonly template: EffectTemplate;
+export class Tf2Effect {
+	readonly template: Tf2EffectTemplate;
 	name = '';
 	system: Source1ParticleSystem | null = null;
 	attachment?: string;
 	offset = vec3.create();
 	killstreakColor?: KillstreakColor;
 
-	constructor(template: EffectTemplate) {
+	constructor(template: Tf2EffectTemplate) {
 		this.template = template;
 	}
 
@@ -30,7 +30,7 @@ export class Effect {
 		return this.template.id;
 	}
 
-	getType(): EffectType {
+	getType(): Tf2EffectType {
 		return this.template.type;
 	}
 }

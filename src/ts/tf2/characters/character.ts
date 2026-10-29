@@ -4,16 +4,16 @@ import { unserializeDmxSync } from 'harmony-dmx';
 import { addTF2Model } from '../addtf2model';
 import { EFFECTS_BLU, EFFECTS_RED, ENTITY_FLYING_BIRD_SPEED_MAX, ENTITY_FLYING_BIRD_SPEED_MIN, MATERIAL_GOLD_RAGDOLL, MATERIAL_ICE_RAGDOLL, MATERIAL_INVULN_BLU, MATERIAL_INVULN_RED, MEDIC_RELEASE_DOVE_COUNT } from '../constants';
 import { Tf2LoadoutController } from '../controller';
-import { Effect } from '../effects/effect';
-import { EffectTemplate, EffectType } from '../effects/effecttemplate';
+import { Tf2Effect } from '../effects/effect';
+import { Tf2EffectTemplate, Tf2EffectType } from '../effects/effecttemplate';
 import { Team } from '../enums';
 import { Tf2Item } from '../items/item';
-import { ItemManager } from '../items/itemmanager';
-import { ItemTemplate } from '../items/itemtemplate';
+import { Tf2ItemManager } from '../items/itemmanager';
+import { Tf2ItemTemplate } from '../items/itemtemplate';
 import { getKillstreak, KillstreakColor, killstreakList } from '../paints/killstreaks';
 import { CharactersList, ClassRemovablePartsOff, Tf2Class } from './characters';
 import { FlyingBird } from './flyingbird';
-import { Preset, PresetEffect, PresetEffectType, PresetItem } from './preset';
+import { Tf2Preset, Tf2PresetEffect, Tf2PresetEffectType, Tf2PresetItem } from './preset';
 
 const eyeAttachments = ['eyeglow_R', 'eyeglow_L'];
 
@@ -28,7 +28,7 @@ export const enum Ragdoll {
 	Ice = 2,
 }
 
-export class Character {
+export class Tf2Character {
 	readonly scene: Scene;
 	readonly characterClass: Tf2Class;
 	readonly name: string;
@@ -37,11 +37,11 @@ export class Character {
 	#showBodyParts = new Map<string, boolean>();
 	#model: Source1ModelInstance | null = null;
 	#extraModels = new Set<Source1ModelInstance>();
-	readonly effects = new Set<Effect>();
-	#tauntEffect: Effect | null = null;
+	readonly effects = new Set<Tf2Effect>();
+	#tauntEffect: Tf2Effect | null = null;
 	// [right, left]
-	#killstreakEffects: [Effect | null, Effect | null] = [null, null];
-	#decapitationEffects: [Effect | null, Effect | null] = [null, null];
+	#killstreakEffects: [Tf2Effect | null, Tf2Effect | null] = [null, null];
+	#decapitationEffects: [Tf2Effect | null, Tf2Effect | null] = [null, null];
 	#team = Team.Red;
 	#readyPromiseResolve!: (value: any) => void;
 	#ready = new Promise<boolean>((resolve) => {
@@ -184,7 +184,7 @@ export class Character {
 		return this.items.get(itemId);
 	}
 
-	async toggleItem(template: ItemTemplate): Promise<[Tf2Item, boolean]> {
+	async toggleItem(template: Tf2ItemTemplate): Promise<[Tf2Item, boolean]> {
 		const existingItem = this.items.get(template.id);
 
 		if (existingItem) {
@@ -195,7 +195,7 @@ export class Character {
 		}
 	}
 
-	async addItem(template: ItemTemplate): Promise<Tf2Item> {
+	async addItem(template: Tf2ItemTemplate): Promise<Tf2Item> {
 		const existingItem = this.items.get(template.id);
 
 		if (existingItem) {
@@ -244,7 +244,7 @@ export class Character {
 		this.#loadoutChanged();
 	}
 
-	async #addItem(template: ItemTemplate): Promise<Tf2Item> {
+	async #addItem(template: Tf2ItemTemplate): Promise<Tf2Item> {
 		const item = new Tf2Item(template, this);
 		this.items.set(template.id, item);
 		const npc = CharactersList.get(this.characterClass)!.name
@@ -425,7 +425,7 @@ export class Character {
 			return;
 		}
 		const pose = this.#voicePose ?? 'stand';
-		if (Character.autoSelectAnim) {
+		if (Tf2Character.autoSelectAnim) {
 			this.#playAnim(pose + '_secondary');
 		}
 		for (const [, item] of this.items) {
@@ -526,8 +526,8 @@ export class Character {
 		}
 	}
 
-	async #addEffect(name: string, systemName: string, attachment?: string, offset?: vec3): Promise<Effect> {
-		const effect = new Effect(new EffectTemplate(EffectType.Other, -1, {}));
+	async #addEffect(name: string, systemName: string, attachment?: string, offset?: vec3): Promise<Tf2Effect> {
+		const effect = new Tf2Effect(new Tf2EffectTemplate(Tf2EffectType.Other, -1, {}));
 		this.effects.add(effect);
 
 		//const system = await Source1ParticleControler.createSystem('tf2', systemName);
@@ -568,8 +568,8 @@ export class Character {
 		}
 	}
 
-	async addEffect(template: EffectTemplate): Promise<Effect> {
-		const effect = new Effect(template);
+	async addEffect(template: Tf2EffectTemplate): Promise<Tf2Effect> {
+		const effect = new Tf2Effect(template);
 		this.effects.add(effect);
 
 		await this.#createEffect(effect);
@@ -578,17 +578,17 @@ export class Character {
 		return effect;
 	}
 
-	async #createEffect(effect: Effect, systemName?: string, eyeAttachment?: string): Promise<void> {
+	async #createEffect(effect: Tf2Effect, systemName?: string, eyeAttachment?: string): Promise<void> {
 		effect.system = await Source1ParticleControler.createSystem('tf2', systemName ?? effect.template.getSystem());
 		effect.system.name = effect.template.getName();
 
 		await this.#ready;
 		let attachment = '';
 		switch (effect.template.type) {
-			case EffectType.Cosmetic:
+			case Tf2EffectType.Cosmetic:
 				attachment = 'bip_head';
 				break;
-			case EffectType.Killstreak:
+			case Tf2EffectType.Killstreak:
 				attachment = eyeAttachment ?? '';
 				break;
 			default:
@@ -610,7 +610,7 @@ export class Character {
 		effect.system.start();
 	}
 
-	removeEffect(effect: Effect): void {
+	removeEffect(effect: Tf2Effect): void {
 		effect.system?.stop();
 		effect.system?.remove();
 		this.effects.delete(effect);
@@ -641,7 +641,7 @@ export class Character {
 		}
 	}
 
-	async #setEffectTeam(effect: Effect): Promise<void> {
+	async #setEffectTeam(effect: Tf2Effect): Promise<void> {
 		let from: string;
 		let to: string;
 		if (this.#team == Team.Red) {
@@ -661,11 +661,11 @@ export class Character {
 		}
 	}
 
-	async setKillsteakEffect(template: EffectTemplate | null, color?: KillstreakColor): Promise<[Effect | null, Effect | null]> {
+	async setKillsteakEffect(template: Tf2EffectTemplate | null, color?: KillstreakColor): Promise<[Tf2Effect | null, Tf2Effect | null]> {
 		return this.#setKillsteakEffect(this.#killstreakEffects, template, Eye.Right, color);
 	}
 
-	async #setKillsteakEffect(array: [Effect | null, Effect | null], template: EffectTemplate | null, demoEye: Eye, color?: KillstreakColor): Promise<[Effect | null, Effect | null]> {
+	async #setKillsteakEffect(array: [Tf2Effect | null, Tf2Effect | null], template: Tf2EffectTemplate | null, demoEye: Eye, color?: KillstreakColor): Promise<[Tf2Effect | null, Tf2Effect | null]> {
 		for (let i = 0; i < 2; i++) {
 			const effect = array[i]!;
 			if (effect) {
@@ -680,7 +680,7 @@ export class Character {
 			}
 
 			if (template) {
-				const effect = new Effect(template);
+				const effect = new Tf2Effect(template);
 				effect.killstreakColor = color;
 				await this.#createEffect(effect, undefined, eyeAttachments[i]);
 
@@ -714,11 +714,11 @@ export class Character {
 		}
 	}
 
-	async setDecapitationLevel(level: number): Promise<[Effect | null, Effect | null]> {
+	async setDecapitationLevel(level: number): Promise<[Tf2Effect | null, Tf2Effect | null]> {
 		this.#decapitationLevel = level;
-		let template: EffectTemplate | null = null;
+		let template: Tf2EffectTemplate | null = null;
 		if (level > 0) {
-			template = new EffectTemplate(EffectType.Killstreak, 20000, { 'name': 'Eye glow', 'system': 'eye_powerup_green_lvl_' + level, });
+			template = new Tf2EffectTemplate(Tf2EffectType.Killstreak, 20000, { 'name': 'Eye glow', 'system': 'eye_powerup_green_lvl_' + level, });
 		}
 		return this.#setKillsteakEffect(this.#decapitationEffects, template, Eye.Left);
 	}
@@ -727,7 +727,7 @@ export class Character {
 		return this.#decapitationLevel;
 	}
 
-	async setTauntEffect(template: EffectTemplate | null): Promise<Effect | null> {
+	async setTauntEffect(template: Tf2EffectTemplate | null): Promise<Tf2Effect | null> {
 		if (this.#tauntEffect) {
 			this.#tauntEffect.system?.stop();
 			this.#tauntEffect.system?.remove();
@@ -738,7 +738,7 @@ export class Character {
 			return null;
 		}
 
-		const effect = new Effect(template);
+		const effect = new Tf2Effect(template);
 		this.#tauntEffect = effect;
 
 		await this.#createEffect(effect);
@@ -747,11 +747,11 @@ export class Character {
 		return effect;
 	}
 
-	getTauntEffect(): Effect | null {
+	getTauntEffect(): Tf2Effect | null {
 		return this.#tauntEffect;
 	}
 
-	getKillstreakEffects(): [Effect | null, Effect | null] {
+	getKillstreakEffects(): [Tf2Effect | null, Tf2Effect | null] {
 		return this.#killstreakEffects;
 	}
 
@@ -762,15 +762,15 @@ export class Character {
 		}
 	}
 
-	savePreset(name: string): Preset {
-		const preset = new Preset(name);
+	savePreset(name: string): Tf2Preset {
+		const preset = new Tf2Preset(name);
 
 		const npc = CharactersList.get(this.characterClass)!.name;
 		preset.character = npc;
 		preset.decapitationLevel = this.#decapitationLevel;
 
 		for (const [, item] of this.items) {
-			const presetItem = new PresetItem();
+			const presetItem = new Tf2PresetItem();
 
 			presetItem.id = item.id;
 			if (presetItem.id.startsWith('w')) {
@@ -808,11 +808,11 @@ export class Character {
 			preset.addItem(presetItem);
 		}
 
-		const addPresetEffect = (effect: Effect | null): void => {
+		const addPresetEffect = (effect: Tf2Effect | null): void => {
 			if (!effect) {
 				return;
 			}
-			const presetEffect = new PresetEffect();
+			const presetEffect = new Tf2PresetEffect();
 
 			presetEffect.id = effect.template.id;
 			presetEffect.setType(effect.template.type);
@@ -842,7 +842,7 @@ export class Character {
 		return preset;
 	}
 
-	async loadPreset(preset: Preset): Promise<void> {
+	async loadPreset(preset: Tf2Preset): Promise<void> {
 		this.removeAllItems();
 		this.removeAllEffects();
 
@@ -856,33 +856,33 @@ export class Character {
 		this.setDecapitationLevel(preset.decapitationLevel);
 
 		for (const presetEffect of preset.effects) {
-			const template = ItemManager.getEffectTemplate(presetEffect.getType(), presetEffect.id);
+			const template = Tf2ItemManager.getEffectTemplate(presetEffect.getType(), presetEffect.id);
 			if (!template) {
 				continue;
 			}
 
 			switch (presetEffect.type) {
-				case PresetEffectType.Unusual:
+				case Tf2PresetEffectType.Unusual:
 					this.addEffect(template);
 					break;
-				case PresetEffectType.Killstreak:
+				case Tf2PresetEffectType.Killstreak:
 					this.setKillsteakEffect(template, presetEffect.color);
 					break;
-				case PresetEffectType.Taunt:
+				case Tf2PresetEffectType.Taunt:
 					this.setTauntEffect(template);
 					break;
 			}
 		}
 	}
 
-	async #loadPresetItem(presetItem: PresetItem): Promise<void> {
+	async #loadPresetItem(presetItem: Tf2PresetItem): Promise<void> {
 		let itemId = presetItem.id;
 
 		if (presetItem.isWorkshop) {
 			itemId = 'w' + itemId;
 		}
 
-		const template = ItemManager.getItemTemplate(itemId);
+		const template = Tf2ItemManager.getItemTemplate(itemId);
 		if (!template) {
 			return;
 		}
@@ -926,7 +926,7 @@ export class Character {
 		this.setTauntEffect(null);
 	}
 
-	async copy(other: Character): Promise<void> {
+	async copy(other: Tf2Character): Promise<void> {
 		this.removeAll();
 
 		for (const [, copiedItem] of other.items) {

@@ -2,24 +2,24 @@ import { vec3, vec4 } from 'gl-matrix';
 import { Material, Source1MaterialManager, Source1ModelInstance, Source1ParticleControler, Source1ParticleSystem } from 'harmony-3d';
 import { WeaponManager } from 'harmony-3d-utils';
 import { addTF2Model } from '../addtf2model';
-import { Character, Ragdoll } from '../characters/character';
+import { Tf2Character, Ragdoll } from '../characters/character';
 import { MATERIAL_GOLD_RAGDOLL, MATERIAL_ICE_RAGDOLL, MATERIAL_INVULN_BLU, MATERIAL_INVULN_RED } from '../constants';
 import { COMMUNITY_SPARKLE_EFFECT, weaponEffects } from '../effects/effect';
-import { EffectType } from '../effects/effecttemplate';
+import { Tf2EffectType } from '../effects/effecttemplate';
 import { Team } from '../enums';
 import { getKillstreak, Killstreak, KillstreakColor } from '../paints/killstreaks';
 import { getPaint, Paint, Paints } from '../paints/paints';
 import { colorToVec4 } from '../utils/colors';
 import { randomProperty } from '../utils/randomproperty';
 import { hasConflict } from './hasconflict';
-import { ItemManager } from './itemmanager';
-import { ItemTemplate } from './itemtemplate';
+import { Tf2ItemManager } from './itemmanager';
+import { Tf2ItemTemplate } from './itemtemplate';
 import { updatePreview } from './updatepreview';
 
 export class Tf2Item {
 	readonly id: string;
-	#itemTemplate: ItemTemplate;
-	#character: Character;
+	#itemTemplate: Tf2ItemTemplate;
+	#character: Tf2Character;
 	#model: Source1ModelInstance | null = null;
 	#modelBlu: Source1ModelInstance | null = null;
 	#modelExtraWearable: Source1ModelInstance | null = null;
@@ -51,7 +51,7 @@ export class Tf2Item {
 		this.#readyPromiseResolve = resolve;
 	});
 
-	constructor(itemTemplate: ItemTemplate, character: Character) {
+	constructor(itemTemplate: Tf2ItemTemplate, character: Tf2Character) {
 		this.#itemTemplate = itemTemplate;
 		this.#character = character;
 		this.id = itemTemplate.id;
@@ -62,7 +62,7 @@ export class Tf2Item {
 		*/
 	}
 
-	getTemplate(): ItemTemplate {
+	getTemplate(): Tf2ItemTemplate {
 		return this.#itemTemplate;
 	}
 
@@ -382,7 +382,7 @@ export class Tf2Item {
 			return;
 		}
 
-		let s = ItemManager.getEffectTemplate(EffectType.Cosmetic, Number(this.#itemTemplate.setAttachedParticleStatic));
+		let s = Tf2ItemManager.getEffectTemplate(Tf2EffectType.Cosmetic, Number(this.#itemTemplate.setAttachedParticleStatic));
 		if (s) {
 			let sys = await Source1ParticleControler.createSystem('tf2', s.getSystem());
 			sys.start();
@@ -703,7 +703,7 @@ export class Tf2Item {
 		}
 	}
 
-	getCharacter(): Character {
+	getCharacter(): Tf2Character {
 		return this.#character;
 	}
 

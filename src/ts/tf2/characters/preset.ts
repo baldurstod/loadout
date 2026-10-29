@@ -1,9 +1,9 @@
 import { vec3 } from 'gl-matrix';
 import { JSONArray, JSONObject } from 'harmony-types';
-import { EffectType } from '../effects/effecttemplate';
+import { Tf2EffectType } from '../effects/effecttemplate';
 import { KillstreakColor } from '../paints/killstreaks';
 
-export class PresetItem {
+export class Tf2PresetItem {
 	id = '';
 	paint?: number;
 	warpaintId?: number;
@@ -94,7 +94,7 @@ export class PresetItem {
 	}
 }
 
-export enum PresetEffectType {
+export enum Tf2PresetEffectType {
 	Unusual = "unusual",
 	Taunt = "taunt",
 	Killstreak = "killstreak",
@@ -104,45 +104,45 @@ export enum PresetEffectType {
 
 const VEC3_ZERO = vec3.create();
 
-export class PresetEffect {
+export class Tf2PresetEffect {
 	id = 0;
-	type: PresetEffectType = PresetEffectType.Unusual;
+	type: Tf2PresetEffectType = Tf2PresetEffectType.Unusual;
 	attachment? = '';
 	offset = vec3.create();
 	color?: KillstreakColor;
 
-	setType(type: EffectType): void {
+	setType(type: Tf2EffectType): void {
 		switch (type) {
-			case EffectType.Cosmetic:
-				this.type = PresetEffectType.Unusual;
+			case Tf2EffectType.Cosmetic:
+				this.type = Tf2PresetEffectType.Unusual;
 				break;
-			case EffectType.Killstreak:
-				this.type = PresetEffectType.Killstreak;
+			case Tf2EffectType.Killstreak:
+				this.type = Tf2PresetEffectType.Killstreak;
 				break;
-			case EffectType.Taunt:
-				this.type = PresetEffectType.Taunt;
+			case Tf2EffectType.Taunt:
+				this.type = Tf2PresetEffectType.Taunt;
 				break;
-			case EffectType.Weapon:
-				this.type = PresetEffectType.Weapon;
+			case Tf2EffectType.Weapon:
+				this.type = Tf2PresetEffectType.Weapon;
 				break;
-			case EffectType.Other:
-				this.type = PresetEffectType.Other;
+			case Tf2EffectType.Other:
+				this.type = Tf2PresetEffectType.Other;
 				break;
 		}
 	}
 
-	getType(): EffectType {
+	getType(): Tf2EffectType {
 		switch (this.type) {
-			case PresetEffectType.Unusual:
-				return EffectType.Cosmetic;
-			case PresetEffectType.Killstreak:
-				return EffectType.Killstreak;
-			case PresetEffectType.Taunt:
-				return EffectType.Taunt;
-			case PresetEffectType.Weapon:
-				return EffectType.Weapon;
-			case PresetEffectType.Other:
-				return EffectType.Other;
+			case Tf2PresetEffectType.Unusual:
+				return Tf2EffectType.Cosmetic;
+			case Tf2PresetEffectType.Killstreak:
+				return Tf2EffectType.Killstreak;
+			case Tf2PresetEffectType.Taunt:
+				return Tf2EffectType.Taunt;
+			case Tf2PresetEffectType.Weapon:
+				return Tf2EffectType.Weapon;
+			case Tf2PresetEffectType.Other:
+				return Tf2EffectType.Other;
 		}
 	}
 
@@ -154,7 +154,7 @@ export class PresetEffect {
 			this.attachment = json.attachment as string;
 		}
 		if (json.type !== undefined) {
-			this.type = json.type as PresetEffectType;
+			this.type = json.type as Tf2PresetEffectType;
 		}
 		if (json.offset !== undefined) {
 			vec3.copy(this.offset, json.offset as any);
@@ -183,11 +183,11 @@ export class PresetEffect {
 	}
 }
 
-export class Preset {
+export class Tf2Preset {
 	character = '';
 	name = '';
-	items = new Set<PresetItem>();
-	effects = new Set<PresetEffect>();
+	items = new Set<Tf2PresetItem>();
+	effects = new Set<Tf2PresetEffect>();
 	decapitationLevel = 0;
 
 	constructor(name?: string) {
@@ -196,11 +196,11 @@ export class Preset {
 		}
 	}
 
-	addItem(item: PresetItem): void {
+	addItem(item: Tf2PresetItem): void {
 		this.items.add(item);
 	}
 
-	addEffect(effect: PresetEffect): void {
+	addEffect(effect: Tf2PresetEffect): void {
 		this.effects.add(effect);
 	}
 
@@ -214,7 +214,7 @@ export class Preset {
 		if (json.items !== undefined) {
 			//this.name = json.name as string;
 			for (const itemJson of json.items as JSONArray) {
-				const presetItem = new PresetItem();
+				const presetItem = new Tf2PresetItem();
 
 				if (presetItem.fromJSON(itemJson as JSONObject)) {
 					this.addItem(presetItem);
@@ -222,7 +222,7 @@ export class Preset {
 			}
 
 			for (const effectJson of json.effects as JSONArray) {
-				const presetEffect = new PresetEffect();
+				const presetEffect = new Tf2PresetEffect();
 
 				if (presetEffect.fromJSON(effectJson as JSONObject)) {
 					this.addEffect(presetEffect);
@@ -259,19 +259,19 @@ export class Preset {
 	}
 }
 
-export class Presets {
-	#presets = new Map<string, Preset>();
+export class Tf2Presets {
+	#presets = new Map<string, Tf2Preset>();
 	selected?: string;
 
-	addPreset(preset: Preset): void {
+	addPreset(preset: Tf2Preset): void {
 		this.#presets.set(preset.name, preset);
 	}
 
-	getPreset(name: string): Preset | undefined {
+	getPreset(name: string): Tf2Preset | undefined {
 		return this.#presets.get(name);
 	}
 
-	getPresets(): Map<string, Preset> {
+	getPresets(): Map<string, Tf2Preset> {
 		return this.#presets;
 	}
 
@@ -289,7 +289,7 @@ export class Presets {
 
 		if (json.presets) {
 			for (const preset of json.presets as JSONArray) {
-				const p = new Preset();
+				const p = new Tf2Preset();
 
 				if (p.fromJSON(preset as JSONObject)) {
 					this.addPreset(p);

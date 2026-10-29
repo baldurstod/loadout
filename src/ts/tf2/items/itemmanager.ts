@@ -3,15 +3,15 @@ import { OptionsManager, OptionsManagerEvents } from 'harmony-browser-utils';
 import { setLegacyWarpaint } from 'harmony-tf2-utils';
 import { JSONObject } from 'harmony-types';
 import { Map2 } from 'harmony-utils';
-import { Panel } from '../enums';
-import { Character } from '../characters/character';
+import { Tf2Character } from '../characters/character';
 import { FIRST_LEGACY_WARPAINT, LAST_LEGACY_WARPAINT, TF2_REPOSITORY, WORKSHOP_UGC_IMG_PREFIX, WORKSHOP_URL } from '../constants';
 import { ItemFilterAttribute, SetItemFilter, Tf2LoadoutController } from '../controller';
-import { Effect } from '../effects/effect';
-import { EffectTemplate, EffectType } from '../effects/effecttemplate';
+import { Tf2Effect } from '../effects/effect';
+import { Tf2EffectTemplate, Tf2EffectType } from '../effects/effecttemplate';
+import { Panel } from '../enums';
 import { Tf2Item } from './item';
-import { ItemFilter, ItemFilterResult } from './itemfilter';
-import { ItemTemplate } from './itemtemplate';
+import { Tf2ItemFilter, ItemFilterResult } from './itemfilter';
+import { Tf2ItemTemplate } from './itemtemplate';
 
 export enum SfmSortField {
 	Index = 'sfm-index',
@@ -22,13 +22,13 @@ export enum SfmSortField {
 	Random = 'sfm-random'
 }
 
-export class ItemManager {
-	static readonly #filters = new ItemFilter();
-	static #currentCharacter: Character | null = null;
+export class Tf2ItemManager {
+	static readonly #filters = new Tf2ItemFilter();
+	static #currentCharacter: Tf2Character | null = null;
 	//static #characterClass: Tf2Class | null = null;
 	static #lang = 'english';
-	static readonly #itemTemplates = new Map<string, ItemTemplate>();
-	static readonly #effectTemplates = new Map2<EffectType, number, EffectTemplate>();
+	static readonly #itemTemplates = new Map<string, Tf2ItemTemplate>();
+	static readonly #effectTemplates = new Map2<Tf2EffectType, number, Tf2EffectTemplate>();
 	static #loadItemsPromise?: Promise<void>;
 	static #initMedalsPromise?: Promise<void>;
 	static #initWorkshopPromise?: Promise<void>;
@@ -47,7 +47,7 @@ export class ItemManager {
 		this.#setSortingType('index');
 	}
 
-	static setCurrentCharacter(character: Character): void {
+	static setCurrentCharacter(character: Tf2Character): void {
 		this.#currentCharacter = character;
 		Tf2LoadoutController.dispatchEvent('filtersupdated');
 	}
@@ -132,22 +132,22 @@ export class ItemManager {
 		}
 	}
 
-	static getItems(): Map<string, ItemTemplate> {
-		return new Map<string, ItemTemplate>(this.#itemTemplates);
+	static getItems(): Map<string, Tf2ItemTemplate> {
+		return new Map<string, Tf2ItemTemplate>(this.#itemTemplates);
 	}
 
-	static getItemTemplate(id: string | number, style?: number): ItemTemplate | null {
+	static getItemTemplate(id: string | number, style?: number): Tf2ItemTemplate | null {
 		if (style !== undefined) {
 			id += '~' + String(style);
 		}
 		return this.#itemTemplates.get(String(id)) ?? this.#itemTemplates.get(String(id) + '~0') ?? null;
 	}
 
-	static getEffectTemplate(type: EffectType, id: number): EffectTemplate | null {
+	static getEffectTemplate(type: Tf2EffectType, id: number): Tf2EffectTemplate | null {
 		return this.#effectTemplates.get(type, id) ?? null;
 	}
 
-	static getEffectTemplateById(id: number): [EffectType, EffectTemplate] | null {
+	static getEffectTemplateById(id: number): [Tf2EffectType, Tf2EffectTemplate] | null {
 		for (const [effectType, effectId, template] of this.#effectTemplates) {
 			if (id == effectId) {
 				return [effectType, template];
@@ -156,7 +156,7 @@ export class ItemManager {
 		return null;
 	}
 
-	static getEffectTemplateBySystem(system: string): [EffectType, number, EffectTemplate] | null {
+	static getEffectTemplateBySystem(system: string): [Tf2EffectType, number, Tf2EffectTemplate] | null {
 		for (const [effectType, effectId, template] of this.#effectTemplates) {
 			if (system == template.getSystem()) {
 				return [effectType, effectId, template];
@@ -165,9 +165,9 @@ export class ItemManager {
 		return null;
 	}
 
-	static getFilteredItems(excluded: { e: number }/*TODO: find a better way to do that*/): [Map<string, ItemTemplate>, Map<string, ItemTemplate>] {
-		const filteredItems = new Map<string, ItemTemplate>();
-		const conflictingItems = new Map<string, ItemTemplate>();
+	static getFilteredItems(excluded: { e: number }/*TODO: find a better way to do that*/): [Map<string, Tf2ItemTemplate>, Map<string, Tf2ItemTemplate>] {
+		const filteredItems = new Map<string, Tf2ItemTemplate>();
+		const conflictingItems = new Map<string, Tf2ItemTemplate>();
 		excluded.e = 0;
 
 		const activeItems = new Set<Tf2Item>;
@@ -205,9 +205,9 @@ export class ItemManager {
 		}
 	}
 
-	static getSelectedEffects(): Set<Effect> {
+	static getSelectedEffects(): Set<Tf2Effect> {
 		if (this.#currentCharacter) {
-			const selectedEffects = new Set<Effect>();
+			const selectedEffects = new Set<Tf2Effect>();
 
 			for (const effect of this.#currentCharacter.effects) {
 				selectedEffects.add(effect);
@@ -215,7 +215,7 @@ export class ItemManager {
 
 			return selectedEffects;
 		} else {
-			return new Set<Effect>();
+			return new Set<Tf2Effect>();
 		}
 	}
 
@@ -288,7 +288,7 @@ export class ItemManager {
 			//let keywords = '';
 			const itemDefinition = itemList[itemIndex] as JSONObject;
 			itemDefinition.is_tournament_medal = tournamentMedals;
-			const itemTemplate = new ItemTemplate(itemIndex, itemDefinition);
+			const itemTemplate = new Tf2ItemTemplate(itemIndex, itemDefinition);
 			//item.id = itemIndex;
 
 			this.#itemTemplates.set(itemIndex, itemTemplate);
@@ -349,16 +349,16 @@ export class ItemManager {
 			const group = systemList[effectType] as JSONObject;
 			for (const effectIndex in group) {
 				const effectIndexN = Number(effectIndex);
-				this.#effectTemplates.set(effectType as EffectType, effectIndexN, new EffectTemplate(effectType as EffectType, effectIndexN, group[effectIndex] as JSONObject));
+				this.#effectTemplates.set(effectType as Tf2EffectType, effectIndexN, new Tf2EffectTemplate(effectType as Tf2EffectType, effectIndexN, group[effectIndex] as JSONObject));
 			}
 		}
 	}
 
-	static getEffects(type: EffectType): Map<number, EffectTemplate> {
-		return new Map<number, EffectTemplate>(this.#effectTemplates.getSubMap(type));
+	static getEffects(type: Tf2EffectType): Map<number, Tf2EffectTemplate> {
+		return new Map<number, Tf2EffectTemplate>(this.#effectTemplates.getSubMap(type));
 	}
 
-	static #pinItem(item: ItemTemplate, isPinned: boolean): void {
+	static #pinItem(item: Tf2ItemTemplate, isPinned: boolean): void {
 		const pinned: string[] = OptionsManager.getItem('app.items.pinned') as string[] ?? [];
 		const index = pinned.indexOf(item.id);
 		if (isPinned) {
@@ -426,7 +426,7 @@ export class ItemManager {
 
 	static #sortByName(sortingDirection: number): void {
 		const self = this;
-		this.#itemTemplates[Symbol.iterator] = function* (): MapIterator<[string, ItemTemplate]> {
+		this.#itemTemplates[Symbol.iterator] = function* (): MapIterator<[string, Tf2ItemTemplate]> {
 			yield* [...this.entries()].sort(
 				(a, b) => {
 					const aname = a[1].name.toLowerCase();
@@ -439,7 +439,7 @@ export class ItemManager {
 
 	static #sortBySlot(sortingDirection: number): void {
 		const self = this;
-		this.#itemTemplates[Symbol.iterator] = function* (): MapIterator<[string, ItemTemplate]> {
+		this.#itemTemplates[Symbol.iterator] = function* (): MapIterator<[string, Tf2ItemTemplate]> {
 			yield* [...this.entries()].sort(
 				(a, b) => {
 					const aSlot = a[1].getItemSlot() ?? '';
@@ -461,7 +461,7 @@ export class ItemManager {
 
 	static #sortBySubscriptions(sortingDirection: number): void {
 		const self = this;
-		this.#itemTemplates[Symbol.iterator] = function* (): MapIterator<[string, ItemTemplate]> {
+		this.#itemTemplates[Symbol.iterator] = function* (): MapIterator<[string, Tf2ItemTemplate]> {
 			yield* [...this.entries()].sort(
 				(a, b) => {
 					const aSubscription = a[1].getSubscriptions() ?? 0;
@@ -483,7 +483,7 @@ export class ItemManager {
 
 	static #sortByCreationTime(sortingDirection: number): void {
 		const self = this;
-		this.#itemTemplates[Symbol.iterator] = function* (): MapIterator<[string, ItemTemplate]> {
+		this.#itemTemplates[Symbol.iterator] = function* (): MapIterator<[string, Tf2ItemTemplate]> {
 			yield* [...this.entries()].sort(
 				(a, b) => {
 					const aSubscription = a[1].getCreated() ?? 0;
@@ -505,7 +505,7 @@ export class ItemManager {
 
 	static #sortByLastUpdate(sortingDirection: number): void {
 		const self = this;
-		this.#itemTemplates[Symbol.iterator] = function* (): MapIterator<[string, ItemTemplate]> {
+		this.#itemTemplates[Symbol.iterator] = function* (): MapIterator<[string, Tf2ItemTemplate]> {
 			yield* [...this.entries()].sort(
 				(a, b) => {
 					const aSubscription = a[1].getUpdated() ?? 0;
@@ -527,7 +527,7 @@ export class ItemManager {
 
 	static #sortRandom(): void {
 		const self = this;
-		this.#itemTemplates[Symbol.iterator] = function* (): MapIterator<[string, ItemTemplate]> {
+		this.#itemTemplates[Symbol.iterator] = function* (): MapIterator<[string, Tf2ItemTemplate]> {
 			yield* [...this.entries()].sort(
 				(a, b) => {
 					let order = self.#randomOrder.get(a[0], b[0]);
@@ -543,7 +543,7 @@ export class ItemManager {
 
 	static #sortByIndex(sortingDirection: number): void {
 		const self = this;
-		this.#itemTemplates[Symbol.iterator] = function* (): MapIterator<[string, ItemTemplate]> {
+		this.#itemTemplates[Symbol.iterator] = function* (): MapIterator<[string, Tf2ItemTemplate]> {
 			yield* [...this.entries()].sort(
 				(a, b) => {
 					if (a[1].name.toLowerCase().includes('romevision')) {
@@ -664,7 +664,7 @@ export class ItemManager {
 				}
 			}
 
-			const itemTemplate = new ItemTemplate('w' + item.id, item);
+			const itemTemplate = new Tf2ItemTemplate('w' + item.id, item);
 			this.#itemTemplates.set(itemTemplate.id, itemTemplate);
 
 			//const keywords = '';
@@ -750,7 +750,7 @@ export class ItemManager {
 			item.workshopMetadata = null;
 			item.paintable = false;
 
-			const itemTemplate = new ItemTemplate(item.id, item);
+			const itemTemplate = new Tf2ItemTemplate(item.id, item);
 			this.#itemTemplates.set(itemTemplate.id, itemTemplate);
 
 			//const keywords = '';
