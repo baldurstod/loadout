@@ -254,6 +254,8 @@ export declare function getPaintByTint(tint: number): Paints | null;
 
 export declare function getPersonaId(slot: string): number;
 
+export declare function getTf2TeamId(team: Tf2Team): 0 | 1;
+
 export declare enum ItemFilterAttribute {
     Name = 0,
     Selected = 1,
@@ -296,8 +298,8 @@ export declare class Killstreak {
      * @param team The team to compute the color for
      * @returns vec3
      */
-    getSheenColor(team: Team): vec3;
-    getKillstreakColor1(team: Team): vec3;
+    getSheenColor(team: Tf2Team): vec3;
+    getKillstreakColor1(team: Tf2Team): vec3;
 }
 
 export declare enum KillstreakColor {
@@ -345,7 +347,7 @@ export declare class Paint {
      * @param team The team to compute the tint for
      * @returns vec3
      */
-    getTint(team: Team): vec3;
+    getTint(team: Tf2Team): vec3;
 }
 
 export declare type PaintDefinition = {
@@ -438,12 +440,6 @@ export declare enum SfmSortField {
     Random = "sfm-random"
 }
 
-export declare enum Team {
-    None = -1,
-    Red = 0,
-    Blu = 1
-}
-
 export declare class Tf2Character {
     #private;
     readonly scene: Scene;
@@ -458,8 +454,8 @@ export declare class Tf2Character {
     getModel(): Promise<Source1ModelInstance | null>;
     addExtraModel(path: string, repository?: string): Promise<Source1ModelInstance | null>;
     setVisible(visble: boolean): void;
-    setTeam(team: Team): Promise<void>;
-    getTeam(): Team;
+    setTeam(team: Tf2Team): Promise<void>;
+    getTeam(): Tf2Team;
     getItemById(itemId: string): Tf2Item | undefined;
     toggleItem(template: Tf2ItemTemplate): Promise<[Tf2Item, boolean]>;
     addItem(template: Tf2ItemTemplate): Promise<Tf2Item>;
@@ -565,7 +561,7 @@ export declare class Tf2Item {
     changeTextureSize?: number;
     constructor(itemTemplate: Tf2ItemTemplate, character: Tf2Character);
     getTemplate(): Tf2ItemTemplate;
-    setTeam(team: Team): Promise<void>;
+    setTeam(team: Tf2Team): Promise<void>;
     getEquipRegions(): string[];
     setKillCount(count: number | null): Promise<void>;
     getKillCount(): number | null;
@@ -796,6 +792,8 @@ export declare class Tf2Presets {
     fromJSON(json: JSONObject): boolean;
     toJSON(): JSONObject;
 }
+
+export declare type Tf2Team = 'none' | 'red' | 'blu';
 
 export declare let updatePreview: boolean;
 

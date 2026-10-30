@@ -1,6 +1,6 @@
 import { vec3 } from 'gl-matrix';
 import paints from '../../../json/paints.json';
-import { Team } from '../enums';
+import { Tf2Team } from '../enums';
 
 export enum Paints {
 	None = 0,
@@ -126,18 +126,18 @@ export class Paint {
 	 * @param team The team to compute the tint for
 	 * @returns vec3
 	 */
-	getTint(team: Team): vec3 {
+	getTint(team: Tf2Team): vec3 {
 		if (this.spell) {
 			//if (!this.computed) {
 			this.#computeTint(team, this.time ?? performance.now() * 0.001);
 			//}
 			return this.#tint;
 		}
-		return team == Team.Red ? this.#tintRed : this.#tintBlu;
+		return team == 'red' ? this.#tintRed : this.#tintBlu;
 	}
 
-	#computeTint(team: Team, time: number): void {
-		if (team == Team.Red) {
+	#computeTint(team: Tf2Team, time: number): void {
+		if (team == 'red') {
 			vec3.copy(this.#tint, this.#tintRed);
 		} else {
 			vec3.copy(this.#tint, this.#tintBlu);
@@ -145,7 +145,7 @@ export class Paint {
 		if (this.spell) {
 			//if (!this.computed)
 			{
-				const paintSamples = team == Team.Red ? pointSampleContentTeamRed.get(this.paint) : pointSampleContentTeamBlu.get(this.paint);
+				const paintSamples = team == 'red' ? pointSampleContentTeamRed.get(this.paint) : pointSampleContentTeamBlu.get(this.paint);
 				if (paintSamples) {
 					const fScaledTime = time * 22.0;
 					const unSamplePoint0 = Math.floor(fScaledTime) % kSamplePoints;

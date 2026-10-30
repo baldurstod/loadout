@@ -2,11 +2,11 @@ import { vec3, vec4 } from 'gl-matrix';
 import { Material, Source1MaterialManager, Source1ModelInstance, Source1ParticleControler, Source1ParticleSystem } from 'harmony-3d';
 import { WeaponManager } from 'harmony-3d-utils';
 import { addTF2Model } from '../addtf2model';
-import { Tf2Character, Ragdoll } from '../characters/character';
+import { Ragdoll, Tf2Character } from '../characters/character';
 import { MATERIAL_GOLD_RAGDOLL, MATERIAL_ICE_RAGDOLL, MATERIAL_INVULN_BLU, MATERIAL_INVULN_RED } from '../constants';
 import { COMMUNITY_SPARKLE_EFFECT, weaponEffects } from '../effects/effect';
 import { Tf2EffectType } from '../effects/effecttemplate';
-import { Team } from '../enums';
+import { getTf2TeamId, Tf2Team } from '../enums';
 import { getKillstreak, Killstreak, KillstreakColor } from '../paints/killstreaks';
 import { getPaint, Paint, Paints } from '../paints/paints';
 import { colorToVec4 } from '../utils/colors';
@@ -26,7 +26,7 @@ export class Tf2Item {
 	#attachedModels: Source1ModelInstance[] = [];
 	#festivizerModel?: Source1ModelInstance | null;
 	#stattrakModule?: Promise<Source1ModelInstance | null> | null;
-	#team = Team.None;
+	#team: Tf2Team = 'none';
 	#killCount: number | null = null;
 	#refreshingSkin = false;
 	#showFestivizer = false;
@@ -66,7 +66,7 @@ export class Tf2Item {
 		return this.#itemTemplate;
 	}
 
-	async setTeam(team: Team): Promise<void> {
+	async setTeam(team: Tf2Team): Promise<void> {
 		this.#team = team;
 		await this.#refreshSkin();
 		await this.#refreshSheen();
@@ -114,7 +114,7 @@ export class Tf2Item {
 		}
 		this.#refreshingSkin = true;
 
-		const skin = this.#team ? this.#itemTemplate.bluSkin : this.#itemTemplate.redSkin;
+		const skin = this.#team === 'blu' ? this.#itemTemplate.bluSkin : this.#itemTemplate.redSkin;
 
 		if (this.#critBoostSysRed) {
 			this.#critBoostSysRed.stop();
@@ -166,7 +166,7 @@ export class Tf2Item {
 
 		const sourceModelBlu = this.#modelBlu;
 		if (sourceModelBlu) {
-			if (this.#team == Team.Red) {
+			if (this.#team == 'red') {
 				this.#model?.setVisible(undefined);
 				sourceModelBlu.setVisible(false);
 			} else {
@@ -179,7 +179,7 @@ export class Tf2Item {
 			let systemName = '';
 			let glowColor = null;
 			let sys = null;
-			if (this.#team == Team.Red) {
+			if (this.#team == 'red') {
 				sys = this.#critBoostSysRed;
 				glowColor = [80, 8, 5];
 				systemName = 'critgun_weaponmodel_red';
@@ -210,7 +210,7 @@ export class Tf2Item {
 				}
 				*/
 			}
-			if (this.#team == Team.Red) {
+			if (this.#team == 'red') {
 				this.#critBoostSysRed = sys;
 			} else {
 				this.#critBoostSysBlu = sys;
@@ -255,7 +255,7 @@ export class Tf2Item {
 			await extraModel.setSkinId(skin);
 		}
 
-		await this.#festivizerModel?.setSkinId(this.#team);
+		await this.#festivizerModel?.setSkinId(getTf2TeamId(this.#team));
 		await (await this.#stattrakModule)?.setSkinId(skin % 2);
 
 		this.#refreshingSkin = false;
@@ -441,7 +441,7 @@ export class Tf2Item {
 		if (this.#model) {
 			if (paint == null) {
 				this.#model.setTint(null);
-				if (this.#team == Team.Red) {
+				if (this.#team == 'red') {
 					if (this.#itemTemplate.setItemTintRGB) {
 						this.#model.setTint(colorToVec4(Number(this.#itemTemplate.setItemTintRGB)));
 					}
@@ -696,7 +696,7 @@ export class Tf2Item {
 				warpaintWear: this.#warpaintWear,
 				warpaintSeed: this.#warpaintSeed,
 				model: this.#model,
-				team: this.#team,
+				team: getTf2TeamId(this.#team),
 				textureSize: this.#textureSize,
 				updatePreview,
 			});

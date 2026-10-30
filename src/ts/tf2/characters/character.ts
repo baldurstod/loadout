@@ -6,7 +6,7 @@ import { EFFECTS_BLU, EFFECTS_RED, ENTITY_FLYING_BIRD_SPEED_MAX, ENTITY_FLYING_B
 import { Tf2LoadoutController } from '../controller';
 import { Tf2Effect } from '../effects/effect';
 import { Tf2EffectTemplate, Tf2EffectType } from '../effects/effecttemplate';
-import { Team } from '../enums';
+import { getTf2TeamId, Tf2Team } from '../enums';
 import { Tf2Item } from '../items/item';
 import { Tf2ItemManager } from '../items/itemmanager';
 import { Tf2ItemTemplate } from '../items/itemtemplate';
@@ -42,7 +42,7 @@ export class Tf2Character {
 	// [right, left]
 	#killstreakEffects: [Tf2Effect | null, Tf2Effect | null] = [null, null];
 	#decapitationEffects: [Tf2Effect | null, Tf2Effect | null] = [null, null];
-	#team = Team.Red;
+	#team: Tf2Team = 'red';
 	#readyPromiseResolve!: (value: any) => void;
 	#ready = new Promise<boolean>((resolve) => {
 		this.#readyPromiseResolve = resolve;
@@ -115,7 +115,7 @@ export class Tf2Character {
 		}
 	}
 
-	async setTeam(team: Team): Promise<void> {
+	async setTeam(team: Tf2Team): Promise<void> {
 		this.#team = team;
 
 		for (const [, item] of this.items) {
@@ -139,7 +139,7 @@ export class Tf2Character {
 				await this.#setMaterialOverride(null);
 				const zombieSkinOffset = (this.characterClass == Tf2Class.Spy ? 22 : 4);
 				if (this.#model) {
-					await this.#model.setSkinId(this.#team + (this.#zombieSkin ? zombieSkinOffset : 0) + (this.#isInvulnerable ? 2 : 0));
+					await this.#model.setSkinId(getTf2TeamId(this.#team) + (this.#zombieSkin ? zombieSkinOffset : 0) + (this.#isInvulnerable ? 2 : 0));
 				}
 				for (const extraModel of this.#extraModels) {
 					if (this.#isInvulnerable) {
@@ -147,11 +147,8 @@ export class Tf2Character {
 						const material = await Source1MaterialManager.getMaterial('tf2', materialOverride);
 						await extraModel.setMaterialOverride(material);
 					} else {
-
-						extraModel.setSkinId(this.#team);
+						extraModel.setSkinId(getTf2TeamId(this.#team));
 					}
-
-
 				}
 				return;
 			case Ragdoll.Gold:
@@ -176,7 +173,7 @@ export class Tf2Character {
 		}
 	}
 
-	getTeam(): Team {
+	getTeam(): Tf2Team {
 		return this.#team;
 	}
 
@@ -644,7 +641,7 @@ export class Tf2Character {
 	async #setEffectTeam(effect: Tf2Effect): Promise<void> {
 		let from: string;
 		let to: string;
-		if (this.#team == Team.Red) {
+		if (this.#team == 'red') {
 			from = EFFECTS_BLU;
 			to = EFFECTS_RED;
 		} else {

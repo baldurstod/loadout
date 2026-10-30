@@ -2265,12 +2265,9 @@ class Tf2EffectTemplate {
     }
 }
 
-var Team;
-(function (Team) {
-    Team[Team["None"] = -1] = "None";
-    Team[Team["Red"] = 0] = "Red";
-    Team[Team["Blu"] = 1] = "Blu";
-})(Team || (Team = {}));
+function getTf2TeamId(team) {
+    return team === 'blu' ? 1 : 0;
+}
 var Panel;
 (function (Panel) {
     Panel["None"] = "none";
@@ -6743,10 +6740,10 @@ class Killstreak {
      * @returns vec3
      */
     getSheenColor(team) {
-        return vec3.clone(team == Team.Red ? this.#sheenRed : this.#sheenBlu);
+        return vec3.clone(team == 'red' ? this.#sheenRed : this.#sheenBlu);
     }
     getKillstreakColor1(team) {
-        return vec3.clone(team == Team.Red ? this.#color1Red : this.#color1Blu);
+        return vec3.clone(team == 'red' ? this.#color1Red : this.#color1Blu);
     }
 }
 
@@ -6860,10 +6857,10 @@ class Paint {
             //}
             return this.#tint;
         }
-        return team == Team.Red ? this.#tintRed : this.#tintBlu;
+        return team == 'red' ? this.#tintRed : this.#tintBlu;
     }
     #computeTint(team, time) {
-        if (team == Team.Red) {
+        if (team == 'red') {
             vec3.copy(this.#tint, this.#tintRed);
         }
         else {
@@ -6872,7 +6869,7 @@ class Paint {
         if (this.spell) {
             //if (!this.computed)
             {
-                const paintSamples = team == Team.Red ? pointSampleContentTeamRed.get(this.paint) : pointSampleContentTeamBlu.get(this.paint);
+                const paintSamples = team == 'red' ? pointSampleContentTeamRed.get(this.paint) : pointSampleContentTeamBlu.get(this.paint);
                 if (paintSamples) {
                     const fScaledTime = time * 22.0;
                     const unSamplePoint0 = Math.floor(fScaledTime) % kSamplePoints;
@@ -8670,7 +8667,7 @@ class Tf2Item {
     #attachedModels = [];
     #festivizerModel;
     #stattrakModule;
-    #team = Team.None;
+    #team = 'none';
     #killCount = null;
     #refreshingSkin = false;
     #showFestivizer = false;
@@ -8748,7 +8745,7 @@ class Tf2Item {
             return;
         }
         this.#refreshingSkin = true;
-        const skin = this.#team ? this.#itemTemplate.bluSkin : this.#itemTemplate.redSkin;
+        const skin = this.#team === 'blu' ? this.#itemTemplate.bluSkin : this.#itemTemplate.redSkin;
         if (this.#critBoostSysRed) {
             this.#critBoostSysRed.stop();
             this.#critBoostSysRed.remove();
@@ -8792,7 +8789,7 @@ class Tf2Item {
         //this.setBurnLevel(this.#character.burnLevel);
         const sourceModelBlu = this.#modelBlu;
         if (sourceModelBlu) {
-            if (this.#team == Team.Red) {
+            if (this.#team == 'red') {
                 this.#model?.setVisible(undefined);
                 sourceModelBlu.setVisible(false);
             }
@@ -8805,7 +8802,7 @@ class Tf2Item {
             let systemName = '';
             let glowColor = null;
             let sys = null;
-            if (this.#team == Team.Red) {
+            if (this.#team == 'red') {
                 sys = this.#critBoostSysRed;
                 glowColor = [80, 8, 5];
                 systemName = 'critgun_weaponmodel_red';
@@ -8836,7 +8833,7 @@ class Tf2Item {
                 }
                 */
             }
-            if (this.#team == Team.Red) {
+            if (this.#team == 'red') {
                 this.#critBoostSysRed = sys;
             }
             else {
@@ -8878,7 +8875,7 @@ class Tf2Item {
         for (const extraModel of this.#attachedModels) {
             await extraModel.setSkinId(skin);
         }
-        await this.#festivizerModel?.setSkinId(this.#team);
+        await this.#festivizerModel?.setSkinId(getTf2TeamId(this.#team));
         await (await this.#stattrakModule)?.setSkinId(skin % 2);
         this.#refreshingSkin = false;
     }
@@ -9038,7 +9035,7 @@ class Tf2Item {
         if (this.#model) {
             if (paint == null) {
                 this.#model.setTint(null);
-                if (this.#team == Team.Red) {
+                if (this.#team == 'red') {
                     if (this.#itemTemplate.setItemTintRGB) {
                         this.#model.setTint(colorToVec4(Number(this.#itemTemplate.setItemTintRGB)));
                     }
@@ -9255,7 +9252,7 @@ class Tf2Item {
                 warpaintWear: this.#warpaintWear,
                 warpaintSeed: this.#warpaintSeed,
                 model: this.#model,
-                team: this.#team,
+                team: getTf2TeamId(this.#team),
                 textureSize: this.#textureSize,
                 updatePreview,
             });
@@ -9619,7 +9616,7 @@ class Tf2Character {
     // [right, left]
     #killstreakEffects = [null, null];
     #decapitationEffects = [null, null];
-    #team = Team.Red;
+    #team = 'red';
     #readyPromiseResolve;
     #ready = new Promise((resolve) => {
         this.#readyPromiseResolve = resolve;
@@ -9704,7 +9701,7 @@ class Tf2Character {
                 await this.#setMaterialOverride(null);
                 const zombieSkinOffset = (this.characterClass == Tf2Class.Spy ? 22 : 4);
                 if (this.#model) {
-                    await this.#model.setSkinId(this.#team + (this.#zombieSkin ? zombieSkinOffset : 0) + (this.#isInvulnerable ? 2 : 0));
+                    await this.#model.setSkinId(getTf2TeamId(this.#team) + (this.#zombieSkin ? zombieSkinOffset : 0) + (this.#isInvulnerable ? 2 : 0));
                 }
                 for (const extraModel of this.#extraModels) {
                     if (this.#isInvulnerable) {
@@ -9713,7 +9710,7 @@ class Tf2Character {
                         await extraModel.setMaterialOverride(material);
                     }
                     else {
-                        extraModel.setSkinId(this.#team);
+                        extraModel.setSkinId(getTf2TeamId(this.#team));
                     }
                 }
                 return;
@@ -10142,7 +10139,7 @@ class Tf2Character {
     async #setEffectTeam(effect) {
         let from;
         let to;
-        if (this.#team == Team.Red) {
+        if (this.#team == 'red') {
             from = EFFECTS_BLU;
             to = EFFECTS_RED;
         }
@@ -10412,4 +10409,4 @@ class Tf2Character {
     }
 }
 
-export { COIN_SPIN_EFFECT, COMMUNITY_SPARKLE_EFFECT, CharactersList, ClassRemovablePartsOff, DEFAULT_ACTIVITY, Dota2AssetModifier, Dota2Hero, Dota2HeroTemplate, Dota2HeroTemplates, Dota2Item, Dota2ItemManager, Dota2ItemTemplate, Dota2ItemTemplates, Dota2LoadoutController, Dota2Units, ItemFilterAttribute, Killstreak, KillstreakColor, Paint, Paints, Panel, SfmSortField, Team, Tf2Character, Tf2Class, Tf2Effect, Tf2EffectTemplate, Tf2EffectType, Tf2Item, Tf2ItemManager, Tf2ItemTemplate, Tf2LoadoutController, Tf2Preset, Tf2PresetEffect, Tf2PresetEffectType, Tf2PresetItem, Tf2Presets, colorToCss, colorToVec3, colorToVec4, getKillstreak, getKillstreakColor, getPaint, getPaintByTint, getPersonaId, killstreakList, npcToClass, paintList, randomProperty, setUpdatePreview, updatePreview, weaponEffects };
+export { COIN_SPIN_EFFECT, COMMUNITY_SPARKLE_EFFECT, CharactersList, ClassRemovablePartsOff, DEFAULT_ACTIVITY, Dota2AssetModifier, Dota2Hero, Dota2HeroTemplate, Dota2HeroTemplates, Dota2Item, Dota2ItemManager, Dota2ItemTemplate, Dota2ItemTemplates, Dota2LoadoutController, Dota2Units, ItemFilterAttribute, Killstreak, KillstreakColor, Paint, Paints, Panel, SfmSortField, Tf2Character, Tf2Class, Tf2Effect, Tf2EffectTemplate, Tf2EffectType, Tf2Item, Tf2ItemManager, Tf2ItemTemplate, Tf2LoadoutController, Tf2Preset, Tf2PresetEffect, Tf2PresetEffectType, Tf2PresetItem, Tf2Presets, colorToCss, colorToVec3, colorToVec4, getKillstreak, getKillstreakColor, getPaint, getPaintByTint, getPersonaId, getTf2TeamId, killstreakList, npcToClass, paintList, randomProperty, setUpdatePreview, updatePreview, weaponEffects };
