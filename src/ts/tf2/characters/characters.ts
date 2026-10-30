@@ -48,8 +48,8 @@ export enum Tf2Class {
 	CompareWarpaints = 1003,
 }
 
-export type CharactersType = { name: string, path: string, type: UsePlayerModels, icon: string, hidden?: boolean, npc: string };
-export const CharactersList = new Map<Tf2Class, CharactersType>([
+export type Tf2CharactersType = { name: string, path: string, type: UsePlayerModels, icon: string, hidden?: boolean, npc: string };
+export const Tf2CharactersList = new Map<Tf2Class, Tf2CharactersType>([
 	[Tf2Class.Scout, { name: 'scout', type: 'human', path: 'models/player/scout', icon: scout, npc: 'scout' }],
 	[Tf2Class.Sniper, { name: 'sniper', type: 'human', path: 'models/player/sniper', icon: sniper, npc: 'sniper' }],
 	[Tf2Class.Soldier, { name: 'soldier', type: 'human', path: 'models/player/soldier', icon: soldier, npc: 'soldier' }],
@@ -87,7 +87,7 @@ export const CharactersList = new Map<Tf2Class, CharactersType>([
 export const ClassRemovablePartsOff = ['heavy_hand_dex_bodygroup', 'robotarm_bodygroup', 'darts_bodygroup', 'spyMask', 'rocket', 'medal_bodygroup', 'demo_smiley'];
 
 export function npcToClass(npc: string): Tf2Class | null {
-	for (const [tf2Class, character] of CharactersList) {
+	for (const [tf2Class, character] of Tf2CharactersList) {
 		if (character.npc == npc) {
 			return tf2Class;
 		}

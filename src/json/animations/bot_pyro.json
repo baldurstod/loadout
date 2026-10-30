@@ -1,0 +1,19 @@
+{
+	"character" : "pyro",
+	"animations":{
+		"#animation_taunt_primary" : {"name":"Taunt primary", "file":"taunt01"},
+		"#animation_taunt_melee" : {"name":"Taunt melee", "file":"taunt03"},
+		"#animation_die_backstab" : {"name":"Die backstab", "file":"primary_death_backstab"},
+		"#animation_die_headshot" : {"name":"Die headshot", "file":"primary_death_headshot"},
+		"#animation_stand_primary" : {"name":"Stand primary", "file":"stand_PRIMARY"},
+		"#animation_stand_secondary" : {"name":"Stand secondary", "file":"stand_SECONDARY"},
+		"#animation_stand_flare_gun" : {"name":"Stand flare gun", "file":"stand_ITEM1"},
+		"#animation_stand_melee" : {"name":"Stand melee", "file":"stand_MELEE"},
+		"#animation_stand_melee_all_class" : {"name":"Stand melee all class", "file":"stand_MELEE_ALLCLASS"},
+		"#animation_stand_loser" : {"name":"Stand loser", "file":"stand_LOSER"},
+		"#animation_melee_stance" : {"name":"Melee stance", "file":"pyro_melee_stance"},
+		"#animation_meet_the_team" : {"name":"Meet the team", "file":"meettheteam"},
+		"#layer_primary_stun_middle" : {"name":"Stun", "file":"layer_primary_stun_middle"},
+		"#ref" : {"name":"Reference", "file":"ref"}
+	}
+}

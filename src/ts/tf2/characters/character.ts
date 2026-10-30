@@ -11,7 +11,7 @@ import { Tf2Item } from '../items/item';
 import { Tf2ItemManager } from '../items/itemmanager';
 import { Tf2ItemTemplate } from '../items/itemtemplate';
 import { getKillstreak, KillstreakColor, killstreakList } from '../paints/killstreaks';
-import { CharactersList, ClassRemovablePartsOff, Tf2Class } from './characters';
+import { Tf2CharactersList, ClassRemovablePartsOff, Tf2Class } from './characters';
 import { FlyingBird } from './flyingbird';
 import { Tf2Preset, Tf2PresetEffect, Tf2PresetEffectType, Tf2PresetItem } from './preset';
 
@@ -62,8 +62,8 @@ export class Tf2Character {
 	constructor(characterClass: Tf2Class, scene: Scene) {
 		this.characterClass = characterClass;
 		this.scene = scene;
-		this.name = CharactersList.get(characterClass)?.name ?? '';
-		this.npc = CharactersList.get(characterClass)?.npc ?? '';
+		this.name = Tf2CharactersList.get(characterClass)?.name ?? '';
+		this.npc = Tf2CharactersList.get(characterClass)?.npc ?? '';
 	}
 
 	async loadModel(path: string, name: string): Promise<void> {
@@ -207,7 +207,7 @@ export class Tf2Character {
 		if (item == this.#taunt) {
 			this.#taunt = null;
 			// TODO: play end choreo
-			const npc = CharactersList.get(this.characterClass)!.name
+			const npc = Tf2CharactersList.get(this.characterClass)!.name
 
 			const choreoName = item.getCustomTauntOutroScenePerClass(npc);
 			if (choreoName && this.#model) {
@@ -244,7 +244,7 @@ export class Tf2Character {
 	async #addItem(template: Tf2ItemTemplate): Promise<Tf2Item> {
 		const item = new Tf2Item(template, this);
 		this.items.set(template.id, item);
-		const npc = CharactersList.get(this.characterClass)!.name
+		const npc = Tf2CharactersList.get(this.characterClass)!.name
 		await item.loadModel(npc);
 		await this.#ready;
 		(await this.getModel())?.addChild(await item.getModel());
@@ -427,7 +427,7 @@ export class Tf2Character {
 		}
 		for (const [, item] of this.items) {
 			const animSlot = item.getTemplate().animSlot;
-			const itemSlot = item.getTemplate().getItemSlotPerClass(CharactersList.get(this.characterClass)?.name ?? 'scout'/*TODO: fix* scout*/);
+			const itemSlot = item.getTemplate().getItemSlotPerClass(Tf2CharactersList.get(this.characterClass)?.name ?? 'scout'/*TODO: fix* scout*/);
 			if (itemSlot != 'action' && animSlot && animSlot.toLowerCase() != 'building') {
 				if (animSlot[0] == '#') {
 					//this.playAnim(animSlot.substring(1) + currentCharacter.npc.toLowerCase());
@@ -762,7 +762,7 @@ export class Tf2Character {
 	savePreset(name: string): Tf2Preset {
 		const preset = new Tf2Preset(name);
 
-		const npc = CharactersList.get(this.characterClass)!.name;
+		const npc = Tf2CharactersList.get(this.characterClass)!.name;
 		preset.character = npc;
 		preset.decapitationLevel = this.#decapitationLevel;
 

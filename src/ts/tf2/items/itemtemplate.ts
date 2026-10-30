@@ -1,6 +1,6 @@
 import { ChoreographiesManager, Repositories, VcdParser, WebRepository } from 'harmony-3d';
 import { JSONObject } from 'harmony-types';
-import { CharactersList, Tf2Class } from '../characters/characters';
+import { Tf2CharactersList, Tf2Class } from '../characters/characters';
 import { WORKSHOP_UGC_URL } from '../constants';
 
 type Warpaint = {
@@ -37,7 +37,7 @@ export class Tf2ItemTemplate {
 	isUsedByClass(characterClass: Tf2Class): boolean {
 		const usedByClasses = this.#definition.used_by_classes as Record<string, string>/*TODO: improve type*/;
 		if (usedByClasses) {
-			const className = CharactersList.get(characterClass)?.name;
+			const className = Tf2CharactersList.get(characterClass)?.name;
 			if (className === undefined || usedByClasses[className]) {
 				return true;
 			}

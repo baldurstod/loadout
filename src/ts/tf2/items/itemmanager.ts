@@ -8,7 +8,6 @@ import { FIRST_LEGACY_WARPAINT, LAST_LEGACY_WARPAINT, TF2_REPOSITORY, WORKSHOP_U
 import { ItemFilterAttribute, SetItemFilter, Tf2LoadoutController } from '../controller';
 import { Tf2Effect } from '../effects/effect';
 import { Tf2EffectTemplate, Tf2EffectType } from '../effects/effecttemplate';
-import { Panel } from '../enums';
 import { Tf2Item } from './item';
 import { Tf2ItemFilter, ItemFilterResult } from './itemfilter';
 import { Tf2ItemTemplate } from './itemtemplate';

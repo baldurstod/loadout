@@ -1,4 +1,4 @@
-import { CharactersList, Tf2Class } from '../characters/characters';
+import { Tf2CharactersList, Tf2Class } from '../characters/characters';
 import { ItemFilterAttribute } from '../controller';
 import { hasConflict } from './hasconflict';
 import { Tf2Item } from './item';
@@ -42,7 +42,7 @@ export class Tf2ItemFilter {
 		let isTaunt = false;
 		let name: string | undefined;
 		if (characterClass !== null) {
-			name = CharactersList.get(characterClass)?.name;
+			name = Tf2CharactersList.get(characterClass)?.name;
 		}
 
 		if (item.getHide()) {

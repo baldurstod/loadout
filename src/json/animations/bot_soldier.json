@@ -1,0 +1,31 @@
+{
+	"character" : "soldier",
+	"animations":{
+		"#animation_taunt_primary" : {"name":"Taunt primary", "file":"taunt01"},
+		"#animation_taunt_direct_hit" : {"name":"Taunt Direct Hit", "file":"layer_taunt07"},
+		"#animation_taunt_cow_mangler" : {"name":"Taunt cow mangler", "file":"layer_taunt08"},
+		"#animation_taunt_secondary" : {"name":"Taunt secondary", "file":"layer_taunt04"},
+		"#animation_taunt_buff_banner" : {"name":"Taunt Buff Banner", "file":"taunt02"},
+		"#animation_taunt_melee" : {"name":"Taunt melee", "file":"taunt03"},
+		"#animation_taunt_equalizer" : {"name":"Taunt Equalizer", "file":"taunt05"},
+		"#animation_taunt_robot" : {"name":"Taunt robot", "file":"layer_taunt09"},
+		"#animation_die_backstab" : {"name":"Die backstab", "file":"primary_death_backstab"},
+		"#animation_die_headshot" : {"name":"Die headshot", "file":"primary_death_headshot"},
+		"#animation_stand_primary" : {"name":"Stand primary", "file":"stand_PRIMARY"},
+		"#animation_stand_secondary" : {"name":"Stand secondary", "file":"stand_SECONDARY"},
+		"#animation_stand_righteous_bison" : {"name":"Stand Righteous Bison", "file":"stand_SECONDARY2"},
+		"#animation_stand_melee" : {"name":"Stand melee", "file":"stand_MELEE"},
+		"#animation_stand_melee_all_class" : {"name":"Stand melee all class", "file":"stand_MELEE_ALLCLASS"},
+		"#animation_stand_loser" : {"name":"Stand loser", "file":"stand_LOSER"},
+		"#animation_marketing_pose_001" : {"name":"Marketing pose 1", "file":"soldier_marketing_pose_001"},
+		"#animation_marketing_pose_002" : {"name":"Marketing pose 2", "file":"soldier_marketing_pose_002"},
+		"#animation_marketing_pose_003" : {"name":"Marketing pose 3", "file":"soldier_marketing_pose_003"},
+		"#animation_marketing_pose_004" : {"name":"Marketing pose 4", "file":"soldier_marketing_pose_004"},
+		"#animation_marketing_pose_005" : {"name":"Marketing pose 5", "file":"soldier_marketing_pose_005"},
+		"#animation_marketing_pose_006" : {"name":"Marketing pose 6", "file":"soldier_marketing_pose_006"},
+		"#animation_melee_stance" : {"name":"Melee stance", "file":"soldier_melee_stance"},
+		"#animation_meet_the_team" : {"name":"Meet the team", "file":"meettheteam"},
+		"#layer_primary_stun_middle" : {"name":"Stun", "file":"layer_primary_stun_middle"},
+		"#ref" : {"name":"Reference", "file":"ref"}
+	}
+}

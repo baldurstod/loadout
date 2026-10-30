@@ -1,6 +1,13 @@
 import { vec3, quat, vec4, vec2 } from 'gl-matrix';
-import { Source2ModelManager, Source2ParticleManager, Group, stringToVec3, Source1ModelManager, Graphics, TextureManager, Color as Color$1, NodeParamOrigin, Source1TextureManager, NodeEventType, DEG_TO_RAD, DEFAULT_TEXTURE_SIZE, NodeImageEditor, Source1MaterialManager, AnimatedTexture, Repositories, WebRepository, VcdParser, ChoreographiesManager, Source1ParticleControler, GraphicsEvents, ChoreographyEventType, Property, Source1SoundManager, RandomFloat } from 'harmony-3d';
+import { Source2ModelManager, Source2ParticleManager, Group, stringToVec3, Source1ModelManager, Graphics, TextureManager, Color as Color$1, NodeParamOrigin, Source1TextureManager, NodeEventType, DEG_TO_RAD, DEFAULT_TEXTURE_SIZE, NodeImageEditor, Source1MaterialManager, AnimatedTexture, Repositories, WebRepository, VcdParser, ChoreographiesManager, Source1ParticleControler, GraphicsEvents, ChoreographyEventType, Property, Source1SoundManager, RandomFloat, Scene, ColorBackground, Camera, OrbitControl, FirstPersonControl, SceneExplorer, PointLight, getSceneExplorer } from 'harmony-3d';
 import { OptionsManager, OptionsManagerEvents } from 'harmony-browser-utils';
+
+var CameraType;
+(function (CameraType) {
+    CameraType["FirstPerson"] = "FirstPerson";
+    CameraType["Orbit"] = "orbit";
+    CameraType["FreeFly"] = "freefly";
+})(CameraType || (CameraType = {}));
 
 class Dota2AssetModifier {
     #item;
@@ -1083,7 +1090,7 @@ function getUnitPlacement(i) {
     return vec3.fromValues(0, 400 * (i % 2 - 0.5) * Math.floor((i + 1) / 2), 0);
 }
 
-const DOTA2_REPOSITORY = 'https://dota2content.dotaloadout.com/';
+const DOTA2_REPOSITORY$1 = 'https://dota2content.dotaloadout.com/';
 const DOTA2_GENERATED_ITEMS = 'generated/items/';
 
 class Dota2ItemManager {
@@ -1096,7 +1103,7 @@ class Dota2ItemManager {
             return items;
         }
         items = new Promise(async (resolve) => {
-            const response = await fetch(new URL(`${DOTA2_GENERATED_ITEMS}${characterId}.json`, DOTA2_REPOSITORY));
+            const response = await fetch(new URL(`${DOTA2_GENERATED_ITEMS}${characterId}.json`, DOTA2_REPOSITORY$1));
             if (!response) {
                 return false;
             }
@@ -2143,15 +2150,59 @@ async function addTF2Model(parent, path, repository, name) {
     return model;
 }
 
+const HTML_NAMESPACE_URI = 'http://www.w3.org/1999/xhtml';
+const CHARACTERS_SKINS = ['red', 'blue'];
+const MAX_UNUSUAL_EFFECTS_PER_CHARACTER = 5;
+const startAnim = 'stand_secondary';
+const baseClassTexturePath = './css/img/class/';
+const baseAnimDataPath = './json/animations/';
+const TF2_COMPETITIVE_STAGE = 'models/props_ui/competitive_stage';
+const TF2_CASUAL_BADGE = 'models/vgui/12v12_badge';
+const TF2_TOOLBOX_MODEL = 'models/weapons/w_models/w_toolbox';
+const RECORDER_DEFAULT_FILENAME = 'Loadout.tf recording.webm';
+const STEAM_PROFILE_URL = 'https://steamcommunity.com/profiles/';
+const STEAM_DEFAULT_PROFILE_URL = STEAM_PROFILE_URL + '76561197960265728';
+const TF2_GROUP_URL = 'https://steamcommunity.com/groups/tf2loadout/discussions/1';
 const TF2_REPOSITORY = 'https://tf2content.loadout.tf/';
+const inventoryPath = TF2_REPOSITORY + 'materials/';
 const UNUSUALS_IMAGES_DIR = './img/unusuals/';
+const DOTA2_REPOSITORY = 'https://dota2content.dotaloadout.com/';
+const ALYX_REPOSITORY = 'https://hlacontent.loadout.tf/';
+const CSGO_REPOSITORY = 'https://cs2content.csloadout.com/';
+const DEADLOCK_REPOSITORY = 'https://dlcontent.deadlockloadout.com/';
+const SFM_DEFAULT_ANIMATION_GROUPS_URL = './json/sfm_defaultanimationgroups.json';
+const LOADOUT_DISPOSITIONS_URL = './json/characters_positions.json';
+const SHADERTOY_VIEW_URL = 'https://www.shadertoy.com/view/';
+const TF2_MAP_LIST_URL = 'https://tf2content.loadout.tf/maps_manifest.json';
 const MEDIC_RELEASE_DOVE_COUNT = 10;
 const TF2_DOVE_MODEL = 'models/props_forest/dove';
 const ENTITY_FLYING_BIRD_SPEED_MIN = 200;
 const ENTITY_FLYING_BIRD_SPEED_MAX = 500;
+const ACCURATE_SKINS_EXTENSION_LINK = 'https://accurateskins.com/';
+const TF2_WARPAINT_DEFINITIONS_URL = TF2_REPOSITORY + 'generated/warpaint_definitions.json';
+const TF2_WARPAINT_PICTURES_URL = TF2_REPOSITORY + 'generated/warpaint_pictures.json';
+const TF2_WARPAINT_ENGLISH_URL = TF2_REPOSITORY + 'generated/items/tf_proto_obj_defs_english.json';
+const STEAM_ECONOMY_IMAGE_PREFIX = 'https://steamcommunity-a.akamaihd.net/economy/image/';
+const SHARE_LOADOUT_URL = 'https://share.loadout.tf/';
 const WORKSHOP_UGC_URL = 'https://ugc.workshop.tf/';
 const WORKSHOP_UGC_IMG_PREFIX = 'https://images.steamusercontent.com/ugc/';
+const SFM_WORKSHOP_UGC_URL = '__sfmEndpoint__/ugc/';
 const WORKSHOP_URL = 'https://workshop.tf/php/workshop/getAllItems.php';
+const STEAM_WORKSHOP_URL = 'http://steamcommunity.com/sharedfiles/filedetails/?id=';
+const WORKSHOP_REPO = 'workshop_';
+//export const TESTING_LOADOUT_ID = 'yVNFJPRh2XXEoDV8';
+//export const TESTING_LOADOUT_ID = '1ESqvbGiFt49Gi1G';
+//export const TESTING_LOADOUT_ID = '7OKoozpWTUYvzAMy';
+//export const TESTING_LOADOUT_ID = 'surre4l4XoLvS2Xi';
+//export const TESTING_LOADOUT_ID = '2duaA28pqTUtadtm';
+//export const TESTING_LOADOUT_ID = 'jopQcK01UqYtUhin';
+//export const TESTING_LOADOUT_ID = 'yyej3TFitchTNsA9';
+const TESTING_LOADOUT_ID = 'WaGFMmx8KyPwVIBi';
+const SCOUT_BLUE_PANTS_ORIGIN = 'materials/models/player/scout/scout_blue.vtf';
+const SCOUT_BLUE_PANTS_DEST = '/img/misc/scout_blue.vtf';
+const BROADCAST_CHANNEL_NAME = 'internal_notification';
+const ACE_EDITOR_URI = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js';
+const SHADERTOY_DIRECTORY = './shadertoy/';
 const MATERIAL_INVULN_BLU = 'models/effects/invulnfx_blue.vmt';
 const MATERIAL_INVULN_RED = 'models/effects/invulnfx_red.vmt';
 const MATERIAL_GOLD_RAGDOLL = 'models/player/shared/gold_player.vmt';
@@ -2160,6 +2211,12 @@ const EFFECTS_RED = 'teamcolor_red';
 const EFFECTS_BLU = 'teamcolor_blue';
 const FIRST_LEGACY_WARPAINT = 15000;
 const LAST_LEGACY_WARPAINT = 15158;
+const LOADOUT_LAYOUT = 'loadout';
+const COMPARE_WARPAINTS_LAYOUT = 'compare warpaints';
+const LOW_QUALITY_TEXTURE_SIZE = 256;
+const MID_QUALITY_TEXTURE_SIZE = 512;
+const MAIN_CANVAS = 'main_canvas';
+const SNIPPET_URL = 'https://github.com/baldurstod/pyodide-snippets';
 
 class Tf2LoadoutController {
     static #eventTarget = new EventTarget();
@@ -2268,21 +2325,6 @@ class Tf2EffectTemplate {
 function getTf2TeamId(team) {
     return team === 'blu' ? 1 : 0;
 }
-var Panel;
-(function (Panel) {
-    Panel["None"] = "none";
-    Panel["Items"] = "items";
-    Panel["Printful"] = "printful";
-    Panel["Options"] = "options";
-    Panel["Effects"] = "effects";
-    Panel["Presets"] = "presets";
-    Panel["Paints"] = "paints";
-    Panel["Sheens"] = "sheens";
-    Panel["WeaponEffects"] = "weaponeffects";
-    Panel["Warpaints"] = "warpaints";
-    Panel["Flexes"] = "flexes";
-    Panel["SfmRepositories"] = "sfmrepositories";
-})(Panel || (Panel = {}));
 
 const closeSVG = '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>';
 
@@ -7264,7 +7306,7 @@ var Tf2Class;
     Tf2Class[Tf2Class["Empty"] = 1002] = "Empty";
     Tf2Class[Tf2Class["CompareWarpaints"] = 1003] = "CompareWarpaints";
 })(Tf2Class || (Tf2Class = {}));
-const CharactersList = new Map([
+const Tf2CharactersList = new Map([
     [Tf2Class.Scout, { name: 'scout', type: 'human', path: 'models/player/scout', icon: img$5, npc: 'scout' }],
     [Tf2Class.Sniper, { name: 'sniper', type: 'human', path: 'models/player/sniper', icon: img$4, npc: 'sniper' }],
     [Tf2Class.Soldier, { name: 'soldier', type: 'human', path: 'models/player/soldier', icon: img$3, npc: 'soldier' }],
@@ -7297,7 +7339,7 @@ const CharactersList = new Map([
 ]);
 const ClassRemovablePartsOff = ['heavy_hand_dex_bodygroup', 'robotarm_bodygroup', 'darts_bodygroup', 'spyMask', 'rocket', 'medal_bodygroup', 'demo_smiley'];
 function npcToClass(npc) {
-    for (const [tf2Class, character] of CharactersList) {
+    for (const [tf2Class, character] of Tf2CharactersList) {
         if (character.npc == npc) {
             return tf2Class;
         }
@@ -7342,7 +7384,7 @@ class Tf2ItemFilter {
         let isTaunt = false;
         let name;
         if (characterClass !== null) {
-            name = CharactersList.get(characterClass)?.name;
+            name = Tf2CharactersList.get(characterClass)?.name;
         }
         if (item.getHide()) {
             return ItemFilterResult.ExcludedFilter;
@@ -7682,7 +7724,7 @@ class Tf2ItemTemplate {
     isUsedByClass(characterClass) {
         const usedByClasses = this.#definition.used_by_classes /*TODO: improve type*/;
         if (usedByClasses) {
-            const className = CharactersList.get(characterClass)?.name;
+            const className = Tf2CharactersList.get(characterClass)?.name;
             if (className === undefined || usedByClasses[className]) {
                 return true;
             }
@@ -9635,8 +9677,8 @@ class Tf2Character {
     constructor(characterClass, scene) {
         this.characterClass = characterClass;
         this.scene = scene;
-        this.name = CharactersList.get(characterClass)?.name ?? '';
-        this.npc = CharactersList.get(characterClass)?.npc ?? '';
+        this.name = Tf2CharactersList.get(characterClass)?.name ?? '';
+        this.npc = Tf2CharactersList.get(characterClass)?.npc ?? '';
     }
     async loadModel(path, name) {
         if (this.#loaded) {
@@ -9763,7 +9805,7 @@ class Tf2Character {
         if (item == this.#taunt) {
             this.#taunt = null;
             // TODO: play end choreo
-            const npc = CharactersList.get(this.characterClass).name;
+            const npc = Tf2CharactersList.get(this.characterClass).name;
             const choreoName = item.getCustomTauntOutroScenePerClass(npc);
             if (choreoName && this.#model) {
                 await this.#ready;
@@ -9799,7 +9841,7 @@ class Tf2Character {
     async #addItem(template) {
         const item = new Tf2Item(template, this);
         this.items.set(template.id, item);
-        const npc = CharactersList.get(this.characterClass).name;
+        const npc = Tf2CharactersList.get(this.characterClass).name;
         await item.loadModel(npc);
         await this.#ready;
         (await this.getModel())?.addChild(await item.getModel());
@@ -9953,7 +9995,7 @@ class Tf2Character {
         }
         for (const [, item] of this.items) {
             const animSlot = item.getTemplate().animSlot;
-            const itemSlot = item.getTemplate().getItemSlotPerClass(CharactersList.get(this.characterClass)?.name ?? 'scout' /*TODO: fix* scout*/);
+            const itemSlot = item.getTemplate().getItemSlotPerClass(Tf2CharactersList.get(this.characterClass)?.name ?? 'scout' /*TODO: fix* scout*/);
             if (itemSlot != 'action' && animSlot && animSlot.toLowerCase() != 'building') {
                 if (animSlot[0] == '#') ;
                 else if (animSlot[0] == '!') {
@@ -10239,7 +10281,7 @@ class Tf2Character {
     }
     savePreset(name) {
         const preset = new Tf2Preset(name);
-        const npc = CharactersList.get(this.characterClass).name;
+        const npc = Tf2CharactersList.get(this.characterClass).name;
         preset.character = npc;
         preset.decapitationLevel = this.#decapitationLevel;
         for (const [, item] of this.items) {
@@ -10409,4 +10451,677 @@ class Tf2Character {
     }
 }
 
-export { COIN_SPIN_EFFECT, COMMUNITY_SPARKLE_EFFECT, CharactersList, ClassRemovablePartsOff, DEFAULT_ACTIVITY, Dota2AssetModifier, Dota2Hero, Dota2HeroTemplate, Dota2HeroTemplates, Dota2Item, Dota2ItemManager, Dota2ItemTemplate, Dota2ItemTemplates, Dota2LoadoutController, Dota2Units, ItemFilterAttribute, Killstreak, KillstreakColor, Paint, Paints, Panel, SfmSortField, Tf2Character, Tf2Class, Tf2Effect, Tf2EffectTemplate, Tf2EffectType, Tf2Item, Tf2ItemManager, Tf2ItemTemplate, Tf2LoadoutController, Tf2Preset, Tf2PresetEffect, Tf2PresetEffectType, Tf2PresetItem, Tf2Presets, colorToCss, colorToVec3, colorToVec4, getKillstreak, getKillstreakColor, getPaint, getPaintByTint, getPersonaId, getTf2TeamId, killstreakList, npcToClass, paintList, randomProperty, setUpdatePreview, updatePreview, weaponEffects };
+var dispositions={"1":[{p:[0,0,0],o:[0,0,-1,1]}],"2":[{p:[-20,0,0],o:[0,0,-1,1]},{p:[20,0,0],o:[0,0,-1,1]}],"3":[{p:[-40,0,0],o:[0,0,-1,1]},{p:[0,0,0],o:[0,0,-1,1]},{p:[40,0,0],o:[0,0,-1,1]}],"4":[{p:[-60,0,0],o:[0,0,-1,1]},{p:[-20,0,0],o:[0,0,-1,1]},{p:[20,0,0],o:[0,0,-1,1]},{p:[60,0,0],o:[0,0,-1,1]}],"5":[{p:[-80,0,0],o:[0,0,-1,1]},{p:[-40,0,0],o:[0,0,-1,1]},{p:[0,0,0],o:[0,0,-1,1]},{p:[40,0,0],o:[0,0,-1,1]},{p:[80,0,0],o:[0,0,-1,1]}],"6":[{p:[-100,0,0],o:[0,0,-1,1]},{p:[-60,0,0],o:[0,0,-1,1]},{p:[-20,0,0],o:[0,0,-1,1]},{p:[20,0,0],o:[0,0,-1,1]},{p:[60,0,0],o:[0,0,-1,1]},{p:[100,0,0],o:[0,0,-1,1]}],"7":[{p:[-120,0,0],o:[0,0,-1,1]},{p:[-80,0,0],o:[0,0,-1,1]},{p:[-40,0,0],o:[0,0,-1,1]},{p:[0,0,0],o:[0,0,-1,1]},{p:[40,0,0],o:[0,0,-1,1]},{p:[80,0,0],o:[0,0,-1,1]},{p:[120,0,0],o:[0,0,-1,1]}],"8":[{p:[-140,0,0],o:[0,0,-1,1]},{p:[-100,0,0],o:[0,0,-1,1]},{p:[-60,0,0],o:[0,0,-1,1]},{p:[-20,0,0],o:[0,0,-1,1]},{p:[20,0,0],o:[0,0,-1,1]},{p:[60,0,0],o:[0,0,-1,1]},{p:[100,0,0],o:[0,0,-1,1]},{p:[140,0,0],o:[0,0,-1,1]}],"9":[{p:[-160,0,0],o:[0,0,-1,1]},{p:[-120,0,0],o:[0,0,-1,1]},{p:[-80,0,0],o:[0,0,-1,1]},{p:[-40,0,0],o:[0,0,-1,1]},{p:[0,0,0],o:[0,0,-1,1]},{p:[40,0,0],o:[0,0,-1,1]},{p:[80,0,0],o:[0,0,-1,1]},{p:[120,0,0],o:[0,0,-1,1]},{p:[160,0,0],o:[0,0,-1,1]}],mtt:[{p:[-100.2281036377,198.9871826172,0],o:[0,0,0.7659834027290344,-0.6428603529930115]},{p:[-75.0726394653,213.8566589355,0],o:[0,0,0.649108350276947,-0.7606959939002991]},{p:[-42.7902297974,191.040435791,0],o:[0,0,0.8473811149597168,-0.5309851169586182]},{p:[-12.7672653198,168.1013031006,0],o:[0,0,0.8095924258232117,-0.5869923830032349]},{p:[13.5784225464,184.4625854492,0],o:[0,0,1,-1]},{p:[24.4398727417,144.8651275635,0],o:[0,0,0.6889068484306335,-0.7248498797416687]},{p:[45.6801071167,199.4777526855,0],o:[0,0,1,-1]},{p:[67.8846969604,162.6588745117,0],o:[0,0,-0.8936024904251099,0.4488592743873596]},{p:[90.9413299561,182.8147583008,0],o:[0,0,1,-1]}],mtt2:[{p:[-80.2281036377,8.9871826172,0],o:[0,0,0.7659834027290344,-0.6428603529930115]},{p:[-55.0726394653,23.8566589355,0],o:[0,0,0.649108350276947,-0.7606959939002991]},{p:[-22.7902297974,1.040435791,0],o:[0,0,0.8473811149597168,-0.5309851169586182]},{p:[8.7672653198,-22.1013031006,0],o:[0,0,0.8095924258232117,-0.5869923830032349]},{p:[33.5784225464,-6.4625854492,0],o:[0,0,1,-1]},{p:[44.4398727417,-46.8651275635,0],o:[0,0,0.6889068484306335,-0.7248498797416687]},{p:[65.6801071167,9.4777526855,0],o:[0,0,1,-1]},{p:[87.8846969604,-28.6588745117,0],o:[0,0,-0.8936024904251099,0.4488592743873596]},{p:[110.9413299561,-8.8147583008,0],o:[0,0,1,-1]}]};var positionJSON = {dispositions:dispositions};
+
+const loadoutScene = new Scene();
+const loadoutColorBackground = new ColorBackground();
+const orbitCamera = new Camera({ name: 'Orbit camera', nearPlane: 10, farPlane: 5000, autoResize: true });
+const firstPersonCamera = new Camera({
+    nearPlane: 5,
+    farPlane: 1000,
+    verticalFov: 90,
+    name: 'First person camera',
+    autoResize: true,
+    position: [0, 5, -7],
+    quaternion: [0, 0, 1, 0],
+});
+const orbitCameraControl = new OrbitControl(orbitCamera);
+const firstPersonCameraControl = new FirstPersonControl(orbitCamera);
+firstPersonCameraControl.movementSpeed = 100;
+firstPersonCameraControl.lookSpeed = 0.1;
+loadoutScene.addChild(orbitCameraControl.target);
+new Group({ name: 'Lights' });
+setActiveCamera(CameraType.Orbit);
+new SceneExplorer().setScene(loadoutScene);
+loadoutScene.activeCamera = orbitCamera;
+loadoutScene.addChild(orbitCamera);
+loadoutScene.background = loadoutColorBackground;
+const mapLightsContainer = new Group({ name: 'Photo studio lights', parent: loadoutScene, visible: false });
+for (let i = 0; i < 3; ++i) {
+    new PointLight({ name: 'Photo studio point light ' + i, position: [i * 200 - 200, -200, 50], range: 700, parent: mapLightsContainer });
+}
+function setActiveCamera(cameraType) {
+    let camera;
+    switch (cameraType) {
+        case CameraType.Orbit:
+            camera = orbitCamera;
+            setActiveCameraControl(orbitCameraControl);
+            break;
+        case CameraType.FreeFly:
+            camera = orbitCamera;
+            setActiveCameraControl(firstPersonCameraControl);
+            break;
+        case CameraType.FirstPerson:
+            camera = firstPersonCamera;
+            setActiveCameraControl(null);
+            break;
+    }
+    camera.setActiveCamera();
+}
+function setActiveCameraControl(control) {
+    firstPersonCameraControl.enabled = false;
+    orbitCameraControl.enabled = false;
+    if (control) {
+        control.enabled = true;
+    }
+}
+
+var character$i="demoman";var animations$h={"#animation_taunt_primary":{name:"Taunt primary",file:"taunt02"},"#animation_taunt_secondary":{name:"Taunt secondary",file:"taunt01"},"#animation_taunt_melee":{name:"Taunt melee",file:"taunt03"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_SECONDARY"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_PRIMARY"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_sword":{name:"Stand sword",file:"stand_ITEM1"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_marketing_pose_001":{name:"Marketing pose 1",file:"demo_marketing_pose_001"},"#animation_marketing_pose_002":{name:"Marketing pose 2",file:"demo_marketing_pose_002"},"#animation_marketing_pose_003":{name:"Marketing pose 3",file:"demo_marketing_pose_003"},"#animation_marketing_pose_004":{name:"Marketing pose 4",file:"demo_marketing_pose_004"},"#animation_melee_stance":{name:"Melee stance",file:"demo_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#layer_secondary_stun_middle":{name:"Stun",file:"layer_secondary_stun_middle"},"#ref":{name:"Reference",file:"ref"}};var bot_demoman = {character:character$i,animations:animations$h};
+
+var character$h="engineer";var animations$g={"#animation_taunt_primary":{name:"Taunt primary",file:"layer_taunt01"},"#animation_taunt_secondary":{name:"Taunt secondary",file:"layer_taunt02"},"#animation_taunt_melee":{name:"Taunt melee",file:"layer_taunt03"},"#animation_taunt_guitar":{name:"Taunt guitar",file:"layer_taunt07"},"#animation_taunt_gunslinger":{name:"Taunt Gunslinger",file:"layer_taunt09"},"#animation_taunt_eureka_effect":{name:"Taunt Eureka Effect",file:"layer_taunt_drg_melee"},"#animation_taunt_high_five":{name:"Taunt high five",file:"taunt_hifiveSuccessFull"},"#animation_taunt_halloween":{name:"Taunt halloween",file:"taunt06"},"#animation_selection_menu":{name:"Selection menu",file:"SelectionMenu_Idle"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_PRIMARY"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_SECONDARY"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_wrangler":{name:"Stand wrangler",file:"stand_ITEM1"},"#animation_stand_gunslinger":{name:"Stand Gunslinger",file:"stand_ITEM2"},"#animation_stand_PDA":{name:"Stand PDA",file:"stand_PDA"},"#animation_stand_toolbox":{name:"Stand toolbox",file:"stand_BUILDING"},"#animation_stand_toolbox_deployed":{name:"Stand toolbox deployed",file:"stand_BUILDING_DEPLOYED"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_crouch_primary":{name:"Crouch primary",file:"crouch_PRIMARY"},"#animation_crouch_secondary":{name:"Crouch secondary",file:"crouch_SECONDARY"},"#animation_crouch_wrangler":{name:"Crouch wrangler",file:"crouch_ITEM1"},"#animation_crouch_melee":{name:"Crouch melee",file:"crouch_MELEE"},"#animation_crouch_melee_all_class":{name:"Crouch melee all class",file:"crouch_MELEE_ALLCLASS"},"#animation_crouch_gunslinger":{name:"Crouch Gunslinger",file:"crouch_ITEM2"},"#animation_crouch_pda":{name:"Crouch PDA",file:"crouch_PDA"},"#animation_crouch_toolbox":{name:"Crouch toolbox",file:"crouch_BUILDING"},"#animation_crouch_toolbox_deployed":{name:"Crouch toolbox deployed",file:"crouch_BUILDING_DEPLOYED"},"#animation_crouch_loser":{name:"Crouch loser",file:"crouch_LOSER"},"#animation_taunt_dosido_dance":{name:"Taunt dosido dance",file:"layer_taunt_dosido_dance"},"#animation_taunt_flip_initiator":{name:"Taunt flip initiator",file:"layer_taunt_flip_success_initiator"},"#animation_taunt_flip_receiver":{name:"Taunt flip receiver",file:"layer_taunt_flip_success_receiver"},"#animation_taunt_headbutt":{name:"Headbutt",file:"layer_taunt_headbutt_success"},"#animation_taunt_rps_rock":{name:"Taunt rps Rock",file:"layer_taunt_rps_rock"},"#animation_taunt_rps_paper":{name:"Taunt rps Paper",file:"layer_taunt_rps_paper"},"#animation_taunt_rps_scissors":{name:"Taunt rps Scissors",file:"taunt_rps_scissors"},"#animation_taunt_rps_paper_lose":{name:"Taunt rps lose",file:"layer_taunt_rps_paper_lose"},"#animation_taunt_rps_paper_win":{name:"Taunt rps win",file:"layer_taunt_rps_paper_win"},"#animation_competitive_winner":{name:"Competitive winner",file:"competitive_winnerstate_idle"},"#animation_competitive_loserstate":{name:"Competitive loser",file:"competitive_loserstate_idle"},"#animation_melee_stance":{name:"Melee stance",file:"engineer_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#taunt_cyoa_PDA_intro":{name:"ConTracker open",file:"taunt_cyoa_PDA_intro"},"#taunt_cyoa_PDA_idle":{name:"ConTracker idle",file:"taunt_cyoa_PDA_idle"},"#taunt_cyoa_PDA_outro":{name:"ConTracker close",file:"taunt_cyoa_PDA_outro"},"#layer_primary_stun_middle":{name:"Stun",file:"layer_primary_stun_middle"},"#ref":{name:"Reference",file:"ref"}};var bot_engineer = {character:character$h,animations:animations$g};
+
+var character$g="heavy";var animations$f={"#animation_taunt_primary":{name:"Taunt primary",file:"taunt01"},"#animation_taunt_secondary":{name:"Taunt secondary",file:"taunt02"},"#animation_taunt_melee":{name:"Taunt melee",file:"taunt03"},"#animation_taunt_sandvich":{name:"Taunt Sandvich",file:"layer_taunt04"},"#animation_taunt_boxing":{name:"Taunt boxing",file:"layer_taunt05"},"#animation_selection_menu":{name:"Selection menu",file:"SelectionMenu_Idle"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_PRIMARY"},"#animation_stand_primary_deployed":{name:"Stand primary deployed",file:"stand_deployed_PRIMARY"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_SECONDARY"},"#animation_stand_sandvich":{name:"Stand sandvich",file:"stand_ITEM1"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_melee_stance":{name:"Melee stance",file:"heavy_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#ref":{name:"Reference",file:"ref"}};var bot_heavy = {character:character$g,animations:animations$f};
+
+var character$f="medic";var animations$e={"#animation_taunt_primary":{name:"Taunt primary",file:"taunt01"},"#animation_taunt_secondary":{name:"Taunt secondary",file:"taunt02"},"#animation_taunt_melee":{name:"Taunt melee",file:"taunt03"},"#animation_taunt_kritzkrieg":{name:"Taunt Kritzkrieg",file:"layer_taunt06"},"#animation_taunt_ubersaw":{name:"Taunt ubersaw",file:"layer_taunt08"},"#animation_taunt_halloween":{name:"Taunt halloween",file:"taunt07"},"#animation_selection_menu2":{name:"Selection menu (fixed)",file:"SelectionMenu_Idle_fixed"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_PRIMARY"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_SECONDARY"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_melee_stance":{name:"Melee stance",file:"medic_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#layer_primary_stun_middle":{name:"Stun",file:"layer_primary_stun_middle"},"#ref":{name:"Reference",file:"ref"}};var bot_medic = {character:character$f,animations:animations$e};
+
+var character$e="pyro";var animations$d={"#animation_taunt_primary":{name:"Taunt primary",file:"taunt01"},"#animation_taunt_melee":{name:"Taunt melee",file:"taunt03"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_PRIMARY"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_SECONDARY"},"#animation_stand_flare_gun":{name:"Stand flare gun",file:"stand_ITEM1"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_melee_stance":{name:"Melee stance",file:"pyro_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#layer_primary_stun_middle":{name:"Stun",file:"layer_primary_stun_middle"},"#ref":{name:"Reference",file:"ref"}};var bot_pyro = {character:character$e,animations:animations$d};
+
+var character$d="scout";var animations$c={"#animation_taunt_primary":{name:"Taunt primary",file:"taunt01"},"#animation_taunt_secondary":{name:"Taunt secondary",file:"taunt02"},"#animation_taunt_melee":{name:"Taunt melee",file:"taunt03"},"#animation_taunt_drink":{name:"Taunt drink",file:"taunt04"},"#animation_taunt_sandman":{name:"Taunt sandman",file:"taunt05"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_PRIMARY"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_SECONDARY"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_drink":{name:"Stand drink",file:"stand_ITEM1"},"#animation_stand_fan":{name:"Stand FAN",file:"stand_ITEM2"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_pose_golfer":{name:"Golfer",file:"pose_golfer"},"#animation_melee_stance":{name:"Melee stance",file:"scout_melee_stance"},"#animation_melancholy":{name:"Melancholy",file:"scout_melancholy"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#animation_marketing_pose_001":{name:"Marketing pose 1",file:"scout_marketing_pose_001"},"#layer_primary_stun_middle":{name:"Stun",file:"layer_primary_stun_middle"},"#ref":{name:"Reference",file:"ref"}};var bot_scout = {character:character$d,animations:animations$c};
+
+var character$c="sniper";var animations$b={"#animation_taunt_primary":{name:"Taunt primary",file:"taunt01"},"#animation_taunt_arrow":{name:"Taunt arrow",file:"layer_taunt04"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_PRIMARY"},"#animation_stand_primary_deployed":{name:"Stand primary deployed",file:"stand_deployed_PRIMARY"},"#animation_stand_bow":{name:"Stand bow",file:"stand_ITEM2"},"#animation_stand_bow_deployed":{name:"Stand bow deployed",file:"stand_deployed_ITEM2"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_SECONDARY"},"#animation_stand_jarate":{name:"Stand jarate",file:"stand_ITEM1"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_melee_stance":{name:"Melee stance",file:"sniper_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#layer_primary_stun_middle":{name:"Stun",file:"layer_primary_stun_middle"},"#ref":{name:"Reference",file:"ref"}};var bot_sniper = {character:character$c,animations:animations$b};
+
+var character$b="soldier";var animations$a={"#animation_taunt_primary":{name:"Taunt primary",file:"taunt01"},"#animation_taunt_direct_hit":{name:"Taunt Direct Hit",file:"layer_taunt07"},"#animation_taunt_cow_mangler":{name:"Taunt cow mangler",file:"layer_taunt08"},"#animation_taunt_secondary":{name:"Taunt secondary",file:"layer_taunt04"},"#animation_taunt_buff_banner":{name:"Taunt Buff Banner",file:"taunt02"},"#animation_taunt_melee":{name:"Taunt melee",file:"taunt03"},"#animation_taunt_equalizer":{name:"Taunt Equalizer",file:"taunt05"},"#animation_taunt_robot":{name:"Taunt robot",file:"layer_taunt09"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_PRIMARY"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_SECONDARY"},"#animation_stand_righteous_bison":{name:"Stand Righteous Bison",file:"stand_SECONDARY2"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_marketing_pose_001":{name:"Marketing pose 1",file:"soldier_marketing_pose_001"},"#animation_marketing_pose_002":{name:"Marketing pose 2",file:"soldier_marketing_pose_002"},"#animation_marketing_pose_003":{name:"Marketing pose 3",file:"soldier_marketing_pose_003"},"#animation_marketing_pose_004":{name:"Marketing pose 4",file:"soldier_marketing_pose_004"},"#animation_marketing_pose_005":{name:"Marketing pose 5",file:"soldier_marketing_pose_005"},"#animation_marketing_pose_006":{name:"Marketing pose 6",file:"soldier_marketing_pose_006"},"#animation_melee_stance":{name:"Melee stance",file:"soldier_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#layer_primary_stun_middle":{name:"Stun",file:"layer_primary_stun_middle"},"#ref":{name:"Reference",file:"ref"}};var bot_soldier = {character:character$b,animations:animations$a};
+
+var character$a="spy";var animations$9={"#animation_taunt_secondary":{name:"Taunt secondary",file:"secondary_taunt"},"#animation_taunt_melee":{name:"Taunt melee",file:"taunt03"},"#animation_taunt_cigarette":{name:"Taunt cigarette",file:"layer_taunt04"},"#animation_taunt_spycrab":{name:"Taunt spycrab",file:"layer_taunt05"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_SECONDARY"},"#animation_stand_item_1":{name:"Stand item 1",file:"stand_ITEM1"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_pda":{name:"Stand PDA",file:"stand_PDA"},"#animation_stand_sapper":{name:"Stand SAPPER",file:"stand_SAPPER"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_melee_stance":{name:"Melee stance",file:"spy_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#animation_saxxy_pose":{name:"Saxxy pose",file:"spy_marketing_pose_saxxy"},"#layer_primary_stun_middle":{name:"Stun",file:"layer_primary_stun_middle"},"#ref":{name:"Reference",file:"ref"}};var bot_spy = {character:character$a,animations:animations$9};
+
+var character$9="demoman";var animations$8={"#animation_taunt_primary":{name:"Taunt primary",file:"taunt02"},"#animation_taunt_secondary":{name:"Taunt secondary",file:"taunt01"},"#animation_taunt_melee":{name:"Taunt melee",file:"taunt03"},"#animation_taunt_caber":{name:"Taunt caber",file:"layer_taunt04"},"#animation_taunt_scottish_resistance":{name:"Taunt Scottish Resistance",file:"layer_taunt08"},"#animation_taunt_decapitation":{name:"Taunt decapitation",file:"layer_taunt09"},"#animation_taunt_high_five":{name:"Taunt high five",file:"layer_taunt_highFiveSuccessFull"},"#animation_taunt_halloween":{name:"Taunt halloween",file:"taunt06"},"#animation_taunt_howl":{name:"Taunt howl",file:"layer_taunt11_howl"},"#animation_selection_menu":{name:"Selection menu",file:"SelectionMenu_Idle"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_SECONDARY"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_PRIMARY"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_sword":{name:"Stand sword",file:"stand_ITEM1"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_crouch_primary":{name:"Crouch primary",file:"crouch_SECONDARY"},"#animation_crouch_secondary":{name:"Crouch secondary",file:"crouch_PRIMARY"},"#animation_crouch_sword":{name:"Crouch sword",file:"crouch_ITEM1"},"#animation_crouch_melee":{name:"Crouch melee",file:"crouch_MELEE"},"#animation_crouch_melee_all_class":{name:"Crouch melee all class",file:"crouch_MELEE_ALLCLASS"},"#animation_crouch_loser":{name:"Crouch loser",file:"crouch_LOSER"},"#animation_taunt_dosido_dance":{name:"Taunt dosido dance",file:"layer_taunt_dosido_dance"},"#animation_taunt_flip_initiator":{name:"Taunt flip initiator",file:"layer_taunt_flip_success_initiator"},"#animation_taunt_flip_receiver":{name:"Taunt flip receiver",file:"layer_taunt_flip_success_receiver"},"#animation_taunt_headbutt":{name:"Headbutt",file:"layer_taunt_headbutt_success"},"#animation_taunt_rps_rock":{name:"Taunt rps Rock",file:"layer_taunt_rps_rock"},"#animation_taunt_rps_paper":{name:"Taunt rps Paper",file:"layer_taunt_rps_paper"},"#animation_taunt_rps_scissors":{name:"Taunt rps Scissors",file:"taunt_rps_scissors"},"#animation_taunt_rps_paper_lose":{name:"Taunt rps lose",file:"layer_taunt_rps_paper_lose"},"#animation_taunt_rps_paper_win":{name:"Taunt rps win",file:"layer_taunt_rps_paper_win"},"#animation_competitive_winner":{name:"Competitive winner",file:"competitive_winnerstate_idle"},"#animation_competitive_loserstate":{name:"Competitive loser",file:"competitive_loserstate_idle"},"#animation_marketing_pose_001":{name:"Marketing pose 1",file:"demo_marketing_pose_001"},"#animation_marketing_pose_002":{name:"Marketing pose 2",file:"demo_marketing_pose_002"},"#animation_marketing_pose_003":{name:"Marketing pose 3",file:"demo_marketing_pose_003"},"#animation_marketing_pose_004":{name:"Marketing pose 4",file:"demo_marketing_pose_004"},"#animation_melee_stance":{name:"Melee stance",file:"demo_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#taunt_cyoa_PDA_intro":{name:"ConTracker open",file:"taunt_cyoa_PDA_intro"},"#taunt_cyoa_PDA_idle":{name:"ConTracker idle",file:"taunt_cyoa_PDA_idle_a"},"#taunt_cyoa_PDA_outro":{name:"ConTracker close",file:"taunt_cyoa_PDA_outro"},"#layer_primary_stun_middle":{name:"Stun",file:"layer_primary_stun_middle"},"#stand_passtime":{name:"Stand passtime",file:"stand_passtime"},"#run_passtime":{name:"Run passtime",file:"run_passtime"},"#crouch_walk_passtime":{name:"Crouch walk passtime",file:"crouch_walk_passtime"},"#ref":{name:"Reference",file:"ref"}};var demoman = {character:character$9,animations:animations$8};
+
+var character$8="engineer";var animations$7={"#animation_taunt_primary":{name:"Taunt primary",file:"layer_taunt01"},"#animation_taunt_secondary":{name:"Taunt secondary",file:"layer_taunt02"},"#animation_taunt_melee":{name:"Taunt melee",file:"layer_taunt03"},"#animation_taunt_guitar":{name:"Taunt guitar",file:"layer_taunt07"},"#animation_taunt_gunslinger":{name:"Taunt Gunslinger",file:"layer_taunt09"},"#animation_taunt_eureka_effect":{name:"Taunt Eureka Effect",file:"layer_taunt_drg_melee"},"#animation_taunt_high_five":{name:"Taunt high five",file:"taunt_hifiveSuccessFull"},"#animation_taunt_halloween":{name:"Taunt halloween",file:"taunt06"},"#animation_selection_menu":{name:"Selection menu",file:"SelectionMenu_Idle"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_PRIMARY"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_SECONDARY"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_wrangler":{name:"Stand wrangler",file:"stand_ITEM1"},"#animation_stand_gunslinger":{name:"Stand Gunslinger",file:"stand_ITEM2"},"#animation_stand_PDA":{name:"Stand PDA",file:"stand_PDA"},"#animation_stand_toolbox":{name:"Stand toolbox",file:"stand_BUILDING"},"#animation_stand_toolbox_deployed":{name:"Stand toolbox deployed",file:"stand_BUILDING_DEPLOYED"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_crouch_primary":{name:"Crouch primary",file:"crouch_PRIMARY"},"#animation_crouch_secondary":{name:"Crouch secondary",file:"crouch_SECONDARY"},"#animation_crouch_wrangler":{name:"Crouch wrangler",file:"crouch_ITEM1"},"#animation_crouch_melee":{name:"Crouch melee",file:"crouch_MELEE"},"#animation_crouch_melee_all_class":{name:"Crouch melee all class",file:"crouch_MELEE_ALLCLASS"},"#animation_crouch_gunslinger":{name:"Crouch Gunslinger",file:"crouch_ITEM2"},"#animation_crouch_pda":{name:"Crouch PDA",file:"crouch_PDA"},"#animation_crouch_toolbox":{name:"Crouch toolbox",file:"crouch_BUILDING"},"#animation_crouch_toolbox_deployed":{name:"Crouch toolbox deployed",file:"crouch_BUILDING_DEPLOYED"},"#animation_crouch_loser":{name:"Crouch loser",file:"crouch_LOSER"},"#animation_taunt_dosido_dance":{name:"Taunt dosido dance",file:"layer_taunt_dosido_dance"},"#animation_taunt_flip_initiator":{name:"Taunt flip initiator",file:"layer_taunt_flip_success_initiator"},"#animation_taunt_flip_receiver":{name:"Taunt flip receiver",file:"layer_taunt_flip_success_receiver"},"#animation_taunt_headbutt":{name:"Headbutt",file:"layer_taunt_headbutt_success"},"#animation_taunt_rps_rock":{name:"Taunt rps Rock",file:"layer_taunt_rps_rock"},"#animation_taunt_rps_paper":{name:"Taunt rps Paper",file:"layer_taunt_rps_paper"},"#animation_taunt_rps_scissors":{name:"Taunt rps Scissors",file:"taunt_rps_scissors"},"#animation_taunt_rps_paper_lose":{name:"Taunt rps lose",file:"layer_taunt_rps_paper_lose"},"#animation_taunt_rps_paper_win":{name:"Taunt rps win",file:"layer_taunt_rps_paper_win"},"#animation_competitive_winner":{name:"Competitive winner",file:"competitive_winnerstate_idle"},"#animation_competitive_loserstate":{name:"Competitive loser",file:"competitive_loserstate_idle"},"#animation_melee_stance":{name:"Melee stance",file:"engineer_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#taunt_cyoa_PDA_intro":{name:"ConTracker open",file:"taunt_cyoa_PDA_intro"},"#taunt_cyoa_PDA_idle":{name:"ConTracker idle",file:"taunt_cyoa_PDA_idle"},"#taunt_cyoa_PDA_outro":{name:"ConTracker close",file:"taunt_cyoa_PDA_outro"},"#layer_primary_stun_middle":{name:"Stun",file:"layer_primary_stun_middle"},"#stand_passtime":{name:"Stand passtime",file:"stand_passtime"},"#run_passtime":{name:"Run passtime",file:"run_passtime"},"#crouch_walk_passtime":{name:"Crouch walk passtime",file:"crouch_walk_passtime"},"#ref":{name:"Reference",file:"ref"}};var engineer = {character:character$8,animations:animations$7};
+
+var character$7="heavy";var animations$6={"#animation_taunt_primary":{name:"Taunt primary",file:"taunt01"},"#animation_taunt_secondary":{name:"Taunt secondary",file:"taunt02"},"#animation_taunt_melee":{name:"Taunt melee",file:"taunt03"},"#animation_taunt_sandvich":{name:"Taunt Sandvich",file:"layer_taunt04"},"#animation_taunt_boxing":{name:"Taunt boxing",file:"layer_taunt05"},"#animation_taunt_high_five":{name:"Taunt high five",file:"layer_taunt_highFiveSuccessFull"},"#animation_taunt_halloween":{name:"Taunt halloween",file:"taunt06"},"#animation_taunt_halloween 2":{name:"Taunt halloween 2",file:"layer_taunt07_Halloween"},"#animation_selection_menu":{name:"Selection menu",file:"SelectionMenu_Idle"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_PRIMARY"},"#animation_stand_primary_deployed":{name:"Stand primary deployed",file:"stand_deployed_PRIMARY"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_SECONDARY"},"#animation_stand_sandvich":{name:"Stand sandvich",file:"stand_ITEM1"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_crouch_primary":{name:"Crouch primary",file:"crouch_PRIMARY"},"#animation_crouch_primary_deployed":{name:"Crouch primary deployed",file:"crouch_deployed_PRIMARY"},"#animation_crouch_secondary":{name:"Crouch secondary",file:"crouch_SECONDARY"},"#animation_crouch_sandvich":{name:"Crouch sandvich",file:"crouch_ITEM1"},"#animation_crouch_melee":{name:"Crouch melee",file:"crouch_MELEE"},"#animation_crouch_melee_all_class":{name:"Crouch melee all class",file:"crouch_MELEE_ALLCLASS"},"#animation_crouch_loser":{name:"Crouch loser",file:"crouch_LOSER"},"#animation_taunt_dosido_dance":{name:"Taunt dosido dance",file:"layer_taunt_dosido_dance"},"#animation_taunt_flip_initiator":{name:"Taunt flip initiator",file:"layer_taunt_flip_success_initiator"},"#animation_taunt_flip_receiver":{name:"Taunt flip receiver",file:"layer_taunt_flip_success_receiver"},"#animation_taunt_headbutt":{name:"Headbutt",file:"layer_taunt_headbutt_success"},"#animation_taunt_rps_rock":{name:"Taunt rps Rock",file:"layer_taunt_rps_rock"},"#animation_taunt_rps_paper":{name:"Taunt rps Paper",file:"layer_taunt_rps_paper"},"#animation_taunt_rps_scissors":{name:"Taunt rps Scissors",file:"taunt_rps_scissors"},"#animation_taunt_rps_paper_lose":{name:"Taunt rps lose",file:"layer_taunt_rps_paper_lose"},"#animation_taunt_rps_paper_win":{name:"Taunt rps win",file:"layer_taunt_rps_paper_win"},"#animation_competitive_winner":{name:"Competitive winner",file:"competitive_winnerstate_idle"},"#animation_competitive_loserstate":{name:"Competitive loser",file:"competitive_loserstate_idle"},"#animation_melee_stance":{name:"Melee stance",file:"heavy_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#animation_proletariat posedown":{name:"Proletariat Posedown",file:"layer_taunt_soviet_showoff"},"#taunt_cyoa_PDA_intro":{name:"ConTracker open",file:"taunt_cyoa_PDA_intro"},"#taunt_cyoa_PDA_idle":{name:"ConTracker idle",file:"taunt_cyoa_PDA_idle"},"#taunt_cyoa_PDA_outro":{name:"ConTracker close",file:"taunt_cyoa_PDA_outro"},"#layer_primary_stun_middle":{name:"Stun",file:"layer_primary_stun_middle"},"#stand_passtime":{name:"Stand passtime",file:"stand_passtime"},"#run_passtime":{name:"Run passtime",file:"run_passtime"},"#crouch_walk_passtime":{name:"Crouch walk passtime",file:"crouch_walk_passtime"},"#ref":{name:"Reference",file:"ref"}};var heavy = {character:character$7,animations:animations$6};
+
+var character$6="medic";var animations$5={"#animation_taunt_primary":{name:"Taunt primary",file:"taunt01"},"#animation_taunt_secondary":{name:"Taunt secondary",file:"taunt02"},"#animation_taunt_melee":{name:"Taunt melee",file:"taunt03"},"#animation_taunt_kritzkrieg":{name:"Taunt Kritzkrieg",file:"layer_taunt06"},"#animation_taunt_ubersaw":{name:"Taunt ubersaw",file:"layer_taunt08"},"#animation_taunt_high_five":{name:"Taunt high five",file:"taunt_highFiveSuccessFull"},"#animation_taunt_halloween":{name:"Taunt halloween",file:"taunt07"},"#animation_selection_menu":{name:"Selection menu",file:"SelectionMenu_Idle"},"#animation_selection_menu2":{name:"Selection menu (fixed)",file:"SelectionMenu_Idle_fixed"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_PRIMARY"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_SECONDARY"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_crouch_primary":{name:"Crouch primary",file:"crouch_PRIMARY"},"#animation_crouch_secondary":{name:"Crouch secondary",file:"crouch_SECONDARY"},"#animation_crouch_melee":{name:"Crouch melee",file:"crouch_MELEE"},"#animation_crouch_melee_all_class":{name:"Crouch melee all class",file:"crouch_MELEE_ALLCLASS"},"#animation_crouch_loser":{name:"Crouch loser",file:"crouch_LOSER"},"#animation_taunt_dosido_dance":{name:"Taunt dosido dance",file:"layer_taunt_dosido_dance"},"#animation_taunt_flip_initiator":{name:"Taunt flip initiator",file:"layer_taunt_flip_success_initiator"},"#animation_taunt_flip_receiver":{name:"Taunt flip receiver",file:"layer_taunt_flip_success_receiver"},"#animation_taunt_headbutt":{name:"Headbutt",file:"layer_taunt_headbutt_success"},"#animation_taunt_rps_rock":{name:"Taunt rps Rock",file:"layer_taunt_rps_rock"},"#animation_taunt_rps_paper":{name:"Taunt rps Paper",file:"layer_taunt_rps_paper"},"#animation_taunt_rps_scissors":{name:"Taunt rps Scissors",file:"taunt_rps_scissors"},"#animation_taunt_rps_paper_lose":{name:"Taunt rps lose",file:"layer_taunt_rps_paper_lose"},"#animation_taunt_rps_paper_win":{name:"Taunt rps win",file:"layer_taunt_rps_paper_win"},"#animation_competitive_winner":{name:"Competitive winner",file:"competitive_winnerstate_idle"},"#animation_competitive_loserstate":{name:"Competitive loser",file:"competitive_loserstate_idle"},"#animation_melee_stance":{name:"Melee stance",file:"medic_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#taunt_cyoa_PDA_intro":{name:"ConTracker open",file:"taunt_cyoa_PDA_intro"},"#taunt_cyoa_PDA_idle":{name:"ConTracker idle",file:"taunt_cyoa_PDA_idle"},"#taunt_cyoa_PDA_outro":{name:"ConTracker close",file:"taunt_cyoa_PDA_outro"},"#layer_primary_stun_middle":{name:"Stun",file:"layer_primary_stun_middle"},"#stand_passtime":{name:"Stand passtime",file:"stand_passtime"},"#run_passtime":{name:"Run passtime",file:"run_passtime"},"#crouch_walk_passtime":{name:"Crouch walk passtime",file:"crouch_walk_passtime"},"#ref":{name:"Reference",file:"ref"}};var medic = {character:character$6,animations:animations$5};
+
+var character$5="pyro";var animations$4={"#animation_taunt_primary":{name:"Taunt primary",file:"taunt01"},"#animation_taunt_secondary":{name:"Taunt secondary",file:"taunt02"},"#animation_taunt_scorch_shot":{name:"Taunt scorch shot",file:"layer_taunt_scorch_shot"},"#animation_taunt_melee":{name:"Taunt melee",file:"taunt03"},"#animation_taunt_lollichop":{name:"Taunt lollichop",file:"layer_taunt_lollichop"},"#animation_taunt_pyroland":{name:"Taunt pyroland",file:"layer_taunt_bubbles"},"#animation_taunt_high_five":{name:"Taunt high five",file:"taunt_highFiveSuccessFull"},"#animation_taunt_halloween":{name:"Taunt halloween",file:"taunt06"},"#animation_selection_menu":{name:"Selection menu",file:"SelectionMenu_Idle"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_PRIMARY"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_SECONDARY"},"#animation_stand_flare_gun":{name:"Stand flare gun",file:"stand_ITEM1"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_crouch_primary":{name:"Crouch primary",file:"crouch_PRIMARY"},"#animation_crouch_secondary":{name:"Crouch secondary",file:"crouch_SECONDARY"},"#animation_crouch_flare_gun":{name:"Crouch flare gun",file:"crouch_ITEM1"},"#animation_crouch_melee":{name:"Crouch melee",file:"crouch_MELEE"},"#animation_crouch_melee_all_class":{name:"Crouch melee all class",file:"crouch_MELEE_ALLCLASS"},"#animation_crouch_loser":{name:"Crouch loser",file:"crouch_LOSER"},"#animation_taunt_dosido_dance":{name:"Taunt dosido dance",file:"layer_taunt_dosido_dance"},"#animation_taunt_flip_initiator":{name:"Taunt flip initiator",file:"layer_taunt_flip_success_initiator"},"#animation_taunt_flip_receiver":{name:"Taunt flip receiver",file:"layer_taunt_flip_success_receiver"},"#animation_taunt_headbutt":{name:"Headbutt",file:"layer_taunt_headbutt_success"},"#animation_taunt_rps_rock":{name:"Taunt rps Rock",file:"layer_taunt_rps_rock"},"#animation_taunt_rps_paper":{name:"Taunt rps Paper",file:"layer_taunt_rps_paper"},"#animation_taunt_rps_scissors":{name:"Taunt rps Scissors",file:"taunt_rps_scissors"},"#animation_taunt_rps_paper_lose":{name:"Taunt rps lose",file:"layer_taunt_rps_paper_lose"},"#animation_taunt_rps_paper_win":{name:"Taunt rps win",file:"layer_taunt_rps_paper_win"},"#animation_competitive_winner":{name:"Competitive winner",file:"competitive_winnerstate_idle"},"#animation_competitive_loserstate":{name:"Competitive loser",file:"competitive_loserstate_idle"},"#animation_melee_stance":{name:"Melee stance",file:"pyro_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#animation_stand_thermal_thruster":{name:"Stand Thermal Thruster",file:"stand_ITEM4"},"#animation_airwalk_thermal_thruster":{name:"Airwalk Thermal Thruster",file:"airwalk_ITEM4"},"#animation_crouch_thermal_thruster":{name:"Crouch Thermal Thruster",file:"crouch_ITEM4"},"#a_jumpfloat_ITEM4":{name:"Float Thermal Thruster",file:"a_jumpfloat_ITEM4"},"#taunt_cyoa_PDA_intro":{name:"ConTracker open",file:"taunt_cyoa_PDA_intro"},"#taunt_cyoa_PDA_idle":{name:"ConTracker idle",file:"taunt_cyoa_PDA_idle"},"#taunt_cyoa_PDA_outro":{name:"ConTracker close",file:"taunt_cyoa_PDA_outro"},"#taunt_gasblast":{name:"Taunt Thermal Thruster",file:"taunt_gasblast"},"#layer_primary_stun_middle":{name:"Stun",file:"layer_primary_stun_middle"},"#stand_passtime":{name:"Stand passtime",file:"stand_passtime"},"#run_passtime":{name:"Run passtime",file:"run_passtime"},"#crouch_walk_passtime":{name:"Crouch walk passtime",file:"crouch_walk_passtime"},"#ref":{name:"Reference",file:"ref"}};var pyro = {character:character$5,animations:animations$4};
+
+var character$4="scout";var animations$3={"#animation_taunt_primary":{name:"Taunt primary",file:"taunt01"},"#animation_taunt_primary_alt":{name:"Taunt primary alt",file:"taunt01_Alt"},"#animation_taunt_secondary":{name:"Taunt secondary",file:"taunt02"},"#animation_taunt_melee":{name:"Taunt melee",file:"taunt03"},"#animation_taunt_drink":{name:"Taunt drink",file:"taunt04"},"#animation_taunt_sandman":{name:"Taunt sandman",file:"taunt05"},"#animation_layer_taunt_come_and_get_me":{name:"Taunt come and get me",file:"layer_taunt_come_and_get_me"},"#animation_taunt_high_five":{name:"Taunt high five",file:"layer_taunt_highFiveSuccessFull"},"#animation_taunt_halloween":{name:"Taunt halloween",file:"taunt06"},"#animation_selection_menu":{name:"Selection menu",file:"SelectionMenu_Idle"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_PRIMARY"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_SECONDARY"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_drink":{name:"Stand drink",file:"stand_ITEM1"},"#animation_stand_fan":{name:"Stand FAN",file:"stand_ITEM2"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_crouch_primary":{name:"Crouch primary",file:"crouch_PRIMARY"},"#animation_crouch_FAN":{name:"Crouch FAN",file:"crouch_ITEM2"},"#animation_crouch_secondary":{name:"Crouch secondary",file:"crouch_SECONDARY"},"#animation_crouch_drink":{name:"Crouch drink",file:"crouch_ITEM1"},"#animation_crouch_melee":{name:"Crouch melee",file:"crouch_MELEE"},"#animation_crouch_melee_all_class":{name:"Crouch melee all class",file:"crouch_MELEE_ALLCLASS"},"#animation_crouch_loser":{name:"Crouch loser",file:"crouch_LOSER"},"#animation_taunt_dosido_dance":{name:"Taunt dosido dance",file:"layer_taunt_dosido_dance"},"#animation_taunt_flip_initiator":{name:"Taunt flip initiator",file:"layer_taunt_flip_success_initiator"},"#animation_taunt_flip_receiver":{name:"Taunt flip receiver",file:"layer_taunt_flip_success_receiver"},"#animation_taunt_headbutt":{name:"Headbutt",file:"layer_taunt_headbutt_success"},"#animation_taunt_rps_rock":{name:"Taunt rps Rock",file:"layer_taunt_rps_rock"},"#animation_taunt_rps_paper":{name:"Taunt rps Paper",file:"layer_taunt_rps_paper"},"#animation_taunt_rps_scissors":{name:"Taunt rps Scissors",file:"taunt_rps_scissors"},"#animation_taunt_rps_paper_lose":{name:"Taunt rps lose",file:"layer_taunt_rps_paper_lose"},"#animation_taunt_rps_paper_win":{name:"Taunt rps win",file:"layer_taunt_rps_paper_win"},"#animation_competitive_winner":{name:"Competitive winner",file:"competitive_winnerstate_idle"},"#animation_competitive_loserstate":{name:"Competitive loser",file:"competitive_loserstate_idle"},"#animation_pose_golfer":{name:"Golfer",file:"pose_golfer"},"#animation_melee_stance":{name:"Melee stance",file:"scout_melee_stance"},"#animation_melancholy":{name:"Melancholy",file:"scout_melancholy"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#animation_marketing_pose_001":{name:"Marketing pose 1",file:"scout_marketing_pose_001"},"#taunt_cyoa_PDA_intro":{name:"ConTracker open",file:"taunt_cyoa_PDA_intro"},"#taunt_cyoa_PDA_idle":{name:"ConTracker idle",file:"taunt_cyoa_PDA_idle"},"#taunt_cyoa_PDA_outro":{name:"ConTracker close",file:"taunt_cyoa_PDA_outro"},"#layer_primary_stun_middle":{name:"Stun",file:"layer_primary_stun_middle"},"#stand_passtime":{name:"Stand passtime",file:"stand_passtime"},"#run_passtime":{name:"Run passtime",file:"run_passtime"},"#crouch_walk_passtime":{name:"Crouch walk passtime",file:"crouch_walk_passtime"},"#ref":{name:"Reference",file:"ref"}};var scout = {character:character$4,animations:animations$3};
+
+var character$3="sniper";var animations$2={"#animation_taunt_primary":{name:"Taunt primary",file:"taunt01"},"#animation_taunt_secondary":{name:"Taunt secondary",file:"taunt02"},"#animation_taunt_melee":{name:"Taunt melee",file:"taunt03"},"#animation_taunt_arrow":{name:"Taunt arrow",file:"layer_taunt04"},"#animation_taunt_high_five":{name:"Taunt high five",file:"layer_taunt_highFiveSuccessFull"},"#animation_taunt_halloween":{name:"Taunt halloween",file:"taunt06"},"#animation_selection_menu":{name:"Selection menu",file:"SelectionMenu_Idle"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_PRIMARY"},"#animation_stand_primary_deployed":{name:"Stand primary deployed",file:"stand_deployed_PRIMARY"},"#animation_stand_bow":{name:"Stand bow",file:"stand_ITEM2"},"#animation_stand_bow_deployed":{name:"Stand bow deployed",file:"stand_deployed_ITEM2"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_SECONDARY"},"#animation_stand_jarate":{name:"Stand jarate",file:"stand_ITEM1"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_crouch_primary":{name:"Crouch primary",file:"crouch_PRIMARY"},"#animation_crouch_primary_deployed":{name:"Crouch primary deployed",file:"crouch_deployed_PRIMARY"},"#animation_crouch_bow":{name:"Crouch bow",file:"crouch_ITEM2"},"#animation_crouch_bow_deployed":{name:"Crouch bow deployed",file:"crouch_deployed_ITEM2"},"#animation_crouch_secondary":{name:"Crouch secondary",file:"crouch_SECONDARY"},"#animation_crouch_jarate":{name:"Crouch jarate",file:"crouch_ITEM1"},"#animation_crouch_melee":{name:"Crouch melee",file:"crouch_MELEE"},"#animation_crouch_melee_all_class":{name:"Crouch melee all class",file:"crouch_MELEE_ALLCLASS"},"#animation_crouch_loser":{name:"Crouch loser",file:"crouch_LOSER"},"#animation_taunt_dosido_dance":{name:"Taunt dosido dance",file:"layer_taunt_dosido_dance"},"#animation_taunt_flip_initiator":{name:"Taunt flip initiator",file:"layer_taunt_flip_success_initiator"},"#animation_taunt_flip_receiver":{name:"Taunt flip receiver",file:"layer_taunt_flip_success_receiver"},"#animation_taunt_headbutt":{name:"Headbutt",file:"layer_taunt_headbutt_success"},"#animation_taunt_rps_rock":{name:"Taunt rps Rock",file:"layer_taunt_rps_rock"},"#animation_taunt_rps_paper":{name:"Taunt rps Paper",file:"layer_taunt_rps_paper"},"#animation_taunt_rps_scissors":{name:"Taunt rps Scissors",file:"taunt_rps_scissors"},"#animation_taunt_rps_paper_lose":{name:"Taunt rps lose",file:"layer_taunt_rps_paper_lose"},"#animation_taunt_rps_paper_win":{name:"Taunt rps win",file:"layer_taunt_rps_paper_win"},"#animation_competitive_winner":{name:"Competitive winner",file:"competitive_winnerstate_idle"},"#animation_competitive_loserstate":{name:"Competitive loser",file:"competitive_loserstate_idle"},"#animation_melee_stance":{name:"Melee stance",file:"sniper_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#taunt_cyoa_PDA_intro":{name:"ConTracker open",file:"taunt_cyoa_PDA_intro"},"#taunt_cyoa_PDA_idle":{name:"ConTracker idle",file:"taunt_cyoa_PDA_idle"},"#taunt_cyoa_PDA_outro":{name:"ConTracker close",file:"taunt_cyoa_PDA_outro"},"#layer_primary_stun_middle":{name:"Stun",file:"layer_primary_stun_middle"},"#stand_passtime":{name:"Stand passtime",file:"stand_passtime"},"#run_passtime":{name:"Run passtime",file:"run_passtime"},"#crouch_walk_passtime":{name:"Crouch walk passtime",file:"crouch_walk_passtime"},"#ref":{name:"Reference",file:"ref"}};var sniper = {character:character$3,animations:animations$2};
+
+var character$2="soldier";var animations$1={"#animation_taunt_primary":{name:"Taunt primary",file:"taunt01"},"#animation_taunt_direct_hit":{name:"Taunt Direct Hit",file:"layer_taunt07"},"#animation_taunt_cow_mangler":{name:"Taunt cow mangler",file:"layer_taunt08"},"#animation_taunt_secondary":{name:"Taunt secondary",file:"layer_taunt04"},"#animation_taunt_buff_banner":{name:"Taunt Buff Banner",file:"taunt02"},"#animation_taunt_melee":{name:"Taunt melee",file:"taunt03"},"#animation_taunt_equalizer":{name:"Taunt Equalizer",file:"taunt05"},"#animation_taunt_robot":{name:"Taunt robot",file:"layer_taunt09"},"#animation_taunt_high_five":{name:"Taunt high five",file:"layer_taunt_highFiveSuccessFull"},"#animation_taunt_halloween":{name:"Taunt halloween",file:"taunt06"},"#animation_selection_menu":{name:"Selection menu",file:"SelectionMenu_Idle"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_PRIMARY"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_SECONDARY"},"#animation_stand_righteous_bison":{name:"Stand Righteous Bison",file:"stand_SECONDARY2"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_crouch_primary":{name:"Crouch primary",file:"crouch_PRIMARY"},"#animation_crouch_secondary":{name:"Crouch secondary",file:"crouch_SECONDARY"},"#animation_crouch_righteous_bison":{name:"Crouch Righteous Bison",file:"crouch_SECONDARY2"},"#animation_crouch_melee":{name:"Crouch melee",file:"crouch_MELEE"},"#animation_crouch_melee_all_class":{name:"Crouch melee all class",file:"crouch_MELEE_ALLCLASS"},"#animation_crouch_loser":{name:"Crouch loser",file:"crouch_LOSER"},"#animation_taunt_dosido_dance":{name:"Taunt dosido dance",file:"layer_taunt_dosido_dance"},"#animation_taunt_flip_initiator":{name:"Taunt flip initiator",file:"layer_taunt_flip_success_initiator"},"#animation_taunt_flip_receiver":{name:"Taunt flip receiver",file:"layer_taunt_flip_success_receiver"},"#animation_taunt_headbutt":{name:"Headbutt",file:"layer_taunt_headbutt_success"},"#animation_taunt_rps_rock":{name:"Taunt rps Rock",file:"layer_taunt_rps_rock"},"#animation_taunt_rps_paper":{name:"Taunt rps Paper",file:"layer_taunt_rps_paper"},"#animation_taunt_rps_scissors":{name:"Taunt rps Scissors",file:"taunt_rps_scissors"},"#animation_taunt_rps_paper_lose":{name:"Taunt rps lose",file:"layer_taunt_rps_paper_lose"},"#animation_taunt_rps_paper_win":{name:"Taunt rps win",file:"layer_taunt_rps_paper_win"},"#animation_competitive_winner":{name:"Competitive winner",file:"competitive_winnerstate_idle"},"#animation_competitive_loserstate":{name:"Competitive loser",file:"competitive_loserstate_idle"},"#animation_marketing_pose_001":{name:"Marketing pose 1",file:"soldier_marketing_pose_001"},"#animation_marketing_pose_002":{name:"Marketing pose 2",file:"soldier_marketing_pose_002"},"#animation_marketing_pose_003":{name:"Marketing pose 3",file:"soldier_marketing_pose_003"},"#animation_marketing_pose_004":{name:"Marketing pose 4",file:"soldier_marketing_pose_004"},"#animation_marketing_pose_005":{name:"Marketing pose 5",file:"soldier_marketing_pose_005"},"#animation_marketing_pose_006":{name:"Marketing pose 6",file:"soldier_marketing_pose_006"},"#animation_melee_stance":{name:"Melee stance",file:"soldier_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#taunt_cyoa_PDA_intro":{name:"ConTracker open",file:"taunt_cyoa_PDA_intro"},"#taunt_cyoa_PDA_idle":{name:"ConTracker idle",file:"taunt_cyoa_PDA_idle"},"#taunt_cyoa_PDA_outro":{name:"ConTracker close",file:"taunt_cyoa_PDA_outro"},"#layer_primary_stun_middle":{name:"Stun",file:"layer_primary_stun_middle"},"#stand_passtime":{name:"Stand passtime",file:"stand_passtime"},"#run_passtime":{name:"Run passtime",file:"run_passtime"},"#crouch_walk_passtime":{name:"Crouch walk passtime",file:"crouch_walk_passtime"},"#ref":{name:"Reference",file:"ref"}};var soldier = {character:character$2,animations:animations$1};
+
+var character$1="spy";var animations={"#animation_taunt_secondary":{name:"Taunt secondary",file:"secondary_taunt"},"#animation_taunt_melee":{name:"Taunt melee",file:"taunt03"},"#animation_taunt_cigarette":{name:"Taunt cigarette",file:"layer_taunt04"},"#animation_taunt_spycrab":{name:"Taunt spycrab",file:"layer_taunt05"},"#animation_taunt_high_five":{name:"Taunt high five",file:"taunt_hifiveSuccessFull"},"#animation_taunt_halloween":{name:"Taunt halloween",file:"taunt06"},"#animation_selection_menu":{name:"Selection menu",file:"SelectionMenu_Idle"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_SECONDARY"},"#animation_stand_item_1":{name:"Stand item 1",file:"stand_ITEM1"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_pda":{name:"Stand PDA",file:"stand_PDA"},"#animation_stand_sapper":{name:"Stand SAPPER",file:"stand_SAPPER"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_crouch_secondary":{name:"Crouch secondary",file:"crouch_SECONDARY"},"#animation_crouch_item_1":{name:"Crouch item 1",file:"crouch_ITEM1"},"#animation_crouch_melee":{name:"Crouch melee",file:"crouch_MELEE"},"#animation_crouch_melee_all_class":{name:"Crouch melee all class",file:"crouch_MELEE_ALLCLASS"},"#animation_crouch_pda":{name:"Crouch PDA",file:"crouch_PDA"},"#animation_crouch_sapper":{name:"Crouch SAPPER",file:"crouch_SAPPER"},"#animation_crouch_loser":{name:"Crouch loser",file:"crouch_LOSER"},"#animation_taunt_dosido_dance":{name:"Taunt dosido dance",file:"layer_taunt_dosido_dance"},"#animation_taunt_flip_initiator":{name:"Taunt flip initiator",file:"layer_taunt_flip_success_initiator"},"#animation_taunt_flip_receiver":{name:"Taunt flip receiver",file:"layer_taunt_flip_success_receiver"},"#animation_taunt_headbutt":{name:"Headbutt",file:"layer_taunt_headbutt_success"},"#animation_taunt_rps_rock":{name:"Taunt rps Rock",file:"layer_taunt_rps_rock"},"#animation_taunt_rps_paper":{name:"Taunt rps Paper",file:"layer_taunt_rps_paper"},"#animation_taunt_rps_scissors":{name:"Taunt rps Scissors",file:"taunt_rps_scissors"},"#animation_taunt_rps_paper_lose":{name:"Taunt rps lose",file:"layer_taunt_rps_paper_lose"},"#animation_taunt_rps_paper_win":{name:"Taunt rps win",file:"layer_taunt_rps_paper_win"},"#animation_competitive_winner":{name:"Competitive winner",file:"competitive_winnerstate_idle"},"#animation_competitive_loserstate":{name:"Competitive loser",file:"competitive_loserstate_idle"},"#animation_melee_stance":{name:"Melee stance",file:"spy_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#animation_saxxy_pose":{name:"Saxxy pose",file:"spy_marketing_pose_saxxy"},"#taunt_cyoa_PDA_intro":{name:"ConTracker open",file:"taunt_cyoa_PDA_intro"},"#taunt_cyoa_PDA_idle":{name:"ConTracker idle",file:"taunt_cyoa_PDA_idle_a"},"#taunt_cyoa_PDA_outro":{name:"ConTracker close",file:"taunt_cyoa_PDA_outro"},"#layer_primary_stun_middle":{name:"Stun",file:"layer_primary_stun_middle"},"#stand_passtime":{name:"Stand passtime",file:"stand_passtime"},"#run_passtime":{name:"Run passtime",file:"run_passtime"},"#crouch_walk_passtime":{name:"Crouch walk passtime",file:"crouch_walk_passtime"},"#ref":{name:"Reference",file:"ref"}};var spy = {character:character$1,animations:animations};
+
+const TF2_CLASS_ANIMATIONS = new Map([
+    [Tf2Class.Scout, scout],
+    [Tf2Class.Sniper, sniper],
+    [Tf2Class.Soldier, soldier],
+    [Tf2Class.Demoman, demoman],
+    [Tf2Class.Medic, medic],
+    [Tf2Class.Heavy, heavy],
+    [Tf2Class.Pyro, pyro],
+    [Tf2Class.Spy, spy],
+    [Tf2Class.Engineer, engineer],
+    [Tf2Class.ScoutBot, bot_scout],
+    [Tf2Class.SniperBot, bot_sniper],
+    [Tf2Class.SoldierBot, bot_soldier],
+    [Tf2Class.DemomanBot, bot_demoman],
+    [Tf2Class.MedicBot, bot_medic],
+    [Tf2Class.HeavyBot, bot_heavy],
+    [Tf2Class.PyroBot, bot_pyro],
+    [Tf2Class.SpyBot, bot_spy],
+    [Tf2Class.EngineerBot, bot_engineer],
+]);
+function getTf2ClassAnimations(tf2Class) {
+    return TF2_CLASS_ANIMATIONS.get(tf2Class) ?? null;
+}
+
+class CharacterSlot {
+    character = null;
+    position = vec3.create();
+    orientation = quat.clone(DEFAULT_ORIENTATION);
+    async setPosition(position) {
+        vec3.copy(this.position, position);
+        (await this.character?.getModel())?.setPosition(position);
+    }
+    async setOrientation(orientation) {
+        quat.copy(this.orientation, orientation);
+        (await this.character?.getModel())?.setOrientation(orientation);
+    }
+}
+const DEFAULT_ORIENTATION = quat.fromValues(0, 0, -1, 1);
+const TOOLBOX_POSITION = vec3.fromValues(-71.0726394653, 195.8566589355, 0);
+const TOOLBOX_ORIENTATION = quat.fromValues(0, 0, -0.5927425026893616, 0.8053920269012451);
+class Tf2CharacterManager {
+    static #characterSlots = new Map([[loadoutScene, [new CharacterSlot()]]]); // = [new CharacterSlot()];
+    static #currentSlot = null;
+    static #unusedCharacters = [];
+    static #currentCharacter = new Map();
+    static #team = 'red';
+    static #slotsPositions = new Map();
+    static #applyToAll = true;
+    static #useBots = 'human';
+    static #presets = new Map();
+    static {
+        GraphicsEvents.addEventListener('tick', () => this.#updatePaintColor());
+        GraphicsEvents.addEventListener('pick', (event) => this.#pickedModel(event));
+        Tf2LoadoutController.addEventListener('setinvulnerable', (event) => { this.#setInvulnerable(event.detail.invulnerable, event.detail.scene); return; });
+        Tf2LoadoutController.addEventListener('setragdoll', (event) => { this.#setRagdoll(event.detail.ragdoll, event.detail.scene); return; });
+        Tf2LoadoutController.addEventListener('setanim', (event) => this.#setAnim(event.detail));
+        Tf2LoadoutController.addEventListener('setapplytoall', (event) => this.#applyToAll = event.detail);
+        Tf2LoadoutController.addEventListener('usebots', (event) => this.#useBots = event.detail);
+        Tf2LoadoutController.addEventListener('importpresets', (event) => { this.#importPresets(event.detail); });
+        Tf2LoadoutController.addEventListener('changeanimframe', (event) => { this.#changeAnimFrame(event.detail); });
+        OptionsManagerEvents.addEventListener('app.loadout.presets', (event) => this.#loadPresets(event.detail.value));
+        this.#initDispositions();
+    }
+    static async selectCharacter(characterClass, slotId, scene = loadoutScene) {
+        const slot = this.getSlot(slotId, scene);
+        if (slot.character?.characterClass == characterClass) {
+            slot.character.setVisible(true);
+            // the same character is selected again
+            return slot.character;
+        }
+        this.#removeCharacter(slot);
+        const character = this.#getUnusedCharacter(characterClass) ?? new Tf2Character(characterClass, scene);
+        slot.character = character;
+        // set the character visible
+        character.setVisible(true);
+        character.setTeam(this.#team);
+        const characterTemplate = Tf2CharactersList.get(characterClass);
+        if (characterTemplate) {
+            const modelName = characterTemplate.name;
+            character.loadModel(characterTemplate.path, modelName);
+            const model = await character.getModel();
+            if (model) {
+                model.sourceModel.mdl.addExternalMdl('models/player/loadout_tf/' + modelName.toLowerCase().replace(/bots\/[^\/]*\/bot_/, 'player/') + '_loadout_tf_animations.mdl');
+                if (model) {
+                    character.autoSelectAnim();
+                    //model.playSequence(startAnim);
+                    //model.setAnimation(0, startAnim, 1);
+                    model.setPosition(slot.position);
+                    model.setOrientation(slot.orientation);
+                }
+            }
+        }
+        this.#setCurrentCharacter(character, scene);
+        return character;
+    }
+    static removeCharacter(slotId, scene = loadoutScene) {
+        const slot = this.getSlot(slotId, scene);
+        this.#removeCharacter(slot);
+    }
+    static #getUnusedCharacter(characterClass) {
+        for (let i = 0; i < this.#unusedCharacters.length; i++) {
+            const character = this.#unusedCharacters[i];
+            if (character.characterClass == characterClass) {
+                this.#unusedCharacters.splice(i, 1);
+                return character;
+            }
+        }
+        return null;
+    }
+    static #setCurrentCharacter(character, scene = loadoutScene) {
+        this.#currentCharacter.set(scene, character);
+        //ItemManager.setCharacterClass(character.characterClass);
+        Tf2ItemManager.setCurrentCharacter(character);
+        //EffectManager.setCurrentCharacter(character);
+        Tf2LoadoutController.dispatchEvent('characterchanged', { detail: character });
+        (async () => {
+            const model = await character.getModel();
+            if (model) {
+                const selectedEntity = getSceneExplorer().getSelectedEntity();
+                if (!selectedEntity || !selectedEntity.isParent(model)) { // Only switch entity if not parent of currently selected entity
+                    getSceneExplorer().selectEntity(model);
+                }
+                model.getBoneByName('bip_head')?.addChild(firstPersonCamera);
+            }
+        })();
+    }
+    static #removeCharacter(slot) {
+        const character = slot?.character;
+        if (character) {
+            character.setVisible(false);
+            this.#unusedCharacters.push(character);
+            slot.character = null;
+        }
+    }
+    static getSlot(slotId, scene = loadoutScene) {
+        let slots = this.#characterSlots.get(scene);
+        if (!slots) {
+            slots = [new CharacterSlot()];
+            this.#characterSlots.set(scene, slots);
+        }
+        if (slotId !== undefined) {
+            const slot = slots[slotId];
+            if (slot) {
+                return slot;
+            }
+        }
+        for (const slot of slots) {
+            if (slot == this.#currentSlot || !slot.character || slot.character.characterClass == Tf2Class.None || slot.character.characterClass == Tf2Class.Empty || slot.character.characterClass == Tf2Class.CompareWarpaints) {
+                return slot;
+            }
+        }
+        return slots[slots.length - 1];
+    }
+    static setSlotsCount(size, removeExisting = false, scene = loadoutScene) {
+        const slots = this.#characterSlots.get(scene);
+        if (!slots) {
+            return;
+        }
+        size = Math.max(size, 1);
+        const removeStart = removeExisting ? 0 : size - 1;
+        for (let i = removeStart; i < slots.length; i++) {
+            this.#removeCharacter(slots[i]);
+        }
+        for (let i = slots.length; i < size; i++) {
+            slots.push(new CharacterSlot());
+        }
+    }
+    static async setTeam(team, scene = loadoutScene) {
+        const slots = this.#characterSlots.get(scene);
+        if (!slots) {
+            return;
+        }
+        this.#team = team;
+        if (this.#applyToAll) {
+            for (const slot of slots) {
+                if (slot) {
+                    await slot.character?.setTeam(team);
+                }
+            }
+        }
+        else {
+            const character = this.getCurrentCharacter(scene);
+            if (character) {
+                character.setTeam(team);
+            }
+        }
+    }
+    static getTeam() {
+        return this.#team;
+    }
+    static getCurrentCharacter(scene = loadoutScene) {
+        return this.#currentCharacter.get(scene) ?? null;
+    }
+    static setCustomTexture(itemId, customTextureName, scene = loadoutScene) {
+        const currentCharacter = this.getCurrentCharacter(scene);
+        if (currentCharacter) {
+            const item = currentCharacter.getItemById(itemId);
+            if (item) {
+                item.setCustomTexture(customTextureName);
+            }
+        }
+    }
+    ;
+    static #updatePaintColor() {
+        for (const [, slots] of this.#characterSlots) {
+            for (const slot of slots) {
+                if (slot) {
+                    slot.character?.updatePaintColor();
+                }
+            }
+        }
+    }
+    ;
+    static async #setInvulnerable(invulnerable, scene = loadoutScene) {
+        const slots = this.#characterSlots.get(scene);
+        if (!slots) {
+            return;
+        }
+        if (this.#applyToAll) {
+            for (const slot of slots) {
+                if (slot) {
+                    await slot.character?.setInvulnerable(invulnerable);
+                }
+            }
+        }
+        else {
+            await this.getCurrentCharacter(scene)?.setInvulnerable(invulnerable);
+        }
+    }
+    static async #setRagdoll(ragdoll, scene = loadoutScene) {
+        const slots = this.#characterSlots.get(scene);
+        if (!slots) {
+            return;
+        }
+        if (this.#applyToAll) {
+            for (const slot of slots) {
+                if (slot) {
+                    await slot.character?.setRagdoll(ragdoll);
+                }
+            }
+        }
+        else {
+            await this.getCurrentCharacter(scene)?.setRagdoll(ragdoll);
+        }
+    }
+    static #initDispositions() {
+        const dispositions = positionJSON.dispositions;
+        for (const key in dispositions) {
+            const slotPosition = dispositions[key];
+            const positions = [];
+            for (const position of slotPosition) {
+                positions.push({
+                    position: position.p,
+                    orientation: position.o,
+                });
+            }
+            this.#slotsPositions.set(key, positions);
+        }
+    }
+    static useDisposition(name, scene = loadoutScene) {
+        const slots = this.#characterSlots.get(scene);
+        if (!slots) {
+            return;
+        }
+        //console.info('use disposition: ', name)
+        const dispositions = this.#slotsPositions.get(String(name));
+        if (!dispositions) {
+            return;
+        }
+        this.setSlotsCount(dispositions.length, false, scene);
+        for (let i = 0; i < slots.length; i++) {
+            const slot = slots[i];
+            const disposition = dispositions[i];
+            if (disposition) {
+                slot.setPosition(disposition.position);
+                slot.setOrientation(disposition.orientation);
+                if (slot.character) {
+                    slot.character.getModel().then((model) => {
+                        model?.setPosition(disposition.position);
+                        model?.setOrientation(disposition.orientation);
+                    });
+                }
+            }
+        }
+    }
+    static async setupMeetTheTeam(scene = loadoutScene) {
+        this.setSlotsCount(9, true, scene);
+        this.useDisposition('mtt', scene);
+        let botDelta = 0;
+        if (this.#useBots === 'bot') {
+            botDelta = Tf2Class.ScoutBot;
+        }
+        else if (this.#useBots === 'infected') {
+            botDelta = Tf2Class.ScoutInfected;
+        }
+        await this.selectCharacter(Tf2Class.Pyro + botDelta, 0, scene);
+        const engy = await this.selectCharacter(Tf2Class.Engineer + botDelta, 1, scene);
+        await this.selectCharacter(Tf2Class.Spy + botDelta, 2, scene);
+        await this.selectCharacter(Tf2Class.Heavy + botDelta, 3, scene);
+        await this.selectCharacter(Tf2Class.Sniper + botDelta, 4, scene);
+        await this.selectCharacter(Tf2Class.Scout + botDelta, 5, scene);
+        await this.selectCharacter(Tf2Class.Soldier + botDelta, 6, scene);
+        await this.selectCharacter(Tf2Class.Demoman + botDelta, 7, scene);
+        await this.selectCharacter(Tf2Class.Medic + botDelta, 8, scene);
+        this.#selectAnim('meettheteam', true, false, scene);
+        const toolbox = await engy.addExtraModel(TF2_TOOLBOX_MODEL);
+        if (toolbox) {
+            toolbox.setPosition(TOOLBOX_POSITION);
+            toolbox.setOrientation(TOOLBOX_ORIENTATION);
+        }
+        Tf2LoadoutController.dispatchEvent('activatemeettheteammap');
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    static #selectAnim(anim, applyToAll, force = false, scene = loadoutScene) {
+        /*
+        if (!force && this.#htmlAnimSelector.value != '') {
+            return;
+        }
+        */
+        if (applyToAll) {
+            for (const [, slots] of this.#characterSlots) {
+                for (const slot of slots) {
+                    slot.character?.setUserAnim(anim);
+                }
+            }
+        }
+        else {
+            this.getCurrentCharacter(scene)?.setUserAnim(anim);
+        }
+    }
+    static #setAnim(anim, scene = loadoutScene) {
+        this.#selectAnim(anim, this.#applyToAll, false, scene);
+    }
+    static getAnimList(scene = loadoutScene) {
+        const currentClass = this.getCurrentCharacter(scene)?.characterClass ?? null;
+        if (currentClass !== null) {
+            return getTf2ClassAnimations(currentClass);
+        }
+        return null;
+    }
+    static #loadPresets(presets) {
+        const j = JSON.parse(presets);
+        this.#presets.clear();
+        //#presets = new Map<string, Presets>();
+        for (const name in j) {
+            //const preset = presets[name];
+            const p = new Tf2Presets();
+            p.fromJSON(j[name]);
+            this.#presets.set(name, p);
+        }
+        Tf2LoadoutController.dispatchEvent('presetsupdated');
+        //this.#updatePresetsPanel();
+    }
+    static loadPreset(name, scene = loadoutScene) {
+        const currentCharacter = this.getCurrentCharacter(scene);
+        if (!currentCharacter) {
+            return;
+        }
+        const npc = Tf2CharactersList.get(currentCharacter.characterClass).name;
+        const presets = this.#presets.get(npc);
+        if (!presets) {
+            return;
+        }
+        const preset = presets.getPreset(name);
+        if (!preset) {
+            return;
+        }
+        currentCharacter.loadPreset(preset);
+    }
+    static savePresets() {
+        const j = {};
+        for (const [name, presets] of this.#presets) {
+            //#presets = new Map<string, Presets>();
+            j[name] = presets.toJSON();
+        }
+        OptionsManager.setItem('app.loadout.presets', JSON.stringify(j));
+    }
+    static savePreset(name, scene = loadoutScene) {
+        const currentCharacter = this.getCurrentCharacter(scene);
+        if (!currentCharacter || name == '') {
+            return;
+        }
+        const npc = currentCharacter.npc;
+        let presets = this.#presets.get(npc);
+        if (!presets) {
+            presets = new Tf2Presets();
+            this.#presets.set(npc, presets);
+        }
+        if (!presets.selected && !name) {
+            return;
+        }
+        presets.addPreset(currentCharacter.savePreset(name ?? presets.selected));
+        if (name) {
+            presets.selected = name;
+        }
+        //#presets = new Map<string, Presets>();
+        this.savePresets();
+        //this.#updatePresetsPanel();
+        Tf2LoadoutController.dispatchEvent('presetsupdated');
+    }
+    static async #importPresets(files, scene = loadoutScene) {
+        for (const file of files) {
+            await this.#importPreset(file, scene);
+        }
+        Tf2LoadoutController.dispatchEvent('presetsupdated');
+    }
+    static async #importPreset(file, scene = loadoutScene) {
+        const currentCharacter = this.getCurrentCharacter(scene);
+        if (!currentCharacter) {
+            return;
+        }
+        let json;
+        try {
+            json = JSON.parse(await file.text());
+            if (!json) {
+                return;
+            }
+        }
+        catch (e) {
+            console.error(e);
+            return;
+        }
+        const npc = currentCharacter.npc;
+        let presets = this.#presets.get(npc);
+        if (!presets) {
+            presets = new Tf2Presets();
+            this.#presets.set(npc, presets);
+        }
+        const preset = new Tf2Preset();
+        preset.fromJSON(json);
+        if (!preset.name || presets.getPreset(preset.name)) {
+            preset.name = this.createPresetName(scene);
+        }
+        presets.addPreset(preset);
+    }
+    static createPresetName(scene = loadoutScene) {
+        const currentCharacter = this.getCurrentCharacter(scene);
+        if (!currentCharacter) {
+            return '';
+        }
+        function* nameGenerator() {
+            let gen;
+            try {
+                const names = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                let subName = '';
+                while (true) {
+                    if (gen) {
+                        subName = gen.next().value;
+                    }
+                    for (const name of names) {
+                        yield subName + name;
+                    }
+                    if (!gen) {
+                        gen = nameGenerator();
+                    }
+                }
+            }
+            finally {
+                gen?.return('');
+            }
+        }
+        const gen = nameGenerator();
+        const npc = Tf2CharactersList.get(currentCharacter.characterClass).name;
+        const presets = this.#presets.get(npc);
+        if (!presets) {
+            return gen.next().value;
+        }
+        while (true) {
+            const name = gen.next().value;
+            if (!name) {
+                continue;
+            }
+            if (!presets.getPreset(name)) {
+                gen.return('');
+                return name;
+            }
+        }
+    }
+    /*
+    static setSelectedPreset(preset: string): void {
+        if (!this.#currentCharacter) {
+            return;
+        }
+        const npc = CharactersList.get(this.#currentCharacter?.characterClass)!.name
+        const presets = this.#presets.get(npc);
+        if (presets) {
+            presets.selected = preset;
+        }
+    }
+    */
+    static getPresets(scene = loadoutScene) {
+        const currentCharacter = this.getCurrentCharacter(scene);
+        if (!currentCharacter) {
+            return null;
+        }
+        const npc = Tf2CharactersList.get(currentCharacter.characterClass)?.name;
+        if (!npc) {
+            return null;
+        }
+        return this.#presets.get(npc) ?? null;
+    }
+    static getCharacters(scene = loadoutScene) {
+        const slots = this.#characterSlots.get(scene);
+        const characters = new Set();
+        if (slots) {
+            for (const slot of slots) {
+                if (slot.character) {
+                    characters.add(slot.character);
+                }
+            }
+        }
+        return characters;
+    }
+    static async #changeAnimFrame(frame, scene = loadoutScene) {
+        const source1Model = await this.getCurrentCharacter(scene)?.getModel();
+        if (source1Model) {
+            const sequence = source1Model.sequences[Object.keys(source1Model.sequences)[0]];
+            if (sequence) {
+                source1Model.frame = frame * (sequence.s?.length ?? 1);
+            }
+        }
+    }
+    static getSlotsPositions() {
+        return this.#slotsPositions;
+    }
+    static refreshCustomDisposition(customDisposition, scene = loadoutScene) {
+        const positions = [];
+        const deltaX = 40;
+        const deltaY = 50;
+        const deltaZ = 80;
+        const startX = -deltaX * 0.5 * (customDisposition.countX - 1);
+        const startY = -deltaY * 0.5 * (customDisposition.countY - 1);
+        const startZ = -deltaZ * 0.5 * (customDisposition.countZ - 1);
+        this.setSlotsCount(customDisposition.countX * customDisposition.countY * customDisposition.countZ, false, scene);
+        for (let x = 0; x < customDisposition.countX; x++) {
+            for (let y = 0; y < customDisposition.countY; y++) {
+                for (let z = 0; z < customDisposition.countZ; z++) {
+                    positions.push({
+                        //origin: [0, deltaY * ((x % 2) * -2 + 1) * Math.floor((x + 1) / 2), 0],
+                        position: [
+                            startX + x * deltaX,
+                            startY + y * deltaY,
+                            startZ + z * deltaZ,
+                        ],
+                        orientation: [0, 0, -1, 1],
+                    });
+                }
+            }
+        }
+        this.#slotsPositions.set('custom', positions);
+        //this.#setCharactersPositions(new CharactersPositions(positions, true));
+        this.useDisposition('custom', scene);
+    }
+    static #pickedModel(pickEvent) {
+        const model = pickEvent.detail.entity;
+        if (model) {
+            this.#selectCharacterPerDynamicProp(model);
+        }
+    }
+    static async #selectCharacterPerDynamicProp(prop, scene = loadoutScene) {
+        const slots = this.#characterSlots.get(scene);
+        if (!slots) {
+            return;
+        }
+        for (const slot of slots) {
+            if (!slot.character) {
+                continue;
+            }
+            const characterModel = await slot.character?.getModel();
+            let currentEntity = prop;
+            while (currentEntity) {
+                if (characterModel == currentEntity) {
+                    this.#currentSlot = slot;
+                    this.#setCurrentCharacter(slot.character, scene);
+                    return;
+                }
+                currentEntity = currentEntity.parent;
+            }
+        }
+    }
+}
+
+export { ACCURATE_SKINS_EXTENSION_LINK, ACE_EDITOR_URI, ALYX_REPOSITORY, BROADCAST_CHANNEL_NAME, CHARACTERS_SKINS, COIN_SPIN_EFFECT, COMMUNITY_SPARKLE_EFFECT, COMPARE_WARPAINTS_LAYOUT, CSGO_REPOSITORY, CameraType, ClassRemovablePartsOff, DEADLOCK_REPOSITORY, DEFAULT_ACTIVITY, DOTA2_REPOSITORY, Dota2AssetModifier, Dota2Hero, Dota2HeroTemplate, Dota2HeroTemplates, Dota2Item, Dota2ItemManager, Dota2ItemTemplate, Dota2ItemTemplates, Dota2LoadoutController, Dota2Units, EFFECTS_BLU, EFFECTS_RED, ENTITY_FLYING_BIRD_SPEED_MAX, ENTITY_FLYING_BIRD_SPEED_MIN, FIRST_LEGACY_WARPAINT, HTML_NAMESPACE_URI, ItemFilterAttribute, Killstreak, KillstreakColor, LAST_LEGACY_WARPAINT, LOADOUT_DISPOSITIONS_URL, LOADOUT_LAYOUT, LOW_QUALITY_TEXTURE_SIZE, MAIN_CANVAS, MATERIAL_GOLD_RAGDOLL, MATERIAL_ICE_RAGDOLL, MATERIAL_INVULN_BLU, MATERIAL_INVULN_RED, MAX_UNUSUAL_EFFECTS_PER_CHARACTER, MEDIC_RELEASE_DOVE_COUNT, MID_QUALITY_TEXTURE_SIZE, Paint, Paints, RECORDER_DEFAULT_FILENAME, SCOUT_BLUE_PANTS_DEST, SCOUT_BLUE_PANTS_ORIGIN, SFM_DEFAULT_ANIMATION_GROUPS_URL, SFM_WORKSHOP_UGC_URL, SHADERTOY_DIRECTORY, SHADERTOY_VIEW_URL, SHARE_LOADOUT_URL, SNIPPET_URL, STEAM_DEFAULT_PROFILE_URL, STEAM_ECONOMY_IMAGE_PREFIX, STEAM_PROFILE_URL, STEAM_WORKSHOP_URL, SfmSortField, TESTING_LOADOUT_ID, TF2_CASUAL_BADGE, TF2_COMPETITIVE_STAGE, TF2_DOVE_MODEL, TF2_GROUP_URL, TF2_MAP_LIST_URL, TF2_REPOSITORY, TF2_TOOLBOX_MODEL, TF2_WARPAINT_DEFINITIONS_URL, TF2_WARPAINT_ENGLISH_URL, TF2_WARPAINT_PICTURES_URL, Tf2Character, Tf2CharacterManager, Tf2CharactersList, Tf2Class, Tf2Effect, Tf2EffectTemplate, Tf2EffectType, Tf2Item, Tf2ItemManager, Tf2ItemTemplate, Tf2LoadoutController, Tf2Preset, Tf2PresetEffect, Tf2PresetEffectType, Tf2PresetItem, Tf2Presets, UNUSUALS_IMAGES_DIR, WORKSHOP_REPO, WORKSHOP_UGC_IMG_PREFIX, WORKSHOP_UGC_URL, WORKSHOP_URL, baseAnimDataPath, baseClassTexturePath, colorToCss, colorToVec3, colorToVec4, getKillstreak, getKillstreakColor, getPaint, getPaintByTint, getPersonaId, getTf2TeamId, inventoryPath, killstreakList, npcToClass, paintList, positionJSON, randomProperty, setUpdatePreview, startAnim, updatePreview, weaponEffects };
