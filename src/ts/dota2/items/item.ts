@@ -43,7 +43,6 @@ export class Dota2Item {
 			this.#model.playSequence('ACT_DOTA_IDLE');
 			this.#model.skin = this.skin;
 		}
-		//loadoutScene.addChild(this.#model);
 		return this.#model;
 	}
 

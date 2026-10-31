@@ -1,5 +1,5 @@
 import { vec3, quat, vec4, vec2 } from 'gl-matrix';
-import { Source2ModelManager, Source2ParticleManager, Group, stringToVec3, Source1ModelManager, Graphics, TextureManager, Color as Color$1, NodeParamOrigin, Source1TextureManager, NodeEventType, DEG_TO_RAD, DEFAULT_TEXTURE_SIZE, NodeImageEditor, Source1MaterialManager, AnimatedTexture, Repositories, WebRepository, VcdParser, ChoreographiesManager, Source1ParticleControler, GraphicsEvents, ChoreographyEventType, Property, Source1SoundManager, RandomFloat, Scene, ColorBackground, Camera, OrbitControl, FirstPersonControl, SceneExplorer, PointLight, getSceneExplorer } from 'harmony-3d';
+import { Source2ModelManager, Source2ParticleManager, Group, stringToVec3, Source1ModelManager, Graphics, TextureManager, Color as Color$1, NodeParamOrigin, Source1TextureManager, NodeEventType, DEG_TO_RAD, DEFAULT_TEXTURE_SIZE, NodeImageEditor, Source1MaterialManager, AnimatedTexture, Repositories, WebRepository, VcdParser, ChoreographiesManager, Source1ParticleControler, GraphicsEvents, ChoreographyEventType, Property, Source1SoundManager, RandomFloat, getSceneExplorer } from 'harmony-3d';
 import { OptionsManager, OptionsManagerEvents } from 'harmony-browser-utils';
 
 var CameraType;
@@ -101,7 +101,6 @@ class Dota2Item {
             this.#model.playSequence('ACT_DOTA_IDLE');
             this.#model.skin = this.skin;
         }
-        //loadoutScene.addChild(this.#model);
         return this.#model;
     }
     async playSequence(sequenceName) {
@@ -9012,14 +9011,6 @@ class Tf2Item {
         else {
             this.#readyPromiseResolve(false);
         }
-        //this.#model.setVisible(this.#visible);
-        /*
-        if (this.#character) {
-            (await this.#character.getModel())?.addChild(this.#model);
-        } else {
-            loadoutScene.addChild(this.#model);
-        }
-        */
     }
     async attachSystems(npc) {
         if (!this.#model) {
@@ -10453,59 +10444,6 @@ class Tf2Character {
 
 var dispositions={"1":[{p:[0,0,0],o:[0,0,-1,1]}],"2":[{p:[-20,0,0],o:[0,0,-1,1]},{p:[20,0,0],o:[0,0,-1,1]}],"3":[{p:[-40,0,0],o:[0,0,-1,1]},{p:[0,0,0],o:[0,0,-1,1]},{p:[40,0,0],o:[0,0,-1,1]}],"4":[{p:[-60,0,0],o:[0,0,-1,1]},{p:[-20,0,0],o:[0,0,-1,1]},{p:[20,0,0],o:[0,0,-1,1]},{p:[60,0,0],o:[0,0,-1,1]}],"5":[{p:[-80,0,0],o:[0,0,-1,1]},{p:[-40,0,0],o:[0,0,-1,1]},{p:[0,0,0],o:[0,0,-1,1]},{p:[40,0,0],o:[0,0,-1,1]},{p:[80,0,0],o:[0,0,-1,1]}],"6":[{p:[-100,0,0],o:[0,0,-1,1]},{p:[-60,0,0],o:[0,0,-1,1]},{p:[-20,0,0],o:[0,0,-1,1]},{p:[20,0,0],o:[0,0,-1,1]},{p:[60,0,0],o:[0,0,-1,1]},{p:[100,0,0],o:[0,0,-1,1]}],"7":[{p:[-120,0,0],o:[0,0,-1,1]},{p:[-80,0,0],o:[0,0,-1,1]},{p:[-40,0,0],o:[0,0,-1,1]},{p:[0,0,0],o:[0,0,-1,1]},{p:[40,0,0],o:[0,0,-1,1]},{p:[80,0,0],o:[0,0,-1,1]},{p:[120,0,0],o:[0,0,-1,1]}],"8":[{p:[-140,0,0],o:[0,0,-1,1]},{p:[-100,0,0],o:[0,0,-1,1]},{p:[-60,0,0],o:[0,0,-1,1]},{p:[-20,0,0],o:[0,0,-1,1]},{p:[20,0,0],o:[0,0,-1,1]},{p:[60,0,0],o:[0,0,-1,1]},{p:[100,0,0],o:[0,0,-1,1]},{p:[140,0,0],o:[0,0,-1,1]}],"9":[{p:[-160,0,0],o:[0,0,-1,1]},{p:[-120,0,0],o:[0,0,-1,1]},{p:[-80,0,0],o:[0,0,-1,1]},{p:[-40,0,0],o:[0,0,-1,1]},{p:[0,0,0],o:[0,0,-1,1]},{p:[40,0,0],o:[0,0,-1,1]},{p:[80,0,0],o:[0,0,-1,1]},{p:[120,0,0],o:[0,0,-1,1]},{p:[160,0,0],o:[0,0,-1,1]}],mtt:[{p:[-100.2281036377,198.9871826172,0],o:[0,0,0.7659834027290344,-0.6428603529930115]},{p:[-75.0726394653,213.8566589355,0],o:[0,0,0.649108350276947,-0.7606959939002991]},{p:[-42.7902297974,191.040435791,0],o:[0,0,0.8473811149597168,-0.5309851169586182]},{p:[-12.7672653198,168.1013031006,0],o:[0,0,0.8095924258232117,-0.5869923830032349]},{p:[13.5784225464,184.4625854492,0],o:[0,0,1,-1]},{p:[24.4398727417,144.8651275635,0],o:[0,0,0.6889068484306335,-0.7248498797416687]},{p:[45.6801071167,199.4777526855,0],o:[0,0,1,-1]},{p:[67.8846969604,162.6588745117,0],o:[0,0,-0.8936024904251099,0.4488592743873596]},{p:[90.9413299561,182.8147583008,0],o:[0,0,1,-1]}],mtt2:[{p:[-80.2281036377,8.9871826172,0],o:[0,0,0.7659834027290344,-0.6428603529930115]},{p:[-55.0726394653,23.8566589355,0],o:[0,0,0.649108350276947,-0.7606959939002991]},{p:[-22.7902297974,1.040435791,0],o:[0,0,0.8473811149597168,-0.5309851169586182]},{p:[8.7672653198,-22.1013031006,0],o:[0,0,0.8095924258232117,-0.5869923830032349]},{p:[33.5784225464,-6.4625854492,0],o:[0,0,1,-1]},{p:[44.4398727417,-46.8651275635,0],o:[0,0,0.6889068484306335,-0.7248498797416687]},{p:[65.6801071167,9.4777526855,0],o:[0,0,1,-1]},{p:[87.8846969604,-28.6588745117,0],o:[0,0,-0.8936024904251099,0.4488592743873596]},{p:[110.9413299561,-8.8147583008,0],o:[0,0,1,-1]}]};var positionJSON = {dispositions:dispositions};
 
-const loadoutScene = new Scene();
-const loadoutColorBackground = new ColorBackground();
-const orbitCamera = new Camera({ name: 'Orbit camera', nearPlane: 10, farPlane: 5000, autoResize: true });
-const firstPersonCamera = new Camera({
-    nearPlane: 5,
-    farPlane: 1000,
-    verticalFov: 90,
-    name: 'First person camera',
-    autoResize: true,
-    position: [0, 5, -7],
-    quaternion: [0, 0, 1, 0],
-});
-const orbitCameraControl = new OrbitControl(orbitCamera);
-const firstPersonCameraControl = new FirstPersonControl(orbitCamera);
-firstPersonCameraControl.movementSpeed = 100;
-firstPersonCameraControl.lookSpeed = 0.1;
-loadoutScene.addChild(orbitCameraControl.target);
-new Group({ name: 'Lights' });
-setActiveCamera(CameraType.Orbit);
-new SceneExplorer().setScene(loadoutScene);
-loadoutScene.activeCamera = orbitCamera;
-loadoutScene.addChild(orbitCamera);
-loadoutScene.background = loadoutColorBackground;
-const mapLightsContainer = new Group({ name: 'Photo studio lights', parent: loadoutScene, visible: false });
-for (let i = 0; i < 3; ++i) {
-    new PointLight({ name: 'Photo studio point light ' + i, position: [i * 200 - 200, -200, 50], range: 700, parent: mapLightsContainer });
-}
-function setActiveCamera(cameraType) {
-    let camera;
-    switch (cameraType) {
-        case CameraType.Orbit:
-            camera = orbitCamera;
-            setActiveCameraControl(orbitCameraControl);
-            break;
-        case CameraType.FreeFly:
-            camera = orbitCamera;
-            setActiveCameraControl(firstPersonCameraControl);
-            break;
-        case CameraType.FirstPerson:
-            camera = firstPersonCamera;
-            setActiveCameraControl(null);
-            break;
-    }
-    camera.setActiveCamera();
-}
-function setActiveCameraControl(control) {
-    firstPersonCameraControl.enabled = false;
-    orbitCameraControl.enabled = false;
-    if (control) {
-        control.enabled = true;
-    }
-}
-
 var character$i="demoman";var animations$h={"#animation_taunt_primary":{name:"Taunt primary",file:"taunt02"},"#animation_taunt_secondary":{name:"Taunt secondary",file:"taunt01"},"#animation_taunt_melee":{name:"Taunt melee",file:"taunt03"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_SECONDARY"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_PRIMARY"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_sword":{name:"Stand sword",file:"stand_ITEM1"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_marketing_pose_001":{name:"Marketing pose 1",file:"demo_marketing_pose_001"},"#animation_marketing_pose_002":{name:"Marketing pose 2",file:"demo_marketing_pose_002"},"#animation_marketing_pose_003":{name:"Marketing pose 3",file:"demo_marketing_pose_003"},"#animation_marketing_pose_004":{name:"Marketing pose 4",file:"demo_marketing_pose_004"},"#animation_melee_stance":{name:"Melee stance",file:"demo_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#layer_secondary_stun_middle":{name:"Stun",file:"layer_secondary_stun_middle"},"#ref":{name:"Reference",file:"ref"}};var bot_demoman = {character:character$i,animations:animations$h};
 
 var character$h="engineer";var animations$g={"#animation_taunt_primary":{name:"Taunt primary",file:"layer_taunt01"},"#animation_taunt_secondary":{name:"Taunt secondary",file:"layer_taunt02"},"#animation_taunt_melee":{name:"Taunt melee",file:"layer_taunt03"},"#animation_taunt_guitar":{name:"Taunt guitar",file:"layer_taunt07"},"#animation_taunt_gunslinger":{name:"Taunt Gunslinger",file:"layer_taunt09"},"#animation_taunt_eureka_effect":{name:"Taunt Eureka Effect",file:"layer_taunt_drg_melee"},"#animation_taunt_high_five":{name:"Taunt high five",file:"taunt_hifiveSuccessFull"},"#animation_taunt_halloween":{name:"Taunt halloween",file:"taunt06"},"#animation_selection_menu":{name:"Selection menu",file:"SelectionMenu_Idle"},"#animation_die_backstab":{name:"Die backstab",file:"primary_death_backstab"},"#animation_die_headshot":{name:"Die headshot",file:"primary_death_headshot"},"#animation_stand_primary":{name:"Stand primary",file:"stand_PRIMARY"},"#animation_stand_secondary":{name:"Stand secondary",file:"stand_SECONDARY"},"#animation_stand_melee":{name:"Stand melee",file:"stand_MELEE"},"#animation_stand_melee_all_class":{name:"Stand melee all class",file:"stand_MELEE_ALLCLASS"},"#animation_stand_wrangler":{name:"Stand wrangler",file:"stand_ITEM1"},"#animation_stand_gunslinger":{name:"Stand Gunslinger",file:"stand_ITEM2"},"#animation_stand_PDA":{name:"Stand PDA",file:"stand_PDA"},"#animation_stand_toolbox":{name:"Stand toolbox",file:"stand_BUILDING"},"#animation_stand_toolbox_deployed":{name:"Stand toolbox deployed",file:"stand_BUILDING_DEPLOYED"},"#animation_stand_loser":{name:"Stand loser",file:"stand_LOSER"},"#animation_crouch_primary":{name:"Crouch primary",file:"crouch_PRIMARY"},"#animation_crouch_secondary":{name:"Crouch secondary",file:"crouch_SECONDARY"},"#animation_crouch_wrangler":{name:"Crouch wrangler",file:"crouch_ITEM1"},"#animation_crouch_melee":{name:"Crouch melee",file:"crouch_MELEE"},"#animation_crouch_melee_all_class":{name:"Crouch melee all class",file:"crouch_MELEE_ALLCLASS"},"#animation_crouch_gunslinger":{name:"Crouch Gunslinger",file:"crouch_ITEM2"},"#animation_crouch_pda":{name:"Crouch PDA",file:"crouch_PDA"},"#animation_crouch_toolbox":{name:"Crouch toolbox",file:"crouch_BUILDING"},"#animation_crouch_toolbox_deployed":{name:"Crouch toolbox deployed",file:"crouch_BUILDING_DEPLOYED"},"#animation_crouch_loser":{name:"Crouch loser",file:"crouch_LOSER"},"#animation_taunt_dosido_dance":{name:"Taunt dosido dance",file:"layer_taunt_dosido_dance"},"#animation_taunt_flip_initiator":{name:"Taunt flip initiator",file:"layer_taunt_flip_success_initiator"},"#animation_taunt_flip_receiver":{name:"Taunt flip receiver",file:"layer_taunt_flip_success_receiver"},"#animation_taunt_headbutt":{name:"Headbutt",file:"layer_taunt_headbutt_success"},"#animation_taunt_rps_rock":{name:"Taunt rps Rock",file:"layer_taunt_rps_rock"},"#animation_taunt_rps_paper":{name:"Taunt rps Paper",file:"layer_taunt_rps_paper"},"#animation_taunt_rps_scissors":{name:"Taunt rps Scissors",file:"taunt_rps_scissors"},"#animation_taunt_rps_paper_lose":{name:"Taunt rps lose",file:"layer_taunt_rps_paper_lose"},"#animation_taunt_rps_paper_win":{name:"Taunt rps win",file:"layer_taunt_rps_paper_win"},"#animation_competitive_winner":{name:"Competitive winner",file:"competitive_winnerstate_idle"},"#animation_competitive_loserstate":{name:"Competitive loser",file:"competitive_loserstate_idle"},"#animation_melee_stance":{name:"Melee stance",file:"engineer_melee_stance"},"#animation_meet_the_team":{name:"Meet the team",file:"meettheteam"},"#taunt_cyoa_PDA_intro":{name:"ConTracker open",file:"taunt_cyoa_PDA_intro"},"#taunt_cyoa_PDA_idle":{name:"ConTracker idle",file:"taunt_cyoa_PDA_idle"},"#taunt_cyoa_PDA_outro":{name:"ConTracker close",file:"taunt_cyoa_PDA_outro"},"#layer_primary_stun_middle":{name:"Stun",file:"layer_primary_stun_middle"},"#ref":{name:"Reference",file:"ref"}};var bot_engineer = {character:character$h,animations:animations$g};
@@ -10583,7 +10521,7 @@ const DEFAULT_ORIENTATION = quat.fromValues(0, 0, -1, 1);
 const TOOLBOX_POSITION = vec3.fromValues(-71.0726394653, 195.8566589355, 0);
 const TOOLBOX_ORIENTATION = quat.fromValues(0, 0, -0.5927425026893616, 0.8053920269012451);
 class Tf2CharacterManager {
-    static #characterSlots = new Map([[loadoutScene, [new CharacterSlot()]]]); // = [new CharacterSlot()];
+    static #characterSlots = new Map();
     static #currentSlot = null;
     static #unusedCharacters = [];
     static #currentCharacter = new Map();
@@ -10592,21 +10530,30 @@ class Tf2CharacterManager {
     static #applyToAll = true;
     static #useBots = 'human';
     static #presets = new Map();
+    static #scene;
+    static #firstPersonCamera;
     static {
         GraphicsEvents.addEventListener('tick', () => this.#updatePaintColor());
         GraphicsEvents.addEventListener('pick', (event) => this.#pickedModel(event));
-        Tf2LoadoutController.addEventListener('setinvulnerable', (event) => { this.#setInvulnerable(event.detail.invulnerable, event.detail.scene); return; });
-        Tf2LoadoutController.addEventListener('setragdoll', (event) => { this.#setRagdoll(event.detail.ragdoll, event.detail.scene); return; });
-        Tf2LoadoutController.addEventListener('setanim', (event) => this.#setAnim(event.detail));
-        Tf2LoadoutController.addEventListener('setapplytoall', (event) => this.#applyToAll = event.detail);
-        Tf2LoadoutController.addEventListener('usebots', (event) => this.#useBots = event.detail);
-        Tf2LoadoutController.addEventListener('importpresets', (event) => { this.#importPresets(event.detail); });
-        Tf2LoadoutController.addEventListener('changeanimframe', (event) => { this.#changeAnimFrame(event.detail); });
+        Tf2LoadoutController.addEventListener('setinvulnerable', event => { this.#setInvulnerable(event.detail.invulnerable, event.detail.scene); return; });
+        Tf2LoadoutController.addEventListener('setragdoll', event => { this.#setRagdoll(event.detail.ragdoll, event.detail.scene); return; });
+        Tf2LoadoutController.addEventListener('setanim', (event) => this.#setAnim(event.detail.anim, event.detail.scene));
+        Tf2LoadoutController.addEventListener('setapplytoall', event => this.#applyToAll = event.detail);
+        Tf2LoadoutController.addEventListener('usebots', event => this.#useBots = event.detail);
+        Tf2LoadoutController.addEventListener('importpresets', (event) => { this.#importPresets(event.detail.files, event.detail.scene); });
+        Tf2LoadoutController.addEventListener('changeanimframe', event => { this.#changeAnimFrame(event.detail.frame, event.detail.scene); });
         OptionsManagerEvents.addEventListener('app.loadout.presets', (event) => this.#loadPresets(event.detail.value));
         this.#initDispositions();
     }
-    static async selectCharacter(characterClass, slotId, scene = loadoutScene) {
-        const slot = this.getSlot(slotId, scene);
+    static setScene(scene) {
+        this.#scene = scene;
+        this.#characterSlots.set(scene, [new CharacterSlot()]);
+    }
+    static setFirstPersonCamera(camera) {
+        this.#firstPersonCamera = camera;
+    }
+    static async selectCharacter(characterClass, scene, slotId) {
+        const slot = this.getSlot(scene, slotId);
         if (slot.character?.characterClass == characterClass) {
             slot.character.setVisible(true);
             // the same character is selected again
@@ -10637,8 +10584,8 @@ class Tf2CharacterManager {
         this.#setCurrentCharacter(character, scene);
         return character;
     }
-    static removeCharacter(slotId, scene = loadoutScene) {
-        const slot = this.getSlot(slotId, scene);
+    static removeCharacter(scene, slotId) {
+        const slot = this.getSlot(scene, slotId);
         this.#removeCharacter(slot);
     }
     static #getUnusedCharacter(characterClass) {
@@ -10651,7 +10598,7 @@ class Tf2CharacterManager {
         }
         return null;
     }
-    static #setCurrentCharacter(character, scene = loadoutScene) {
+    static #setCurrentCharacter(character, scene) {
         this.#currentCharacter.set(scene, character);
         //ItemManager.setCharacterClass(character.characterClass);
         Tf2ItemManager.setCurrentCharacter(character);
@@ -10664,7 +10611,7 @@ class Tf2CharacterManager {
                 if (!selectedEntity || !selectedEntity.isParent(model)) { // Only switch entity if not parent of currently selected entity
                     getSceneExplorer().selectEntity(model);
                 }
-                model.getBoneByName('bip_head')?.addChild(firstPersonCamera);
+                model.getBoneByName('bip_head')?.addChild(this.#firstPersonCamera);
             }
         })();
     }
@@ -10676,7 +10623,7 @@ class Tf2CharacterManager {
             slot.character = null;
         }
     }
-    static getSlot(slotId, scene = loadoutScene) {
+    static getSlot(scene, slotId) {
         let slots = this.#characterSlots.get(scene);
         if (!slots) {
             slots = [new CharacterSlot()];
@@ -10695,7 +10642,7 @@ class Tf2CharacterManager {
         }
         return slots[slots.length - 1];
     }
-    static setSlotsCount(size, removeExisting = false, scene = loadoutScene) {
+    static setSlotsCount(size, removeExisting = false, scene) {
         const slots = this.#characterSlots.get(scene);
         if (!slots) {
             return;
@@ -10709,7 +10656,7 @@ class Tf2CharacterManager {
             slots.push(new CharacterSlot());
         }
     }
-    static async setTeam(team, scene = loadoutScene) {
+    static async setTeam(team, scene) {
         const slots = this.#characterSlots.get(scene);
         if (!slots) {
             return;
@@ -10732,10 +10679,10 @@ class Tf2CharacterManager {
     static getTeam() {
         return this.#team;
     }
-    static getCurrentCharacter(scene = loadoutScene) {
+    static getCurrentCharacter(scene) {
         return this.#currentCharacter.get(scene) ?? null;
     }
-    static setCustomTexture(itemId, customTextureName, scene = loadoutScene) {
+    static setCustomTexture(itemId, customTextureName, scene) {
         const currentCharacter = this.getCurrentCharacter(scene);
         if (currentCharacter) {
             const item = currentCharacter.getItemById(itemId);
@@ -10755,7 +10702,7 @@ class Tf2CharacterManager {
         }
     }
     ;
-    static async #setInvulnerable(invulnerable, scene = loadoutScene) {
+    static async #setInvulnerable(invulnerable, scene) {
         const slots = this.#characterSlots.get(scene);
         if (!slots) {
             return;
@@ -10771,7 +10718,7 @@ class Tf2CharacterManager {
             await this.getCurrentCharacter(scene)?.setInvulnerable(invulnerable);
         }
     }
-    static async #setRagdoll(ragdoll, scene = loadoutScene) {
+    static async #setRagdoll(ragdoll, scene) {
         const slots = this.#characterSlots.get(scene);
         if (!slots) {
             return;
@@ -10801,7 +10748,7 @@ class Tf2CharacterManager {
             this.#slotsPositions.set(key, positions);
         }
     }
-    static useDisposition(name, scene = loadoutScene) {
+    static useDisposition(name, scene) {
         const slots = this.#characterSlots.get(scene);
         if (!slots) {
             return;
@@ -10827,7 +10774,7 @@ class Tf2CharacterManager {
             }
         }
     }
-    static async setupMeetTheTeam(scene = loadoutScene) {
+    static async setupMeetTheTeam(scene) {
         this.setSlotsCount(9, true, scene);
         this.useDisposition('mtt', scene);
         let botDelta = 0;
@@ -10837,15 +10784,15 @@ class Tf2CharacterManager {
         else if (this.#useBots === 'infected') {
             botDelta = Tf2Class.ScoutInfected;
         }
-        await this.selectCharacter(Tf2Class.Pyro + botDelta, 0, scene);
-        const engy = await this.selectCharacter(Tf2Class.Engineer + botDelta, 1, scene);
-        await this.selectCharacter(Tf2Class.Spy + botDelta, 2, scene);
-        await this.selectCharacter(Tf2Class.Heavy + botDelta, 3, scene);
-        await this.selectCharacter(Tf2Class.Sniper + botDelta, 4, scene);
-        await this.selectCharacter(Tf2Class.Scout + botDelta, 5, scene);
-        await this.selectCharacter(Tf2Class.Soldier + botDelta, 6, scene);
-        await this.selectCharacter(Tf2Class.Demoman + botDelta, 7, scene);
-        await this.selectCharacter(Tf2Class.Medic + botDelta, 8, scene);
+        await this.selectCharacter(Tf2Class.Pyro + botDelta, scene, 0);
+        const engy = await this.selectCharacter(Tf2Class.Engineer + botDelta, scene, 1);
+        await this.selectCharacter(Tf2Class.Spy + botDelta, scene, 2);
+        await this.selectCharacter(Tf2Class.Heavy + botDelta, scene, 3);
+        await this.selectCharacter(Tf2Class.Sniper + botDelta, scene, 4);
+        await this.selectCharacter(Tf2Class.Scout + botDelta, scene, 5);
+        await this.selectCharacter(Tf2Class.Soldier + botDelta, scene, 6);
+        await this.selectCharacter(Tf2Class.Demoman + botDelta, scene, 7);
+        await this.selectCharacter(Tf2Class.Medic + botDelta, scene, 8);
         this.#selectAnim('meettheteam', true, false, scene);
         const toolbox = await engy.addExtraModel(TF2_TOOLBOX_MODEL);
         if (toolbox) {
@@ -10855,7 +10802,7 @@ class Tf2CharacterManager {
         Tf2LoadoutController.dispatchEvent('activatemeettheteammap');
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    static #selectAnim(anim, applyToAll, force = false, scene = loadoutScene) {
+    static #selectAnim(anim, applyToAll, force = false, scene) {
         /*
         if (!force && this.#htmlAnimSelector.value != '') {
             return;
@@ -10872,10 +10819,10 @@ class Tf2CharacterManager {
             this.getCurrentCharacter(scene)?.setUserAnim(anim);
         }
     }
-    static #setAnim(anim, scene = loadoutScene) {
+    static #setAnim(anim, scene) {
         this.#selectAnim(anim, this.#applyToAll, false, scene);
     }
-    static getAnimList(scene = loadoutScene) {
+    static getAnimList(scene) {
         const currentClass = this.getCurrentCharacter(scene)?.characterClass ?? null;
         if (currentClass !== null) {
             return getTf2ClassAnimations(currentClass);
@@ -10895,7 +10842,7 @@ class Tf2CharacterManager {
         Tf2LoadoutController.dispatchEvent('presetsupdated');
         //this.#updatePresetsPanel();
     }
-    static loadPreset(name, scene = loadoutScene) {
+    static loadPreset(name, scene) {
         const currentCharacter = this.getCurrentCharacter(scene);
         if (!currentCharacter) {
             return;
@@ -10919,7 +10866,7 @@ class Tf2CharacterManager {
         }
         OptionsManager.setItem('app.loadout.presets', JSON.stringify(j));
     }
-    static savePreset(name, scene = loadoutScene) {
+    static savePreset(scene, name) {
         const currentCharacter = this.getCurrentCharacter(scene);
         if (!currentCharacter || name == '') {
             return;
@@ -10942,13 +10889,13 @@ class Tf2CharacterManager {
         //this.#updatePresetsPanel();
         Tf2LoadoutController.dispatchEvent('presetsupdated');
     }
-    static async #importPresets(files, scene = loadoutScene) {
+    static async #importPresets(files, scene) {
         for (const file of files) {
             await this.#importPreset(file, scene);
         }
         Tf2LoadoutController.dispatchEvent('presetsupdated');
     }
-    static async #importPreset(file, scene = loadoutScene) {
+    static async #importPreset(file, scene) {
         const currentCharacter = this.getCurrentCharacter(scene);
         if (!currentCharacter) {
             return;
@@ -10977,7 +10924,7 @@ class Tf2CharacterManager {
         }
         presets.addPreset(preset);
     }
-    static createPresetName(scene = loadoutScene) {
+    static createPresetName(scene) {
         const currentCharacter = this.getCurrentCharacter(scene);
         if (!currentCharacter) {
             return '';
@@ -11032,7 +10979,7 @@ class Tf2CharacterManager {
         }
     }
     */
-    static getPresets(scene = loadoutScene) {
+    static getPresets(scene) {
         const currentCharacter = this.getCurrentCharacter(scene);
         if (!currentCharacter) {
             return null;
@@ -11043,7 +10990,7 @@ class Tf2CharacterManager {
         }
         return this.#presets.get(npc) ?? null;
     }
-    static getCharacters(scene = loadoutScene) {
+    static getCharacters(scene) {
         const slots = this.#characterSlots.get(scene);
         const characters = new Set();
         if (slots) {
@@ -11055,7 +11002,7 @@ class Tf2CharacterManager {
         }
         return characters;
     }
-    static async #changeAnimFrame(frame, scene = loadoutScene) {
+    static async #changeAnimFrame(frame, scene) {
         const source1Model = await this.getCurrentCharacter(scene)?.getModel();
         if (source1Model) {
             const sequence = source1Model.sequences[Object.keys(source1Model.sequences)[0]];
@@ -11067,7 +11014,7 @@ class Tf2CharacterManager {
     static getSlotsPositions() {
         return this.#slotsPositions;
     }
-    static refreshCustomDisposition(customDisposition, scene = loadoutScene) {
+    static refreshCustomDisposition(customDisposition, scene) {
         const positions = [];
         const deltaX = 40;
         const deltaY = 50;
@@ -11097,11 +11044,11 @@ class Tf2CharacterManager {
     }
     static #pickedModel(pickEvent) {
         const model = pickEvent.detail.entity;
-        if (model) {
-            this.#selectCharacterPerDynamicProp(model);
+        if (model && this.#scene) {
+            this.#selectCharacterPerDynamicProp(model, this.#scene);
         }
     }
-    static async #selectCharacterPerDynamicProp(prop, scene = loadoutScene) {
+    static async #selectCharacterPerDynamicProp(prop, scene) {
         const slots = this.#characterSlots.get(scene);
         if (!slots) {
             return;

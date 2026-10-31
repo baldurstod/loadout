@@ -365,15 +365,6 @@ export class Tf2Item {
 		} else {
 			this.#readyPromiseResolve(false);
 		}
-		//this.#model.setVisible(this.#visible);
-
-		/*
-		if (this.#character) {
-			(await this.#character.getModel())?.addChild(this.#model);
-		} else {
-			loadoutScene.addChild(this.#model);
-		}
-		*/
 	}
 
 
