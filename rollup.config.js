@@ -37,6 +37,10 @@ export default [
 			'gl-matrix',
 			'harmony-3d',
 			'harmony-browser-utils',
+			'harmony-3d-utils',
+			'harmony-dmx',
+			'harmony-tf2-utils',
+			'harmony-types',
 		],
 	},
 ];
