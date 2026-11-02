@@ -10,6 +10,7 @@ export * from './ts/dota2/items/itemtemplate';
 export * from './ts/dota2/items/itemtemplates';
 export * from './ts/dota2/utils/persona';
 export * from './ts/dota2/utils/units';
+export * from './ts/tf2/characters/animations';
 export * from './ts/tf2/characters/character';
 export * from './ts/tf2/characters/charactermanager';
 export * from './ts/tf2/characters/characters';

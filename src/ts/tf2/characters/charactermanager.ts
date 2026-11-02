@@ -13,7 +13,7 @@ import { Tf2CharactersList, Tf2Class } from './characters';
 import { Tf2Preset, Tf2Presets } from './preset';
 export { positionJSON };
 
-class CharacterSlot {
+export class CharacterSlot {
 	character: Tf2Character | null = null;
 	readonly position = vec3.create();
 	readonly orientation = quat.clone(DEFAULT_ORIENTATION);
@@ -29,7 +29,7 @@ class CharacterSlot {
 	}
 }
 
-type CharacterPosition = {
+export type CharacterPosition = {
 	position: vec3;
 	orientation: quat;
 }

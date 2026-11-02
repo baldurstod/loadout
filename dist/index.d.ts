@@ -23,12 +23,12 @@ export declare enum CameraType {
     FreeFly = "freefly"
 }
 
-declare type CharacterPosition = {
+export declare type CharacterPosition = {
     position: vec3;
     orientation: quat;
 };
 
-declare class CharacterSlot {
+export declare class CharacterSlot {
     character: Tf2Character | null;
     readonly position: vec3;
     readonly orientation: vec4;
@@ -36,7 +36,7 @@ declare class CharacterSlot {
     setOrientation(orientation: quat): Promise<void>;
 }
 
-declare type ClassAnimations = {
+export declare type ClassAnimations = {
     character: string;
     animations: Record<string, {
         name: string;
@@ -289,6 +289,8 @@ export declare function getPaint(paint: Paints): Paint | null;
 export declare function getPaintByTint(tint: number): Paints | null;
 
 export declare function getPersonaId(slot: string): number;
+
+export declare function getTf2ClassAnimations(tf2Class: Tf2Class): ClassAnimations | null;
 
 export declare function getTf2TeamId(team: Tf2Team): 0 | 1;
 
