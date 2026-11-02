@@ -11,7 +11,7 @@ import { Tf2Item } from '../items/item';
 import { Tf2ItemManager } from '../items/itemmanager';
 import { Tf2ItemTemplate } from '../items/itemtemplate';
 import { getKillstreak, KillstreakColor, killstreakList } from '../paints/killstreaks';
-import { Tf2CharactersList, ClassRemovablePartsOff, Tf2Class } from './characters';
+import { ClassRemovablePartsOff, Tf2CharactersList, Tf2Class } from './characters';
 import { FlyingBird } from './flyingbird';
 import { Tf2Preset, Tf2PresetEffect, Tf2PresetEffectType, Tf2PresetItem } from './preset';
 
@@ -29,7 +29,6 @@ export const enum Ragdoll {
 }
 
 export class Tf2Character {
-	readonly scene: Scene;
 	readonly characterClass: Tf2Class;
 	readonly name: string;
 	readonly npc: string;
@@ -59,19 +58,18 @@ export class Tf2Character {
 	#decapitationLevel = 0;
 	static autoSelectAnim = true;
 
-	constructor(characterClass: Tf2Class, scene: Scene) {
+	constructor(characterClass: Tf2Class) {
 		this.characterClass = characterClass;
-		this.scene = scene;
 		this.name = Tf2CharactersList.get(characterClass)?.name ?? '';
 		this.npc = Tf2CharactersList.get(characterClass)?.npc ?? '';
 	}
 
-	async loadModel(path: string, name: string): Promise<void> {
+	async loadModel(scene: Scene, path: string, name: string): Promise<void> {
 		if (this.#loaded) {
 			return;
 		}
 		this.#loaded = true;
-		this.#model = await addTF2Model(this.scene, path);
+		this.#model = await addTF2Model(scene, path);
 		if (!this.#model) {
 			this.#readyPromiseResolve(false);
 			return;
@@ -94,8 +92,8 @@ export class Tf2Character {
 		return this.#model;
 	}
 
-	async addExtraModel(path: string, repository?: string): Promise<Source1ModelInstance | null> {
-		const extraModel = await addTF2Model(this.scene, path, repository);
+	async addExtraModel(scene: Scene, path: string, repository?: string): Promise<Source1ModelInstance | null> {
+		const extraModel = await addTF2Model(scene, path, repository);
 
 		if (extraModel) {
 			extraModel.setVisible(this.#visible);

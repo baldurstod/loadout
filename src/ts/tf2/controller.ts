@@ -1,4 +1,3 @@
-import { Scene } from 'harmony-3d';
 import { Ragdoll, Tf2Character } from './characters/character';
 import { UsePlayerModels } from './enums';
 import { Tf2Item } from './items/item';
@@ -52,13 +51,13 @@ export class Tf2LoadoutController {
 	static addEventListener(type: 'setitemsorttype', callback: (evt: CustomEvent<string>) => void, options?: AddEventListenerOptions | boolean): void;
 	static addEventListener(type: 'setsfmsortfield', callback: (evt: CustomEvent<string>) => void, options?: AddEventListenerOptions | boolean): void;
 	static addEventListener(type: 'itempinned', callback: (evt: CustomEvent<ItemPinned>) => void, options?: AddEventListenerOptions | boolean): void;
-	static addEventListener(type: 'setinvulnerable', callback: (evt: CustomEvent<SetInvulnerable>) => void, options?: AddEventListenerOptions | boolean): void;
-	static addEventListener(type: 'setragdoll', callback: (evt: CustomEvent<SetRagdoll>) => void, options?: AddEventListenerOptions | boolean): void;
-	static addEventListener(type: 'setanim', callback: (evt: CustomEvent<SetAnim>) => void, options?: AddEventListenerOptions | boolean): void;
+	static addEventListener(type: 'setinvulnerable', callback: (evt: CustomEvent<boolean>) => void, options?: AddEventListenerOptions | boolean): void;
+	static addEventListener(type: 'setragdoll', callback: (evt: CustomEvent<Ragdoll>) => void, options?: AddEventListenerOptions | boolean): void;
+	static addEventListener(type: 'setanim', callback: (evt: CustomEvent<string>) => void, options?: AddEventListenerOptions | boolean): void;
 	static addEventListener(type: 'setapplytoall', callback: (evt: CustomEvent<boolean>) => void, options?: AddEventListenerOptions | boolean): void;
 	static addEventListener(type: 'usebots', callback: (evt: CustomEvent<UsePlayerModels>) => void, options?: AddEventListenerOptions | boolean): void;
-	static addEventListener(type: 'importpresets', callback: (evt: CustomEvent<ImportPresets>) => void, options?: AddEventListenerOptions | boolean): void;
-	static addEventListener(type: 'changeanimframe', callback: (evt: CustomEvent<ChangeAnimFrame>) => void, options?: AddEventListenerOptions | boolean): void;
+	static addEventListener(type: 'importpresets', callback: (evt: CustomEvent<File[]>) => void, options?: AddEventListenerOptions | boolean): void;
+	static addEventListener(type: 'changeanimframe', callback: (evt: CustomEvent<number>) => void, options?: AddEventListenerOptions | boolean): void;
 	static addEventListener(type: 'characterchanged', callback: (evt: CustomEvent<Tf2Character>) => void, options?: AddEventListenerOptions | boolean): void;
 	static addEventListener(type: 'activatemeettheteammap', callback: (evt: CustomEvent<void>) => void, options?: AddEventListenerOptions | boolean): void;
 	static addEventListener(type: 'presetsupdated', callback: (evt: CustomEvent<void>) => void, options?: AddEventListenerOptions | boolean): void;
@@ -79,13 +78,13 @@ export class Tf2LoadoutController {
 	static dispatchEvent(type: 'setitemsorttype', options: Tf2LoadoutControllerEventInit<string>): boolean;
 	static dispatchEvent(type: 'setsfmsortfield', options: Tf2LoadoutControllerEventInit<string>): boolean;
 	static dispatchEvent(type: 'itempinned', options: Tf2LoadoutControllerEventInit<ItemPinned>): boolean;
-	static dispatchEvent(type: 'setinvulnerable', options: Tf2LoadoutControllerEventInit<SetInvulnerable>): boolean;
-	static dispatchEvent(type: 'setragdoll', options: Tf2LoadoutControllerEventInit<SetRagdoll>): boolean;
-	static dispatchEvent(type: 'setanim', options: Tf2LoadoutControllerEventInit<SetAnim>): boolean;
+	static dispatchEvent(type: 'setinvulnerable', options: Tf2LoadoutControllerEventInit<boolean>): boolean;
+	static dispatchEvent(type: 'setragdoll', options: Tf2LoadoutControllerEventInit<Ragdoll>): boolean;
+	static dispatchEvent(type: 'setanim', options: Tf2LoadoutControllerEventInit<string>): boolean;
 	static dispatchEvent(type: 'setapplytoall', options: Tf2LoadoutControllerEventInit<boolean>): boolean;
 	static dispatchEvent(type: 'usebots', options: Tf2LoadoutControllerEventInit<UsePlayerModels>): boolean;
-	static dispatchEvent(type: 'importpresets', options: Tf2LoadoutControllerEventInit<ImportPresets>): boolean;
-	static dispatchEvent(type: 'changeanimframe', options: Tf2LoadoutControllerEventInit<ChangeAnimFrame>): boolean;
+	static dispatchEvent(type: 'importpresets', options: Tf2LoadoutControllerEventInit<File[]>): boolean;
+	static dispatchEvent(type: 'changeanimframe', options: Tf2LoadoutControllerEventInit<number>): boolean;
 	static dispatchEvent(type: 'characterchanged', options: Tf2LoadoutControllerEventInit<Tf2Character>): boolean;
 	static dispatchEvent(type: 'activatemeettheteammap', options?: CustomEventInit<void>): boolean;
 	static dispatchEvent(type: 'presetsupdated', options?: CustomEventInit<void>): boolean;
@@ -129,29 +128,4 @@ export type SetItemFilter = {
 export type ItemPinned = {
 	item: Tf2ItemTemplate;
 	pinned: boolean;
-}
-
-export type SetInvulnerable = {
-	invulnerable: boolean;
-	scene: Scene;
-}
-
-export type SetRagdoll = {
-	ragdoll: Ragdoll;
-	scene: Scene;
-}
-
-export type SetAnim = {
-	anim: string;
-	scene: Scene;
-}
-
-export type ImportPresets = {
-	files: File[];
-	scene: Scene;
-}
-
-export type ChangeAnimFrame = {
-	frame: number;
-	scene: Scene;
 }

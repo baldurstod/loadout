@@ -9,7 +9,7 @@ import { ItemFilterAttribute, SetItemFilter, Tf2LoadoutController } from '../con
 import { Tf2Effect } from '../effects/effect';
 import { Tf2EffectTemplate, Tf2EffectType } from '../effects/effecttemplate';
 import { Tf2Item } from './item';
-import { Tf2ItemFilter, ItemFilterResult } from './itemfilter';
+import { ItemFilterResult, Tf2ItemFilter } from './itemfilter';
 import { Tf2ItemTemplate } from './itemtemplate';
 
 export enum SfmSortField {

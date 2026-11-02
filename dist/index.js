@@ -1092,7 +1092,7 @@ function getUnitPlacement(i) {
     return vec3.fromValues(0, 400 * (i % 2 - 0.5) * Math.floor((i + 1) / 2), 0);
 }
 
-const DOTA2_REPOSITORY$1 = 'https://dota2content.dotaloadout.com/';
+const DOTA2_REPOSITORY = 'https://dota2content.dotaloadout.com/';
 const DOTA2_GENERATED_ITEMS = 'generated/items/';
 
 class Dota2ItemManager {
@@ -1105,7 +1105,7 @@ class Dota2ItemManager {
             return items;
         }
         items = new Promise(async (resolve) => {
-            const response = await fetch(new URL(`${DOTA2_GENERATED_ITEMS}${characterId}.json`, DOTA2_REPOSITORY$1));
+            const response = await fetch(new URL(`${DOTA2_GENERATED_ITEMS}${characterId}.json`, DOTA2_REPOSITORY));
             if (!response) {
                 return false;
             }
@@ -1188,59 +1188,18 @@ async function addTF2Model(parent, path, repository, name) {
     return model;
 }
 
-const HTML_NAMESPACE_URI = 'http://www.w3.org/1999/xhtml';
-const CHARACTERS_SKINS = ['red', 'blue'];
-const MAX_UNUSUAL_EFFECTS_PER_CHARACTER = 5;
-const startAnim = 'stand_secondary';
-const baseClassTexturePath = './css/img/class/';
-const baseAnimDataPath = './json/animations/';
 const TF2_COMPETITIVE_STAGE = 'models/props_ui/competitive_stage';
 const TF2_CASUAL_BADGE = 'models/vgui/12v12_badge';
 const TF2_TOOLBOX_MODEL = 'models/weapons/w_models/w_toolbox';
-const RECORDER_DEFAULT_FILENAME = 'Loadout.tf recording.webm';
-const STEAM_PROFILE_URL = 'https://steamcommunity.com/profiles/';
-const STEAM_DEFAULT_PROFILE_URL = STEAM_PROFILE_URL + '76561197960265728';
-const TF2_GROUP_URL = 'https://steamcommunity.com/groups/tf2loadout/discussions/1';
 const TF2_REPOSITORY = 'https://tf2content.loadout.tf/';
-const inventoryPath = TF2_REPOSITORY + 'materials/';
 const UNUSUALS_IMAGES_DIR = './img/unusuals/';
-const DOTA2_REPOSITORY = 'https://dota2content.dotaloadout.com/';
-const ALYX_REPOSITORY = 'https://hlacontent.loadout.tf/';
-const CSGO_REPOSITORY = 'https://cs2content.csloadout.com/';
-const DEADLOCK_REPOSITORY = 'https://dlcontent.deadlockloadout.com/';
-const SFM_DEFAULT_ANIMATION_GROUPS_URL = './json/sfm_defaultanimationgroups.json';
-const LOADOUT_DISPOSITIONS_URL = './json/characters_positions.json';
-const SHADERTOY_VIEW_URL = 'https://www.shadertoy.com/view/';
-const TF2_MAP_LIST_URL = 'https://tf2content.loadout.tf/maps_manifest.json';
 const MEDIC_RELEASE_DOVE_COUNT = 10;
 const TF2_DOVE_MODEL = 'models/props_forest/dove';
 const ENTITY_FLYING_BIRD_SPEED_MIN = 200;
 const ENTITY_FLYING_BIRD_SPEED_MAX = 500;
-const ACCURATE_SKINS_EXTENSION_LINK = 'https://accurateskins.com/';
-const TF2_WARPAINT_DEFINITIONS_URL = TF2_REPOSITORY + 'generated/warpaint_definitions.json';
-const TF2_WARPAINT_PICTURES_URL = TF2_REPOSITORY + 'generated/warpaint_pictures.json';
-const TF2_WARPAINT_ENGLISH_URL = TF2_REPOSITORY + 'generated/items/tf_proto_obj_defs_english.json';
-const STEAM_ECONOMY_IMAGE_PREFIX = 'https://steamcommunity-a.akamaihd.net/economy/image/';
-const SHARE_LOADOUT_URL = 'https://share.loadout.tf/';
 const WORKSHOP_UGC_URL = 'https://ugc.workshop.tf/';
 const WORKSHOP_UGC_IMG_PREFIX = 'https://images.steamusercontent.com/ugc/';
-const SFM_WORKSHOP_UGC_URL = '__sfmEndpoint__/ugc/';
 const WORKSHOP_URL = 'https://workshop.tf/php/workshop/getAllItems.php';
-const STEAM_WORKSHOP_URL = 'http://steamcommunity.com/sharedfiles/filedetails/?id=';
-const WORKSHOP_REPO = 'workshop_';
-//export const TESTING_LOADOUT_ID = 'yVNFJPRh2XXEoDV8';
-//export const TESTING_LOADOUT_ID = '1ESqvbGiFt49Gi1G';
-//export const TESTING_LOADOUT_ID = '7OKoozpWTUYvzAMy';
-//export const TESTING_LOADOUT_ID = 'surre4l4XoLvS2Xi';
-//export const TESTING_LOADOUT_ID = '2duaA28pqTUtadtm';
-//export const TESTING_LOADOUT_ID = 'jopQcK01UqYtUhin';
-//export const TESTING_LOADOUT_ID = 'yyej3TFitchTNsA9';
-const TESTING_LOADOUT_ID = 'WaGFMmx8KyPwVIBi';
-const SCOUT_BLUE_PANTS_ORIGIN = 'materials/models/player/scout/scout_blue.vtf';
-const SCOUT_BLUE_PANTS_DEST = '/img/misc/scout_blue.vtf';
-const BROADCAST_CHANNEL_NAME = 'internal_notification';
-const ACE_EDITOR_URI = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js';
-const SHADERTOY_DIRECTORY = './shadertoy/';
 const MATERIAL_INVULN_BLU = 'models/effects/invulnfx_blue.vmt';
 const MATERIAL_INVULN_RED = 'models/effects/invulnfx_red.vmt';
 const MATERIAL_GOLD_RAGDOLL = 'models/player/shared/gold_player.vmt';
@@ -1249,12 +1208,6 @@ const EFFECTS_RED = 'teamcolor_red';
 const EFFECTS_BLU = 'teamcolor_blue';
 const FIRST_LEGACY_WARPAINT = 15000;
 const LAST_LEGACY_WARPAINT = 15158;
-const LOADOUT_LAYOUT = 'loadout';
-const COMPARE_WARPAINTS_LAYOUT = 'compare warpaints';
-const LOW_QUALITY_TEXTURE_SIZE = 256;
-const MID_QUALITY_TEXTURE_SIZE = 512;
-const MAIN_CANVAS = 'main_canvas';
-const SNIPPET_URL = 'https://github.com/baldurstod/pyodide-snippets';
 
 class Tf2LoadoutController {
     static #eventTarget = new EventTarget();
@@ -4493,7 +4446,6 @@ class Tf2Presets {
 
 const eyeAttachments = ['eyeglow_R', 'eyeglow_L'];
 class Tf2Character {
-    scene;
     characterClass;
     name;
     npc;
@@ -4522,18 +4474,17 @@ class Tf2Character {
     #flexControllers = new Map;
     #decapitationLevel = 0;
     static autoSelectAnim = true;
-    constructor(characterClass, scene) {
+    constructor(characterClass) {
         this.characterClass = characterClass;
-        this.scene = scene;
         this.name = Tf2CharactersList.get(characterClass)?.name ?? '';
         this.npc = Tf2CharactersList.get(characterClass)?.npc ?? '';
     }
-    async loadModel(path, name) {
+    async loadModel(scene, path, name) {
         if (this.#loaded) {
             return;
         }
         this.#loaded = true;
-        this.#model = await addTF2Model(this.scene, path);
+        this.#model = await addTF2Model(scene, path);
         if (!this.#model) {
             this.#readyPromiseResolve(false);
             return;
@@ -4554,8 +4505,8 @@ class Tf2Character {
         await this.#ready;
         return this.#model;
     }
-    async addExtraModel(path, repository) {
-        const extraModel = await addTF2Model(this.scene, path, repository);
+    async addExtraModel(scene, path, repository) {
+        const extraModel = await addTF2Model(scene, path, repository);
         if (extraModel) {
             extraModel.setVisible(this.#visible);
             this.#extraModels.add(extraModel);
@@ -5378,46 +5329,41 @@ const DEFAULT_ORIENTATION = quat.fromValues(0, 0, -1, 1);
 const TOOLBOX_POSITION = vec3.fromValues(-71.0726394653, 195.8566589355, 0);
 const TOOLBOX_ORIENTATION = quat.fromValues(0, 0, -0.5927425026893616, 0.8053920269012451);
 class Tf2CharacterManager {
-    static #characterSlots = new Map();
+    static #characterSlots = [new CharacterSlot()];
     static #currentSlot = null;
     static #unusedCharacters = [];
-    static #currentCharacter = new Map();
+    static #currentCharacter = null;
     static #team = 'red';
     static #slotsPositions = new Map();
     static #applyToAll = true;
     static #useBots = 'human';
     static #presets = new Map();
-    static #scene;
     static #firstPersonCamera;
     static {
         GraphicsEvents.addEventListener('tick', () => this.#updatePaintColor());
         GraphicsEvents.addEventListener('pick', (event) => this.#pickedModel(event));
-        Tf2LoadoutController.addEventListener('setinvulnerable', event => { this.#setInvulnerable(event.detail.invulnerable, event.detail.scene); return; });
-        Tf2LoadoutController.addEventListener('setragdoll', event => { this.#setRagdoll(event.detail.ragdoll, event.detail.scene); return; });
-        Tf2LoadoutController.addEventListener('setanim', (event) => this.#setAnim(event.detail.anim, event.detail.scene));
+        Tf2LoadoutController.addEventListener('setinvulnerable', event => { this.#setInvulnerable(event.detail); return; });
+        Tf2LoadoutController.addEventListener('setragdoll', event => { this.#setRagdoll(event.detail); return; });
+        Tf2LoadoutController.addEventListener('setanim', event => this.#setAnim(event.detail));
         Tf2LoadoutController.addEventListener('setapplytoall', event => this.#applyToAll = event.detail);
         Tf2LoadoutController.addEventListener('usebots', event => this.#useBots = event.detail);
-        Tf2LoadoutController.addEventListener('importpresets', (event) => { this.#importPresets(event.detail.files, event.detail.scene); });
-        Tf2LoadoutController.addEventListener('changeanimframe', event => { this.#changeAnimFrame(event.detail.frame, event.detail.scene); });
+        Tf2LoadoutController.addEventListener('importpresets', event => { this.#importPresets(event.detail); });
+        Tf2LoadoutController.addEventListener('changeanimframe', event => { this.#changeAnimFrame(event.detail); });
         OptionsManagerEvents.addEventListener('app.loadout.presets', (event) => this.#loadPresets(event.detail.value));
         this.#initDispositions();
-    }
-    static setScene(scene) {
-        this.#scene = scene;
-        this.#characterSlots.set(scene, [new CharacterSlot()]);
     }
     static setFirstPersonCamera(camera) {
         this.#firstPersonCamera = camera;
     }
     static async selectCharacter(characterClass, scene, slotId) {
-        const slot = this.getSlot(scene, slotId);
+        const slot = this.getSlot(slotId);
         if (slot.character?.characterClass == characterClass) {
             slot.character.setVisible(true);
             // the same character is selected again
             return slot.character;
         }
         this.#removeCharacter(slot);
-        const character = this.#getUnusedCharacter(characterClass) ?? new Tf2Character(characterClass, scene);
+        const character = this.#getUnusedCharacter(characterClass) ?? new Tf2Character(characterClass);
         slot.character = character;
         // set the character visible
         character.setVisible(true);
@@ -5425,7 +5371,7 @@ class Tf2CharacterManager {
         const characterTemplate = Tf2CharactersList.get(characterClass);
         if (characterTemplate) {
             const modelName = characterTemplate.name;
-            character.loadModel(characterTemplate.path, modelName);
+            character.loadModel(scene, characterTemplate.path, modelName);
             const model = await character.getModel();
             if (model) {
                 model.sourceModel.mdl.addExternalMdl('models/player/loadout_tf/' + modelName.toLowerCase().replace(/bots\/[^\/]*\/bot_/, 'player/') + '_loadout_tf_animations.mdl');
@@ -5438,11 +5384,11 @@ class Tf2CharacterManager {
                 }
             }
         }
-        this.#setCurrentCharacter(character, scene);
+        this.#setCurrentCharacter(character);
         return character;
     }
-    static removeCharacter(scene, slotId) {
-        const slot = this.getSlot(scene, slotId);
+    static removeCharacter(slotId) {
+        const slot = this.getSlot(slotId);
         this.#removeCharacter(slot);
     }
     static #getUnusedCharacter(characterClass) {
@@ -5455,8 +5401,8 @@ class Tf2CharacterManager {
         }
         return null;
     }
-    static #setCurrentCharacter(character, scene) {
-        this.#currentCharacter.set(scene, character);
+    static #setCurrentCharacter(character) {
+        this.#currentCharacter = character;
         //ItemManager.setCharacterClass(character.characterClass);
         Tf2ItemManager.setCurrentCharacter(character);
         //EffectManager.setCurrentCharacter(character);
@@ -5480,30 +5426,22 @@ class Tf2CharacterManager {
             slot.character = null;
         }
     }
-    static getSlot(scene, slotId) {
-        let slots = this.#characterSlots.get(scene);
-        if (!slots) {
-            slots = [new CharacterSlot()];
-            this.#characterSlots.set(scene, slots);
-        }
+    static getSlot(slotId) {
         if (slotId !== undefined) {
-            const slot = slots[slotId];
+            const slot = this.#characterSlots[slotId];
             if (slot) {
                 return slot;
             }
         }
-        for (const slot of slots) {
+        for (const slot of this.#characterSlots) {
             if (slot == this.#currentSlot || !slot.character || slot.character.characterClass == Tf2Class.None || slot.character.characterClass == Tf2Class.Empty || slot.character.characterClass == Tf2Class.CompareWarpaints) {
                 return slot;
             }
         }
-        return slots[slots.length - 1];
+        return this.#characterSlots[this.#characterSlots.length - 1];
     }
-    static setSlotsCount(size, removeExisting = false, scene) {
-        const slots = this.#characterSlots.get(scene);
-        if (!slots) {
-            return;
-        }
+    static setSlotsCount(size, removeExisting = false) {
+        const slots = this.#characterSlots;
         size = Math.max(size, 1);
         const removeStart = removeExisting ? 0 : size - 1;
         for (let i = removeStart; i < slots.length; i++) {
@@ -5513,11 +5451,8 @@ class Tf2CharacterManager {
             slots.push(new CharacterSlot());
         }
     }
-    static async setTeam(team, scene) {
-        const slots = this.#characterSlots.get(scene);
-        if (!slots) {
-            return;
-        }
+    static async setTeam(team) {
+        const slots = this.#characterSlots;
         this.#team = team;
         if (this.#applyToAll) {
             for (const slot of slots) {
@@ -5527,7 +5462,7 @@ class Tf2CharacterManager {
             }
         }
         else {
-            const character = this.getCurrentCharacter(scene);
+            const character = this.getCurrentCharacter();
             if (character) {
                 character.setTeam(team);
             }
@@ -5536,11 +5471,11 @@ class Tf2CharacterManager {
     static getTeam() {
         return this.#team;
     }
-    static getCurrentCharacter(scene) {
-        return this.#currentCharacter.get(scene) ?? null;
+    static getCurrentCharacter() {
+        return this.#currentCharacter;
     }
-    static setCustomTexture(itemId, customTextureName, scene) {
-        const currentCharacter = this.getCurrentCharacter(scene);
+    static setCustomTexture(itemId, customTextureName) {
+        const currentCharacter = this.getCurrentCharacter();
         if (currentCharacter) {
             const item = currentCharacter.getItemById(itemId);
             if (item) {
@@ -5550,20 +5485,15 @@ class Tf2CharacterManager {
     }
     ;
     static #updatePaintColor() {
-        for (const [, slots] of this.#characterSlots) {
-            for (const slot of slots) {
-                if (slot) {
-                    slot.character?.updatePaintColor();
-                }
+        for (const slot of this.#characterSlots) {
+            if (slot) {
+                slot.character?.updatePaintColor();
             }
         }
     }
     ;
-    static async #setInvulnerable(invulnerable, scene) {
-        const slots = this.#characterSlots.get(scene);
-        if (!slots) {
-            return;
-        }
+    static async #setInvulnerable(invulnerable) {
+        const slots = this.#characterSlots;
         if (this.#applyToAll) {
             for (const slot of slots) {
                 if (slot) {
@@ -5572,23 +5502,19 @@ class Tf2CharacterManager {
             }
         }
         else {
-            await this.getCurrentCharacter(scene)?.setInvulnerable(invulnerable);
+            await this.getCurrentCharacter()?.setInvulnerable(invulnerable);
         }
     }
-    static async #setRagdoll(ragdoll, scene) {
-        const slots = this.#characterSlots.get(scene);
-        if (!slots) {
-            return;
-        }
+    static async #setRagdoll(ragdoll) {
         if (this.#applyToAll) {
-            for (const slot of slots) {
+            for (const slot of this.#characterSlots) {
                 if (slot) {
                     await slot.character?.setRagdoll(ragdoll);
                 }
             }
         }
         else {
-            await this.getCurrentCharacter(scene)?.setRagdoll(ragdoll);
+            await this.getCurrentCharacter()?.setRagdoll(ragdoll);
         }
     }
     static #initDispositions() {
@@ -5605,17 +5531,14 @@ class Tf2CharacterManager {
             this.#slotsPositions.set(key, positions);
         }
     }
-    static useDisposition(name, scene) {
-        const slots = this.#characterSlots.get(scene);
-        if (!slots) {
-            return;
-        }
+    static useDisposition(name) {
+        const slots = this.#characterSlots;
         //console.info('use disposition: ', name)
         const dispositions = this.#slotsPositions.get(String(name));
         if (!dispositions) {
             return;
         }
-        this.setSlotsCount(dispositions.length, false, scene);
+        this.setSlotsCount(dispositions.length, false);
         for (let i = 0; i < slots.length; i++) {
             const slot = slots[i];
             const disposition = dispositions[i];
@@ -5632,8 +5555,8 @@ class Tf2CharacterManager {
         }
     }
     static async setupMeetTheTeam(scene) {
-        this.setSlotsCount(9, true, scene);
-        this.useDisposition('mtt', scene);
+        this.setSlotsCount(9, true);
+        this.useDisposition('mtt');
         let botDelta = 0;
         if (this.#useBots === 'bot') {
             botDelta = Tf2Class.ScoutBot;
@@ -5650,8 +5573,8 @@ class Tf2CharacterManager {
         await this.selectCharacter(Tf2Class.Soldier + botDelta, scene, 6);
         await this.selectCharacter(Tf2Class.Demoman + botDelta, scene, 7);
         await this.selectCharacter(Tf2Class.Medic + botDelta, scene, 8);
-        this.#selectAnim('meettheteam', true, false, scene);
-        const toolbox = await engy.addExtraModel(TF2_TOOLBOX_MODEL);
+        this.#selectAnim('meettheteam', true, false);
+        const toolbox = await engy.addExtraModel(scene, TF2_TOOLBOX_MODEL);
         if (toolbox) {
             toolbox.setPosition(TOOLBOX_POSITION);
             toolbox.setOrientation(TOOLBOX_ORIENTATION);
@@ -5659,28 +5582,26 @@ class Tf2CharacterManager {
         Tf2LoadoutController.dispatchEvent('activatemeettheteammap');
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    static #selectAnim(anim, applyToAll, force = false, scene) {
+    static #selectAnim(anim, applyToAll, force = false) {
         /*
         if (!force && this.#htmlAnimSelector.value != '') {
             return;
         }
         */
         if (applyToAll) {
-            for (const [, slots] of this.#characterSlots) {
-                for (const slot of slots) {
-                    slot.character?.setUserAnim(anim);
-                }
+            for (const slot of this.#characterSlots) {
+                slot.character?.setUserAnim(anim);
             }
         }
         else {
-            this.getCurrentCharacter(scene)?.setUserAnim(anim);
+            this.getCurrentCharacter()?.setUserAnim(anim);
         }
     }
-    static #setAnim(anim, scene) {
-        this.#selectAnim(anim, this.#applyToAll, false, scene);
+    static #setAnim(anim) {
+        this.#selectAnim(anim, this.#applyToAll, false);
     }
-    static getAnimList(scene) {
-        const currentClass = this.getCurrentCharacter(scene)?.characterClass ?? null;
+    static getAnimList() {
+        const currentClass = this.getCurrentCharacter()?.characterClass ?? null;
         if (currentClass !== null) {
             return getTf2ClassAnimations(currentClass);
         }
@@ -5699,8 +5620,8 @@ class Tf2CharacterManager {
         Tf2LoadoutController.dispatchEvent('presetsupdated');
         //this.#updatePresetsPanel();
     }
-    static loadPreset(name, scene) {
-        const currentCharacter = this.getCurrentCharacter(scene);
+    static loadPreset(name) {
+        const currentCharacter = this.getCurrentCharacter();
         if (!currentCharacter) {
             return;
         }
@@ -5723,8 +5644,8 @@ class Tf2CharacterManager {
         }
         OptionsManager.setItem('app.loadout.presets', JSON.stringify(j));
     }
-    static savePreset(scene, name) {
-        const currentCharacter = this.getCurrentCharacter(scene);
+    static savePreset(name) {
+        const currentCharacter = this.getCurrentCharacter();
         if (!currentCharacter || name == '') {
             return;
         }
@@ -5746,14 +5667,14 @@ class Tf2CharacterManager {
         //this.#updatePresetsPanel();
         Tf2LoadoutController.dispatchEvent('presetsupdated');
     }
-    static async #importPresets(files, scene) {
+    static async #importPresets(files) {
         for (const file of files) {
-            await this.#importPreset(file, scene);
+            await this.#importPreset(file);
         }
         Tf2LoadoutController.dispatchEvent('presetsupdated');
     }
-    static async #importPreset(file, scene) {
-        const currentCharacter = this.getCurrentCharacter(scene);
+    static async #importPreset(file) {
+        const currentCharacter = this.getCurrentCharacter();
         if (!currentCharacter) {
             return;
         }
@@ -5777,12 +5698,12 @@ class Tf2CharacterManager {
         const preset = new Tf2Preset();
         preset.fromJSON(json);
         if (!preset.name || presets.getPreset(preset.name)) {
-            preset.name = this.createPresetName(scene);
+            preset.name = this.createPresetName();
         }
         presets.addPreset(preset);
     }
-    static createPresetName(scene) {
-        const currentCharacter = this.getCurrentCharacter(scene);
+    static createPresetName() {
+        const currentCharacter = this.getCurrentCharacter();
         if (!currentCharacter) {
             return '';
         }
@@ -5836,8 +5757,8 @@ class Tf2CharacterManager {
         }
     }
     */
-    static getPresets(scene) {
-        const currentCharacter = this.getCurrentCharacter(scene);
+    static getPresets() {
+        const currentCharacter = this.getCurrentCharacter();
         if (!currentCharacter) {
             return null;
         }
@@ -5847,8 +5768,8 @@ class Tf2CharacterManager {
         }
         return this.#presets.get(npc) ?? null;
     }
-    static getCharacters(scene) {
-        const slots = this.#characterSlots.get(scene);
+    static getCharacters() {
+        const slots = this.#characterSlots;
         const characters = new Set();
         if (slots) {
             for (const slot of slots) {
@@ -5859,8 +5780,8 @@ class Tf2CharacterManager {
         }
         return characters;
     }
-    static async #changeAnimFrame(frame, scene) {
-        const source1Model = await this.getCurrentCharacter(scene)?.getModel();
+    static async #changeAnimFrame(frame) {
+        const source1Model = await this.getCurrentCharacter()?.getModel();
         if (source1Model) {
             const sequence = source1Model.sequences[Object.keys(source1Model.sequences)[0]];
             if (sequence) {
@@ -5871,7 +5792,7 @@ class Tf2CharacterManager {
     static getSlotsPositions() {
         return this.#slotsPositions;
     }
-    static refreshCustomDisposition(customDisposition, scene) {
+    static refreshCustomDisposition(customDisposition) {
         const positions = [];
         const deltaX = 40;
         const deltaY = 50;
@@ -5879,7 +5800,7 @@ class Tf2CharacterManager {
         const startX = -deltaX * 0.5 * (customDisposition.countX - 1);
         const startY = -deltaY * 0.5 * (customDisposition.countY - 1);
         const startZ = -deltaZ * 0.5 * (customDisposition.countZ - 1);
-        this.setSlotsCount(customDisposition.countX * customDisposition.countY * customDisposition.countZ, false, scene);
+        this.setSlotsCount(customDisposition.countX * customDisposition.countY * customDisposition.countZ, false);
         for (let x = 0; x < customDisposition.countX; x++) {
             for (let y = 0; y < customDisposition.countY; y++) {
                 for (let z = 0; z < customDisposition.countZ; z++) {
@@ -5897,16 +5818,16 @@ class Tf2CharacterManager {
         }
         this.#slotsPositions.set('custom', positions);
         //this.#setCharactersPositions(new CharactersPositions(positions, true));
-        this.useDisposition('custom', scene);
+        this.useDisposition('custom');
     }
     static #pickedModel(pickEvent) {
         const model = pickEvent.detail.entity;
-        if (model && this.#scene) {
-            this.#selectCharacterPerDynamicProp(model, this.#scene);
+        if (model) {
+            this.#selectCharacterPerDynamicProp(model);
         }
     }
-    static async #selectCharacterPerDynamicProp(prop, scene) {
-        const slots = this.#characterSlots.get(scene);
+    static async #selectCharacterPerDynamicProp(prop) {
+        const slots = this.#characterSlots;
         if (!slots) {
             return;
         }
@@ -5919,7 +5840,7 @@ class Tf2CharacterManager {
             while (currentEntity) {
                 if (characterModel == currentEntity) {
                     this.#currentSlot = slot;
-                    this.#setCurrentCharacter(slot.character, scene);
+                    this.#setCurrentCharacter(slot.character);
                     return;
                 }
                 currentEntity = currentEntity.parent;
@@ -5928,4 +5849,4 @@ class Tf2CharacterManager {
     }
 }
 
-export { ACCURATE_SKINS_EXTENSION_LINK, ACE_EDITOR_URI, ALYX_REPOSITORY, BROADCAST_CHANNEL_NAME, CHARACTERS_SKINS, COIN_SPIN_EFFECT, COMMUNITY_SPARKLE_EFFECT, COMPARE_WARPAINTS_LAYOUT, CSGO_REPOSITORY, CameraType, ClassRemovablePartsOff, DEADLOCK_REPOSITORY, DEFAULT_ACTIVITY, DOTA2_REPOSITORY, Dota2AssetModifier, Dota2Hero, Dota2HeroTemplate, Dota2HeroTemplates, Dota2Item, Dota2ItemManager, Dota2ItemTemplate, Dota2ItemTemplates, Dota2LoadoutController, Dota2Units, EFFECTS_BLU, EFFECTS_RED, ENTITY_FLYING_BIRD_SPEED_MAX, ENTITY_FLYING_BIRD_SPEED_MIN, FIRST_LEGACY_WARPAINT, HTML_NAMESPACE_URI, ItemFilterAttribute, Killstreak, KillstreakColor, LAST_LEGACY_WARPAINT, LOADOUT_DISPOSITIONS_URL, LOADOUT_LAYOUT, LOW_QUALITY_TEXTURE_SIZE, MAIN_CANVAS, MATERIAL_GOLD_RAGDOLL, MATERIAL_ICE_RAGDOLL, MATERIAL_INVULN_BLU, MATERIAL_INVULN_RED, MAX_UNUSUAL_EFFECTS_PER_CHARACTER, MEDIC_RELEASE_DOVE_COUNT, MID_QUALITY_TEXTURE_SIZE, Paint, Paints, RECORDER_DEFAULT_FILENAME, SCOUT_BLUE_PANTS_DEST, SCOUT_BLUE_PANTS_ORIGIN, SFM_DEFAULT_ANIMATION_GROUPS_URL, SFM_WORKSHOP_UGC_URL, SHADERTOY_DIRECTORY, SHADERTOY_VIEW_URL, SHARE_LOADOUT_URL, SNIPPET_URL, STEAM_DEFAULT_PROFILE_URL, STEAM_ECONOMY_IMAGE_PREFIX, STEAM_PROFILE_URL, STEAM_WORKSHOP_URL, SfmSortField, TESTING_LOADOUT_ID, TF2_CASUAL_BADGE, TF2_COMPETITIVE_STAGE, TF2_DOVE_MODEL, TF2_GROUP_URL, TF2_MAP_LIST_URL, TF2_REPOSITORY, TF2_TOOLBOX_MODEL, TF2_WARPAINT_DEFINITIONS_URL, TF2_WARPAINT_ENGLISH_URL, TF2_WARPAINT_PICTURES_URL, Tf2Character, Tf2CharacterManager, Tf2CharactersList, Tf2Class, Tf2Effect, Tf2EffectTemplate, Tf2EffectType, Tf2Item, Tf2ItemManager, Tf2ItemTemplate, Tf2LoadoutController, Tf2Preset, Tf2PresetEffect, Tf2PresetEffectType, Tf2PresetItem, Tf2Presets, UNUSUALS_IMAGES_DIR, WORKSHOP_REPO, WORKSHOP_UGC_IMG_PREFIX, WORKSHOP_UGC_URL, WORKSHOP_URL, baseAnimDataPath, baseClassTexturePath, colorToCss, colorToVec3, colorToVec4, getKillstreak, getKillstreakColor, getPaint, getPaintByTint, getPersonaId, getTf2TeamId, inventoryPath, killstreakList, npcToClass, paintList, positionJSON, randomProperty, setUpdatePreview, startAnim, updatePreview, weaponEffects };
+export { COIN_SPIN_EFFECT, COMMUNITY_SPARKLE_EFFECT, CameraType, ClassRemovablePartsOff, DEFAULT_ACTIVITY, Dota2AssetModifier, Dota2Hero, Dota2HeroTemplate, Dota2HeroTemplates, Dota2Item, Dota2ItemManager, Dota2ItemTemplate, Dota2ItemTemplates, Dota2LoadoutController, Dota2Units, EFFECTS_BLU, EFFECTS_RED, ENTITY_FLYING_BIRD_SPEED_MAX, ENTITY_FLYING_BIRD_SPEED_MIN, FIRST_LEGACY_WARPAINT, ItemFilterAttribute, Killstreak, KillstreakColor, LAST_LEGACY_WARPAINT, MATERIAL_GOLD_RAGDOLL, MATERIAL_ICE_RAGDOLL, MATERIAL_INVULN_BLU, MATERIAL_INVULN_RED, MEDIC_RELEASE_DOVE_COUNT, Paint, Paints, SfmSortField, TF2_CASUAL_BADGE, TF2_COMPETITIVE_STAGE, TF2_DOVE_MODEL, TF2_REPOSITORY, TF2_TOOLBOX_MODEL, Tf2Character, Tf2CharacterManager, Tf2CharactersList, Tf2Class, Tf2Effect, Tf2EffectTemplate, Tf2EffectType, Tf2Item, Tf2ItemManager, Tf2ItemTemplate, Tf2LoadoutController, Tf2Preset, Tf2PresetEffect, Tf2PresetEffectType, Tf2PresetItem, Tf2Presets, UNUSUALS_IMAGES_DIR, WORKSHOP_UGC_IMG_PREFIX, WORKSHOP_UGC_URL, WORKSHOP_URL, colorToCss, colorToVec3, colorToVec4, getKillstreak, getKillstreakColor, getPaint, getPaintByTint, getPersonaId, getTf2TeamId, killstreakList, npcToClass, paintList, positionJSON, randomProperty, setUpdatePreview, updatePreview, weaponEffects };

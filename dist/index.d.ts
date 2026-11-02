@@ -12,22 +12,10 @@ import { uint } from 'harmony-types';
 import { vec3 } from 'gl-matrix';
 import { vec4 } from 'gl-matrix';
 
-export declare const ACCURATE_SKINS_EXTENSION_LINK = "https://accurateskins.com/";
-
-export declare const ACE_EDITOR_URI = "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js";
-
-export declare const ALYX_REPOSITORY = "https://hlacontent.loadout.tf/";
-
 export declare type AttachedParticlesystem = {
     'attachment': string;
     'system': string;
 };
-
-export declare const baseAnimDataPath = "./json/animations/";
-
-export declare const baseClassTexturePath = "./css/img/class/";
-
-export declare const BROADCAST_CHANNEL_NAME = "internal_notification";
 
 export declare enum CameraType {
     FirstPerson = "FirstPerson",
@@ -35,17 +23,10 @@ export declare enum CameraType {
     FreeFly = "freefly"
 }
 
-export declare type ChangeAnimFrame = {
-    frame: number;
-    scene: Scene;
-};
-
 declare type CharacterPosition = {
     position: vec3;
     orientation: quat;
 };
-
-export declare const CHARACTERS_SKINS: string[];
 
 declare class CharacterSlot {
     character: Tf2Character | null;
@@ -79,21 +60,13 @@ export declare function colorToVec4(color: number, tint?: vec4): vec4;
 
 export declare const COMMUNITY_SPARKLE_EFFECT = 4;
 
-export declare const COMPARE_WARPAINTS_LAYOUT = "compare warpaints";
-
-export declare const CSGO_REPOSITORY = "https://cs2content.csloadout.com/";
-
 export declare type CustomDisposition = {
     countX: number;
     countY: number;
     countZ: number;
 };
 
-export declare const DEADLOCK_REPOSITORY = "https://dlcontent.deadlockloadout.com/";
-
 export declare const DEFAULT_ACTIVITY = "ACT_DOTA_IDLE";
-
-export declare const DOTA2_REPOSITORY = "https://dota2content.dotaloadout.com/";
 
 export declare class Dota2AssetModifier {
     #private;
@@ -319,15 +292,6 @@ export declare function getPersonaId(slot: string): number;
 
 export declare function getTf2TeamId(team: Tf2Team): 0 | 1;
 
-export declare const HTML_NAMESPACE_URI = "http://www.w3.org/1999/xhtml";
-
-export declare type ImportPresets = {
-    files: File[];
-    scene: Scene;
-};
-
-export declare const inventoryPath: string;
-
 export declare enum ItemFilterAttribute {
     Name = 0,
     Selected = 1,
@@ -403,14 +367,6 @@ export declare const killstreakList: Map<KillstreakColor, KillstreakDefinition>;
 
 export declare const LAST_LEGACY_WARPAINT = 15158;
 
-export declare const LOADOUT_DISPOSITIONS_URL = "./json/characters_positions.json";
-
-export declare const LOADOUT_LAYOUT = "loadout";
-
-export declare const LOW_QUALITY_TEXTURE_SIZE = 256;
-
-export declare const MAIN_CANVAS = "main_canvas";
-
 export declare const MATERIAL_GOLD_RAGDOLL = "models/player/shared/gold_player.vmt";
 
 export declare const MATERIAL_ICE_RAGDOLL = "models/player/shared/ice_player.vmt";
@@ -419,11 +375,7 @@ export declare const MATERIAL_INVULN_BLU = "models/effects/invulnfx_blue.vmt";
 
 export declare const MATERIAL_INVULN_RED = "models/effects/invulnfx_red.vmt";
 
-export declare const MAX_UNUSUAL_EFFECTS_PER_CHARACTER = 5;
-
 export declare const MEDIC_RELEASE_DOVE_COUNT = 10;
-
-export declare const MID_QUALITY_TEXTURE_SIZE = 512;
 
 export declare function npcToClass(npc: string): Tf2Class | null;
 
@@ -507,37 +459,12 @@ export declare const enum Ragdoll {
 
 export declare function randomProperty(obj: Record<string, any>): string;
 
-export declare const RECORDER_DEFAULT_FILENAME = "Loadout.tf recording.webm";
-
-export declare const SCOUT_BLUE_PANTS_DEST = "/img/misc/scout_blue.vtf";
-
-export declare const SCOUT_BLUE_PANTS_ORIGIN = "materials/models/player/scout/scout_blue.vtf";
-
-export declare type SetAnim = {
-    anim: string;
-    scene: Scene;
-};
-
-export declare type SetInvulnerable = {
-    invulnerable: boolean;
-    scene: Scene;
-};
-
 export declare type SetItemFilter = {
     attribute: ItemFilterAttribute;
     value: string | boolean | undefined;
 };
 
-export declare type SetRagdoll = {
-    ragdoll: Ragdoll;
-    scene: Scene;
-};
-
 export declare function setUpdatePreview(update: boolean): void;
-
-export declare const SFM_DEFAULT_ANIMATION_GROUPS_URL = "./json/sfm_defaultanimationgroups.json";
-
-export declare const SFM_WORKSHOP_UGC_URL = "__sfmEndpoint__/ugc/";
 
 export declare enum SfmSortField {
     Index = "sfm-index",
@@ -548,59 +475,28 @@ export declare enum SfmSortField {
     Random = "sfm-random"
 }
 
-export declare const SHADERTOY_DIRECTORY = "./shadertoy/";
-
-export declare const SHADERTOY_VIEW_URL = "https://www.shadertoy.com/view/";
-
-export declare const SHARE_LOADOUT_URL = "https://share.loadout.tf/";
-
-export declare const SNIPPET_URL = "https://github.com/baldurstod/pyodide-snippets";
-
-export declare const startAnim = "stand_secondary";
-
-export declare const STEAM_DEFAULT_PROFILE_URL: string;
-
-export declare const STEAM_ECONOMY_IMAGE_PREFIX = "https://steamcommunity-a.akamaihd.net/economy/image/";
-
-export declare const STEAM_PROFILE_URL = "https://steamcommunity.com/profiles/";
-
-export declare const STEAM_WORKSHOP_URL = "http://steamcommunity.com/sharedfiles/filedetails/?id=";
-
-export declare const TESTING_LOADOUT_ID = "WaGFMmx8KyPwVIBi";
-
 export declare const TF2_CASUAL_BADGE = "models/vgui/12v12_badge";
 
 export declare const TF2_COMPETITIVE_STAGE = "models/props_ui/competitive_stage";
 
 export declare const TF2_DOVE_MODEL = "models/props_forest/dove";
 
-export declare const TF2_GROUP_URL = "https://steamcommunity.com/groups/tf2loadout/discussions/1";
-
-export declare const TF2_MAP_LIST_URL = "https://tf2content.loadout.tf/maps_manifest.json";
-
 export declare const TF2_REPOSITORY = "https://tf2content.loadout.tf/";
 
 export declare const TF2_TOOLBOX_MODEL = "models/weapons/w_models/w_toolbox";
 
-export declare const TF2_WARPAINT_DEFINITIONS_URL: string;
-
-export declare const TF2_WARPAINT_ENGLISH_URL: string;
-
-export declare const TF2_WARPAINT_PICTURES_URL: string;
-
 export declare class Tf2Character {
     #private;
-    readonly scene: Scene;
     readonly characterClass: Tf2Class;
     readonly name: string;
     readonly npc: string;
     readonly items: Map<string, Tf2Item>;
     readonly effects: Set<Tf2Effect>;
     static autoSelectAnim: boolean;
-    constructor(characterClass: Tf2Class, scene: Scene);
-    loadModel(path: string, name: string): Promise<void>;
+    constructor(characterClass: Tf2Class);
+    loadModel(scene: Scene, path: string, name: string): Promise<void>;
     getModel(): Promise<Source1ModelInstance | null>;
-    addExtraModel(path: string, repository?: string): Promise<Source1ModelInstance | null>;
+    addExtraModel(scene: Scene, path: string, repository?: string): Promise<Source1ModelInstance | null>;
     setVisible(visble: boolean): void;
     setTeam(team: Tf2Team): Promise<void>;
     getTeam(): Tf2Team;
@@ -639,27 +535,26 @@ export declare class Tf2Character {
 
 export declare class Tf2CharacterManager {
     #private;
-    static setScene(scene: Scene): void;
     static setFirstPersonCamera(camera: Camera): void;
     static selectCharacter(characterClass: Tf2Class, scene: Scene, slotId?: uint): Promise<Tf2Character>;
-    static removeCharacter(scene: Scene, slotId?: uint): void;
-    static getSlot(scene: Scene, slotId?: uint): CharacterSlot;
-    static setSlotsCount(size: uint, removeExisting: boolean | undefined, scene: Scene): void;
-    static setTeam(team: Tf2Team, scene: Scene): Promise<void>;
+    static removeCharacter(slotId?: uint): void;
+    static getSlot(slotId?: uint): CharacterSlot;
+    static setSlotsCount(size: uint, removeExisting?: boolean): void;
+    static setTeam(team: Tf2Team): Promise<void>;
     static getTeam(): Tf2Team;
-    static getCurrentCharacter(scene: Scene): Tf2Character | null;
-    static setCustomTexture(itemId: string, customTextureName: string, scene: Scene): void;
-    static useDisposition(name: string | number, scene: Scene): void;
+    static getCurrentCharacter(): Tf2Character | null;
+    static setCustomTexture(itemId: string, customTextureName: string): void;
+    static useDisposition(name: string | number): void;
     static setupMeetTheTeam(scene: Scene): Promise<void>;
-    static getAnimList(scene: Scene): ClassAnimations | null;
-    static loadPreset(name: string, scene: Scene): void;
+    static getAnimList(): ClassAnimations | null;
+    static loadPreset(name: string): void;
     static savePresets(): void;
-    static savePreset(scene: Scene, name?: string): void;
-    static createPresetName(scene: Scene): string;
-    static getPresets(scene: Scene): Tf2Presets | null;
-    static getCharacters(scene: Scene): Set<Tf2Character>;
+    static savePreset(name?: string): void;
+    static createPresetName(): string;
+    static getPresets(): Tf2Presets | null;
+    static getCharacters(): Set<Tf2Character>;
     static getSlotsPositions(): Map<string, CharacterPosition[]>;
-    static refreshCustomDisposition(customDisposition: CustomDisposition, scene: Scene): void;
+    static refreshCustomDisposition(customDisposition: CustomDisposition): void;
 }
 
 export declare const Tf2CharactersList: Map<Tf2Class, Tf2CharactersType>;
@@ -895,13 +790,13 @@ export declare class Tf2LoadoutController {
     static addEventListener(type: 'setitemsorttype', callback: (evt: CustomEvent<string>) => void, options?: AddEventListenerOptions | boolean): void;
     static addEventListener(type: 'setsfmsortfield', callback: (evt: CustomEvent<string>) => void, options?: AddEventListenerOptions | boolean): void;
     static addEventListener(type: 'itempinned', callback: (evt: CustomEvent<ItemPinned>) => void, options?: AddEventListenerOptions | boolean): void;
-    static addEventListener(type: 'setinvulnerable', callback: (evt: CustomEvent<SetInvulnerable>) => void, options?: AddEventListenerOptions | boolean): void;
-    static addEventListener(type: 'setragdoll', callback: (evt: CustomEvent<SetRagdoll>) => void, options?: AddEventListenerOptions | boolean): void;
-    static addEventListener(type: 'setanim', callback: (evt: CustomEvent<SetAnim>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'setinvulnerable', callback: (evt: CustomEvent<boolean>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'setragdoll', callback: (evt: CustomEvent<Ragdoll>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'setanim', callback: (evt: CustomEvent<string>) => void, options?: AddEventListenerOptions | boolean): void;
     static addEventListener(type: 'setapplytoall', callback: (evt: CustomEvent<boolean>) => void, options?: AddEventListenerOptions | boolean): void;
     static addEventListener(type: 'usebots', callback: (evt: CustomEvent<UsePlayerModels>) => void, options?: AddEventListenerOptions | boolean): void;
-    static addEventListener(type: 'importpresets', callback: (evt: CustomEvent<ImportPresets>) => void, options?: AddEventListenerOptions | boolean): void;
-    static addEventListener(type: 'changeanimframe', callback: (evt: CustomEvent<ChangeAnimFrame>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'importpresets', callback: (evt: CustomEvent<File[]>) => void, options?: AddEventListenerOptions | boolean): void;
+    static addEventListener(type: 'changeanimframe', callback: (evt: CustomEvent<number>) => void, options?: AddEventListenerOptions | boolean): void;
     static addEventListener(type: 'characterchanged', callback: (evt: CustomEvent<Tf2Character>) => void, options?: AddEventListenerOptions | boolean): void;
     static addEventListener(type: 'activatemeettheteammap', callback: (evt: CustomEvent<void>) => void, options?: AddEventListenerOptions | boolean): void;
     static addEventListener(type: 'presetsupdated', callback: (evt: CustomEvent<void>) => void, options?: AddEventListenerOptions | boolean): void;
@@ -918,13 +813,13 @@ export declare class Tf2LoadoutController {
     static dispatchEvent(type: 'setitemsorttype', options: Tf2LoadoutControllerEventInit<string>): boolean;
     static dispatchEvent(type: 'setsfmsortfield', options: Tf2LoadoutControllerEventInit<string>): boolean;
     static dispatchEvent(type: 'itempinned', options: Tf2LoadoutControllerEventInit<ItemPinned>): boolean;
-    static dispatchEvent(type: 'setinvulnerable', options: Tf2LoadoutControllerEventInit<SetInvulnerable>): boolean;
-    static dispatchEvent(type: 'setragdoll', options: Tf2LoadoutControllerEventInit<SetRagdoll>): boolean;
-    static dispatchEvent(type: 'setanim', options: Tf2LoadoutControllerEventInit<SetAnim>): boolean;
+    static dispatchEvent(type: 'setinvulnerable', options: Tf2LoadoutControllerEventInit<boolean>): boolean;
+    static dispatchEvent(type: 'setragdoll', options: Tf2LoadoutControllerEventInit<Ragdoll>): boolean;
+    static dispatchEvent(type: 'setanim', options: Tf2LoadoutControllerEventInit<string>): boolean;
     static dispatchEvent(type: 'setapplytoall', options: Tf2LoadoutControllerEventInit<boolean>): boolean;
     static dispatchEvent(type: 'usebots', options: Tf2LoadoutControllerEventInit<UsePlayerModels>): boolean;
-    static dispatchEvent(type: 'importpresets', options: Tf2LoadoutControllerEventInit<ImportPresets>): boolean;
-    static dispatchEvent(type: 'changeanimframe', options: Tf2LoadoutControllerEventInit<ChangeAnimFrame>): boolean;
+    static dispatchEvent(type: 'importpresets', options: Tf2LoadoutControllerEventInit<File[]>): boolean;
+    static dispatchEvent(type: 'changeanimframe', options: Tf2LoadoutControllerEventInit<number>): boolean;
     static dispatchEvent(type: 'characterchanged', options: Tf2LoadoutControllerEventInit<Tf2Character>): boolean;
     static dispatchEvent(type: 'activatemeettheteammap', options?: CustomEventInit<void>): boolean;
     static dispatchEvent(type: 'presetsupdated', options?: CustomEventInit<void>): boolean;
@@ -1011,8 +906,6 @@ declare type Warpaint = {
 };
 
 export declare const weaponEffects: Map<number, [string, string]>;
-
-export declare const WORKSHOP_REPO = "workshop_";
 
 export declare const WORKSHOP_UGC_IMG_PREFIX = "https://images.steamusercontent.com/ugc/";
 
